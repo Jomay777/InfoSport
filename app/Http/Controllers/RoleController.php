@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateRoleRequest;
 use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ class RoleController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('Admin/Roles/RoleIndex',[
+        return Inertia::render('Admin/Roles/RoleIndex', [
             'roles' => RoleResource::collection(Role::all())
         ]);
     }
@@ -24,17 +25,18 @@ class RoleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        //
+        return Inertia::render('Admin/Roles/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateRoleRequest $request)
     {
-        //
+        Role::create($request->validated());
+        return to_route(route:'roles.index');
     }
 
     /**
