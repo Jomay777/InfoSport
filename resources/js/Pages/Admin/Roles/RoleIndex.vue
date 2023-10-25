@@ -37,7 +37,18 @@ defineProps(['roles']);
                         class="border-b">
                             <TableDataCell>{{ role.id }}</TableDataCell>
                             <TableDataCell>{{ role.name }}</TableDataCell>
-                            <TableDataCell>Editar/Eliminar</TableDataCell>
+                            <TableDataCell class="space-x-4">
+                                <Link :href="route('roles.edit', role.id)" 
+                                    class="text-green-400 hover:text-green-600">
+                                    Editar
+                                </Link>
+                                <Link :href="route('roles.destroy', role.id)" 
+                                    method="DELETE" as="button"
+                                    class="text-red-400 hover:text-red-600">
+                                    Eliminar
+                                </Link>
+                            </TableDataCell>
+                            
                         </TableRow>
 
                     </template>

@@ -2,19 +2,24 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
-import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
+const props = defineProps({
+    role:{
+        type: Object,
+        required: true
+    }
+})
 const form = useForm({
-    name: ""
+    name: props.role.name
 });
 </script>
 
 <template>
-    <Head title="Crear nuevo role" />
+    <Head title="Actualizar rol" />
 
     <AdminLayout>       
         <div class="max-w-7xl mx-auto py-4">
@@ -24,8 +29,8 @@ const form = useForm({
                 </Link>                        
             </div>
             <div class="mt-6 max-w-md mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-                <h1 class="text-2xl p-4">Crear un nuevo rol</h1>
-                <form @submit.prevent="form.post(route('roles.store'))">
+                <h1 class="text-2xl p-4">Actualizar rol</h1>
+                <form @submit.prevent="form.put(route('roles.update', role.id))">
                     <div>
                         <InputLabel for="name" value="Nombre" />
 
@@ -42,7 +47,7 @@ const form = useForm({
                     </div>                    
                     <div class="flex items-center mt-4">                        
                         <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Crear
+                            Actualizar
                         </PrimaryButton>
                     </div>
                 </form>
