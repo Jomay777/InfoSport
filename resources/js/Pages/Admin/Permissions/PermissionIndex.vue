@@ -1,21 +1,28 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 import Table from '@/Components/Table.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableHeaderCell from '@/Components/TableHeaderCell.vue';
 import TableDataCell from '@/Components/TableDataCell.vue';
 
-defineProps(['permissions'])
+defineProps(['permissions']);
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Permissions" />
 
     <AdminLayout>
         <div class="max-w-7xl mx-auto py-4">
-            <h1>Permissions Index Page</h1>       
+            <div class="flex justify-between">
+                <h1>Permisos Index</h1>
+                <Link :href="route('permissions.create')" 
+                    class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounted">
+                    Nuevo Permiso
+                </Link>    
+                    
+            </div>
             <div class="mt-6">
                 <Table>
                     <template #header>
@@ -27,7 +34,7 @@ defineProps(['permissions'])
                     </template>
                     <template #default>
                         <TableRow 
-                        v-for="permission in permissions" :key="user.id"
+                        v-for="permission in permissions" :key="permission.id"
                         class="border-b">
                             <TableDataCell>{{ permission.id }}</TableDataCell>
                             <TableDataCell>{{ permission.name }}</TableDataCell>
