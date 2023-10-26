@@ -49,6 +49,7 @@ const form = useForm({
           <div class="mt-4">
             <InputLabel for="permissions" value="Permissions" />
             <VueMultiselect
+              id="permissions"
               v-model="form.permissions"
               :options="permissions"
               :multiple="true"
