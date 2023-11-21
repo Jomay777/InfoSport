@@ -47,10 +47,10 @@ watch(
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Update role</h1>
+        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar rol</h1>
         <form @submit.prevent="form.put(route('roles.update', role.id))">
           <div class="mt-4">
-            <InputLabel for="name" value="Name" />
+            <InputLabel for="name" value="Nombre" />
             <TextInput
               id="name"
               type="text"
@@ -63,14 +63,14 @@ watch(
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
           <div class="mt-4">
-            <InputLabel for="permissions" value="Permissions" />
+            <InputLabel for="permissions" value="Permiso" />
             <VueMultiselect
               id="permissions"
               v-model="form.permissions"
               :options="permissions"
               :multiple="true"
               :close-on-select="true"
-              placeholder="Pick some"
+              placeholder="Escoge algunos"
               label="name"
               track-by="id"
             />
@@ -81,20 +81,20 @@ watch(
               :class="{ 'opacity-25': form.processing }"
               :disabled="form.processing"
             >
-              Update
+              Actualizar
             </PrimaryButton>
           </div>
         </form>
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Permissions</h1>
+        <h1 class="text-2xl font-semibold text-indigo-700">Permisos</h1>
         <div class="bg-white">
           <Table>
             <template #header>
               <TableRow>
                 <TableHeaderCell>ID</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Action</TableHeaderCell>
+                <TableHeaderCell>Nombre</TableHeaderCell>
+                <TableHeaderCell>Acción</TableHeaderCell>
               </TableRow>
             </template>
             <template #default>
@@ -116,7 +116,7 @@ watch(
                     method="DELETE"
                     as="button"
                     class="text-red-400 hover:text-red-600"
-                    >Revoke</Link
+                    >Quitar</Link
                   >
                 </TableDataCell>
               </TableRow>

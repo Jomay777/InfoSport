@@ -40,7 +40,7 @@ const { hasRole } = usePermission();
                                     v-if="hasRole('admin')"                         
                                     :href="route('users.index')" 
                                     :active="route().current('users.index')">
-                                    Admin
+                                    Administrador
                                 </NavLink>
                             </div>
                         </div>
@@ -74,9 +74,9 @@ const { hasRole } = usePermission();
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink :href="route('profile.edit')"> Perfil </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                            Finalizar sesión
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -137,9 +137,9 @@ const { hasRole } = usePermission();
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('profile.edit')"> Perfil </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
+                                Finalizar sesión
                             </ResponsiveNavLink>
                         </div>
                     </div>

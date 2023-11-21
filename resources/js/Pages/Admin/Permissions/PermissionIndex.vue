@@ -37,11 +37,11 @@ const deletePermission = (id) => {
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
-        <h1>Permission Index Page</h1>
+        <h1>Página principal de permisos</h1>
         <Link
           :href="route('permissions.create')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
-          >New Permission</Link
+          >Nuevo Permiso</Link
         >
       </div>
       <div class="mt-6">
@@ -49,8 +49,8 @@ const deletePermission = (id) => {
           <template #header>
             <TableRow>
               <TableHeaderCell>ID</TableHeaderCell>
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Action</TableHeaderCell>
+              <TableHeaderCell>Nombre</TableHeaderCell>
+              <TableHeaderCell>Acción</TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
@@ -65,15 +65,15 @@ const deletePermission = (id) => {
                 <Link
                   :href="route('permissions.edit', permission.id)"
                   class="text-green-400 hover:text-green-600"
-                  >Edit</Link
+                  >Editar</Link
                 >
-              <button @click="confirmDeletePermission" class="text-red-400 hover:text-red-600">Delete</button>
+              <button @click="confirmDeletePermission" class="text-red-400 hover:text-red-600">Eliminar</button>
                <Modal :show="showConfirmDeletePermissionModal" @close="closeModal">
                  <div class="p-6">
-                  <h2 class="text-lg font-semibold text-slate-800">Are you sure to delete this Permission?</h2>
+                  <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este permiso?</h2>
                   <div class="mt-6 flex space-x-4">
-                    <DangerButton @click="deletePermission(permission.id)">Delete</DangerButton>
-                    <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                    <DangerButton @click="deletePermission(permission.id)">Eliminar</DangerButton>
+                    <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                   </div>
                  </div>
                </Modal>

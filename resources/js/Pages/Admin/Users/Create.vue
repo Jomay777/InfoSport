@@ -36,14 +36,14 @@ const submit = () => {
         <Link
           :href="route('users.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
-          >Back</Link
+          >Volver</Link
         >
       </div>
     </div>
     <div class="max-w-md mx-auto mt-6 p-6 bg-slate-100">
       <form @submit.prevent="submit">
         <div>
-          <InputLabel for="name" value="Name" />
+          <InputLabel for="name" value="Nombre" />
 
           <TextInput
             id="name"
@@ -59,7 +59,7 @@ const submit = () => {
         </div>
 
         <div class="mt-4">
-          <InputLabel for="email" value="Email" />
+          <InputLabel for="email" value="Correo electrónico" />
 
           <TextInput
             id="email"
@@ -74,7 +74,7 @@ const submit = () => {
         </div>
 
         <div class="mt-4">
-          <InputLabel for="password" value="Password" />
+          <InputLabel for="password" value="Contraseña" />
 
           <TextInput
             id="password"
@@ -89,7 +89,7 @@ const submit = () => {
         </div>
 
         <div class="mt-4">
-          <InputLabel for="password_confirmation" value="Confirm Password" />
+          <InputLabel for="password_confirmation" value="Confirmar contraseña" />
 
           <TextInput
             id="password_confirmation"
@@ -113,20 +113,20 @@ const submit = () => {
               :options="roles"
               :multiple="true"
               :close-on-select="true"
-              placeholder="Pick some"
+              placeholder="Escoge algunos"
               label="name"
               track-by="id"
             />
           </div>
           <div class="mt-4">
-            <InputLabel for="permissions" value="Permissions" />
+            <InputLabel for="permissions" value="Permisos" />
             <VueMultiselect
               id="permissions"
               v-model="form.permissions"
               :options="permissions"
               :multiple="true"
               :close-on-select="true"
-              placeholder="Pick some"
+              placeholder="Escoge algunos"
               label="name"
               track-by="id"
             />
@@ -138,7 +138,7 @@ const submit = () => {
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
           >
-            Create User
+            Crear usuario
           </PrimaryButton>
         </div>
       </form>

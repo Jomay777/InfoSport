@@ -37,11 +37,11 @@ const deleteUser = (id) => {
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
-        <h1>Users Index Page</h1>
+        <h1>Página principal de usuarios</h1>
         <Link
           :href="route('users.create')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
-          >New User</Link
+          >Nuevo Usuario</Link
         >
       </div>
       <div class="mt-6">
@@ -49,9 +49,9 @@ const deleteUser = (id) => {
           <template #header>
             <TableRow>
               <TableHeaderCell>ID</TableHeaderCell>
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Email</TableHeaderCell>
-              <TableHeaderCell>Action</TableHeaderCell>
+              <TableHeaderCell>Nombre</TableHeaderCell>
+              <TableHeaderCell>Correo electrónico</TableHeaderCell>
+              <TableHeaderCell>Acción</TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
@@ -65,13 +65,13 @@ const deleteUser = (id) => {
                   class="text-green-400 hover:text-green-600"
                   >Edit</Link
                 >
-               <button @click="confirmDeleteUser" class="text-red-400 hover:text-red-600">Delete</button>
+               <button @click="confirmDeleteUser" class="text-red-400 hover:text-red-600">Eliminar</button>
                <Modal :show="showConfirmDeleteUserModal" @close="closeModal">
                  <div class="p-6">
-                  <h2 class="text-lg font-semibold text-slate-800">Are you sure to delete this user?</h2>
+                  <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este usuario?</h2>
                   <div class="mt-6 flex space-x-4">
-                    <DangerButton @click="deleteUser(user.id)">Delete</DangerButton>
-                    <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                    <DangerButton @click="deleteUser(user.id)">Eliminar</DangerButton>
+                    <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                   </div>
                  </div>
                </Modal>

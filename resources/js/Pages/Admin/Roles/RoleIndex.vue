@@ -36,16 +36,16 @@ const deleteRole = (id) => {
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
      <div class="flex justify-between">
-         <h1>Roles Index Page</h1>
-         <Link :href="route('roles.create')" class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded">New Role</Link>
+         <h1>Página principal de roles</h1>
+         <Link :href="route('roles.create')" class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded">Nuevo Rol</Link>
      </div>
       <div class="mt-6">
         <Table>
           <template #header>
             <TableRow>
               <TableHeaderCell>ID</TableHeaderCell>
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Action</TableHeaderCell>
+              <TableHeaderCell>Nombre</TableHeaderCell>
+              <TableHeaderCell>Acción</TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
@@ -53,14 +53,14 @@ const deleteRole = (id) => {
                 <TableDataCell>{{ role.id }}</TableDataCell>
                 <TableDataCell>{{ role.name }}</TableDataCell>
                 <TableDataCell class="space-x-4">
-                    <Link :href="route('roles.edit', role.id)" class="text-green-400 hover:text-green-600">Edit</Link>
-                    <button @click="confirmDeleteRole" class="text-red-400 hover:text-red-600">Delete</button>
+                    <Link :href="route('roles.edit', role.id)" class="text-green-400 hover:text-green-600">Editar</Link>
+                    <button @click="confirmDeleteRole" class="text-red-400 hover:text-red-600">Eliminar</button>
                     <Modal :show="showConfirmDeleteRoleModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800">Are you sure to delete this Role?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este rol?</h2>
                             <div class="mt-6 flex space-x-4">
-                                <DangerButton @click="deleteRole(role.id)">Delete</DangerButton>
-                                <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                                <DangerButton @click="deleteRole(role.id)">Eliminar</DangerButton>
+                                <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                             </div>
                         </div>
                     </Modal>              
