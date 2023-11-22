@@ -31,7 +31,7 @@ const showingNavigationDropdown = ref(false);
                         <path d="M13 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V8Z" class="fill-current text-cyan-200 group-hover:text-cyan-300"></path>
                         <path d="M13 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1Z" class="fill-current group-hover:text-sky-300"></path>
                     </svg>
-                    <span class="-mr-1 font-medium">Dashboard</span>
+                    <span class="-mr-1 font-medium">Inicio</span>
                 </SidebarLink>
             </li>
             <li>
@@ -49,7 +49,7 @@ const showingNavigationDropdown = ref(false);
                 :href="route('roles.index')" 
                 :active="route().current('roles.index')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
                     </svg>
                     <span class="-mr-1 font-medium">Roles</span>
                 </SidebarLink>
@@ -64,7 +64,7 @@ const showingNavigationDropdown = ref(false);
                     <span class="-mr-1 font-medium">Permisos</span>
                 </SidebarLink>
             </li>
-            
+    
         </ul>
     </div>
 
@@ -77,16 +77,43 @@ const showingNavigationDropdown = ref(false);
             <span class="group-hover:text-red-400">Finalizar sesión</span>
         </Link>
     </div>
+    
 </aside>
 <div class="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
     <div class="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
         <div class="px-6 flex items-center justify-between space-x-4 2xl:container">
-            <h5 hidden class="text-2xl text-gray-600 font-medium lg:block">Dashboard</h5>
-            <button class="w-12 h-16 -mr-2 border-r lg:hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 my-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
+            <h5 hidden class="text-2xl text-gray-600 font-medium lg:block">Panel</h5>
+                <!-- Hamburger -->
+                <div class="w-12 h-16 -mr-2 flex items-center sm:hidden">
+                            <button
+                                @click="showingNavigationDropdown = !showingNavigationDropdown"
+                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
+                            >
+                                <svg class="h-6 w-6 my-auto" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path
+                                        :class="{
+                                            hidden: showingNavigationDropdown,
+                                            'inline-flex': !showingNavigationDropdown,
+                                        }"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                    <path
+                                        :class="{
+                                            hidden: !showingNavigationDropdown,
+                                            'inline-flex': showingNavigationDropdown,
+                                        }"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                </div>
+                
             <div class="flex space-x-4">
                 <!--search bar -->
                 <div hidden class="md:block">
@@ -96,7 +123,7 @@ const showingNavigationDropdown = ref(false);
                             <path id="Icon_awesome-search" data-name="search" d="M35.508,31.127l-7.01-7.01a1.686,1.686,0,0,0-1.2-.492H26.156a14.618,14.618,0,1,0-2.531,2.531V27.3a1.686,1.686,0,0,0,.492,1.2l7.01,7.01a1.681,1.681,0,0,0,2.384,0l1.99-1.99a1.7,1.7,0,0,0,.007-2.391Zm-20.883-7.5a9,9,0,1,1,9-9A8.995,8.995,0,0,1,14.625,23.625Z"></path>
                         </svg>
                         </span>
-                        <input type="search" name="leadingIcon" id="leadingIcon" placeholder="Search here" class="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition">
+                        <input type="search" name="leadingIcon" id="leadingIcon" placeholder="Buscar aquí" class="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition">
                     </div>
                 </div>
                 <!--/search bar -->
@@ -116,6 +143,29 @@ const showingNavigationDropdown = ref(false);
                     </svg>
                 </button>
             </div>
+        </div>
+         <!-- Responsive Navigation Menu -->
+        <div
+            :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
+            class="sm:hidden bg-white"
+        >
+            <div class="pt-2 pb-3 space-y-1">
+                <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                    Inicio
+                </ResponsiveNavLink>
+                <ResponsiveNavLink :href="route('users.index')" 
+                    :active="route().current('users.index')">
+                    Usuarios
+                </ResponsiveNavLink>
+                <ResponsiveNavLink :href="route('roles.index')" 
+                    :active="route().current('roles.index')">
+                    Roles
+                </ResponsiveNavLink>
+                <ResponsiveNavLink :href="route('permissions.index')" 
+                    :active="route().current('permissions.index')">
+                    Permisos
+                </ResponsiveNavLink>
+            </div>                                    
         </div>
     </div>
 

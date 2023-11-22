@@ -125,6 +125,12 @@ const { hasRole } = usePermission();
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink  v-if="hasRole('admin')"                         
+                                    :href="route('users.index')" 
+                                    :active="route().current('users.index')">
+                                    Administrador
+                        </ResponsiveNavLink>
+                       
                     </div>
 
                     <!-- Responsive Settings Options -->
