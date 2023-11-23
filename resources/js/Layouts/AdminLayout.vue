@@ -84,7 +84,7 @@ const showingNavigationDropdown = ref(false);
         <div class="px-6 flex items-center justify-between space-x-4 2xl:container">
             <h5 hidden class="text-2xl text-gray-600 font-medium lg:block">Panel</h5>
                 <!-- Hamburger -->
-                <div class="w-12 h-16 -mr-2 flex items-center sm:hidden">
+                <div class="w-12 h-16 -mr-2 flex items-center lg:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
@@ -147,7 +147,7 @@ const showingNavigationDropdown = ref(false);
          <!-- Responsive Navigation Menu -->
         <div
             :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-            class="sm:hidden bg-white"
+            class="lg:hidden bg-white"
         >
             <div class="pt-2 pb-3 space-y-1">
                 <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
