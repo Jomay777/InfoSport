@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClubController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -35,6 +36,8 @@ Route::get('/', function () {
 Route::resource('/users', UserController::class);
 Route::resource('/roles', RoleController::class);
 Route::resource('/permissions', PermissionController::class);
+Route::resource('/clubs', ClubController::class);
+
 Route::delete('/roles/{role}/permissions/{permission}', RevokePermissionFromRoleController::class)
     ->name('roles.permissions.destroy');
 Route::delete('/users/{user}/permissions/{permission}', RevokePermissionFromUserController::class)
