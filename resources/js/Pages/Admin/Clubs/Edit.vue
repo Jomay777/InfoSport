@@ -13,14 +13,14 @@ import TableHeaderCell from "@/Components/TableHeaderCell.vue";
 import { onMounted, watch } from "vue";
 
 const props = defineProps({
-  role: {
+  club: {
     type: Object,
     required: true,
   },
   permissions: Array,
 });
 const form = useForm({
-  name: props.role.name,
+  name: props.club.name,
   permissions: [],
 });
 
@@ -35,20 +35,20 @@ watch(
 </script>
 
 <template>
-  <Head title="Update role" />
+  <Head title="Actualizar club" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('roles.index')"
+          :href="route('clubs.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Back</Link
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-semibold text-indigo-700">Actualizar rol</h1>
-        <form @submit.prevent="form.put(route('roles.update', role.id))">
+        <form @submit.prevent="form.put(route('clubs.update', club.id))">
           <div class="mt-4">
             <InputLabel for="name" value="Nombre" />
             <TextInput
@@ -57,7 +57,7 @@ watch(
               class="mt-1 block w-full"
               v-model="form.name"
               autofocus
-              autocomplete="username"
+              autocomplete="clubname"
             />
 
             <InputError class="mt-2" :message="form.errors.name" />
