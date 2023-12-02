@@ -43,4 +43,44 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    //polymorphic inverse many-to-many relationship
+
+    public function clubs()
+    {
+        return $this->morphedByMany(Club::class, 'userable');
+    }
+    public function categories()
+    {
+        return $this->morphedByMany(Category::class, 'userable');        
+    }
+    public function games()
+    {
+        return $this->morphedByMany(Game::class, 'userable');
+    }
+    public function gameschedulings()
+    {
+        return $this->morphedByMany(GameScheduling::class, 'userable');
+    }
+    public function passrequests()
+    {
+        return $this->morphedByMany(PassRequest::class, 'userable');
+    }
+    public function players()
+    {
+        return $this->morphedByMany(Player::class, 'userable');
+    }
+    public function teams()
+    {
+        return $this->morphedByMany(Team::class, 'userable');
+    }
+    public function tournaments()
+    {
+        return $this->morphedByMany(Tournament::class, 'userable');
+    }
+
+    //one-to-many relationship
+    public function cardGenerations(){
+        return $this->hasMany(CardGeneration::class);
+    }
 }

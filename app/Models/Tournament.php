@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Club extends Model
+class Tournament extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['name'];
 
     //polymorphic many-to-many relationship
     public function users(){
@@ -17,7 +15,13 @@ class Club extends Model
     }
 
     //one-to-many relationship
-    public function teams(){
-        return $this->hasMany(Team::class);
+    public function gameRoles()
+    {
+        return $this->hasMany(GameRole::class);
+    }
+    //one-to-many inverse relationship
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

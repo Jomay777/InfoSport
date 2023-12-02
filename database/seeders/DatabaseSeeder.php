@@ -3,6 +3,22 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\CardGeneration;
+use App\Models\Category;
+use App\Models\Club;
+use App\Models\Game;
+use App\Models\GameRole;
+use App\Models\GameScheduling;
+use App\Models\GameStatistic;
+use App\Models\PassRequest;
+use App\Models\PhotoPlayer;
+use App\Models\Player;
+use App\Models\Team;
+use App\Models\Tournament;
+use App\Models\User;
+use Database\Factories\GameSchedulingTeamFactory;
+use Database\Factories\UserableFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +30,30 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
         $this->call(AdminSeeder::class);
+
+        User::factory(10)->create();
+
+        Category::factory(10)->create();
+        Club::factory(10)->create();
+
+        Team::factory(10)->create();
+
+        Player::factory(10)->create();
+        CardGeneration::factory(10)->create();
+
+        Tournament::factory(10)->create();
+
+        GameRole::factory(10)->create();
+        GameScheduling::factory(10)->create();
+        Game::factory(9)->create();
+
+        //GameSchedulingTeamFactory::factory(10)->create();
+        GameStatistic::factory(9)->create();
+        PassRequest::factory(10)->create();
+        PhotoPlayer::factory(10)->create();
+        //UserableFactory::factory(10)->create();
+        
+
 
         // \App\Models\User::factory(10)->create();
 
