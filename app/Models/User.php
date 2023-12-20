@@ -9,6 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+use App\Models\Club;
+use App\Models\Category;
+use App\Models\Game;
+use App\Models\GameScheduling;
+use App\Models\PassRequest;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -46,35 +54,35 @@ class User extends Authenticatable
 
     //polymorphic inverse many-to-many relationship
 
-    public function clubs()
+    public function clubs(): MorphToMany
     {
         return $this->morphedByMany(Club::class, 'userable');
     }
-    public function categories()
+    public function categories(): MorphToMany
     {
         return $this->morphedByMany(Category::class, 'userable');        
     }
-    public function games()
+    public function games(): MorphToMany
     {
         return $this->morphedByMany(Game::class, 'userable');
     }
-    public function gameschedulings()
+    public function gameschedulings(): MorphToMany
     {
         return $this->morphedByMany(GameScheduling::class, 'userable');
     }
-    public function passrequests()
+    public function passrequests(): MorphToMany
     {
         return $this->morphedByMany(PassRequest::class, 'userable');
     }
-    public function players()
+    public function players(): MorphToMany
     {
         return $this->morphedByMany(Player::class, 'userable');
     }
-    public function teams()
+    public function teams(): MorphToMany
     {
         return $this->morphedByMany(Team::class, 'userable');
     }
-    public function tournaments()
+    public function tournaments(): MorphToMany
     {
         return $this->morphedByMany(Tournament::class, 'userable');
     }

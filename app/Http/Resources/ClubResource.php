@@ -16,7 +16,11 @@ class ClubResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name
+            'name' => $this->name,
+            'coach' => $this->coach,
+            'logo_path' => $this->logo_path,
+            //'users' => UserResource::collection($this->users),
+            'users' => UserResource::collection($this->whenLoaded('users')),
         ];
     }
 }

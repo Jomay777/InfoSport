@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('coach');
+            $table->string('coach')->nullable();
 
-            $table->string('logo_path');
+            $table->string('logo_path')->nullable();
 
             $table->timestamps();
         });

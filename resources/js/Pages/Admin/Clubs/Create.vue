@@ -6,9 +6,17 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
+import VueMultiselect from "vue-multiselect";
 
+
+defineProps({
+  users: Array
+});
 const form = useForm({
-  name: ""
+  name: "",
+  coach: "",
+  logo_path: "",
+  users: [],
 });
 </script>
 
@@ -40,7 +48,45 @@ const form = useForm({
 
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
-          
+          <div>
+            <InputLabel for="coach" value="Profesor" />
+            <TextInput
+              id="coach"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.coach"
+              autofocus
+              autocomplete="clubcoach"
+            />
+
+            <InputError class="mt-2" :message="form.errors.coach" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="logo_path" value="Logo" />
+            <TextInput
+              id="logo_path"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.logo_path"
+              autofocus
+              autocomplete="clublogo_path"
+            />
+
+            <InputError class="mt-2" :message="form.errors.logo_path" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="users" value="Delegado" />
+            <VueMultiselect
+              id="users"
+              v-model="form.users"
+              :options="users"
+              :multiple="true"
+              :close-on-select="true"
+              placeholder="Escoge delegados"
+              label="name"
+              track-by="id"
+            />
+          </div>
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"
@@ -55,3 +101,4 @@ const form = useForm({
     </div>
   </AdminLayout>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

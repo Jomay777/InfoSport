@@ -22,7 +22,11 @@ class CreateClubRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string','max:255']
+            'name' => ['required', 'string', 'max:255'],
+            'coach' => [ 'string', 'max:255'],
+            'logo_path' => ['string', 'max:255'],
+            
+            'users' => ['sometimes', 'array']
         ];
     }
 }

@@ -48,10 +48,11 @@ class DatabaseSeeder extends Seeder
         Game::factory(9)->create();
 
         //GameSchedulingTeamFactory::factory(10)->create();
+
         GameStatistic::factory(9)->create();
         PassRequest::factory(10)->create();
         PhotoPlayer::factory(10)->create();
-        //UserableFactory::factory(10)->create();
+      //  UserableFactory::factory(10)->create();
         
 
 

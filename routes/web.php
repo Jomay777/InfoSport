@@ -13,6 +13,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Models\Club;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +26,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function () {   
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -34,9 +36,14 @@ Route::get('/', function () {
 });
 
 Route::resource('/users', UserController::class);
+//Routes for clubs
+Route::resource('/clubs', ClubController::class);
+Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
+
+
+//
 Route::resource('/roles', RoleController::class);
 Route::resource('/permissions', PermissionController::class);
-Route::resource('/clubs', ClubController::class);
 
 Route::delete('/roles/{role}/permissions/{permission}', RevokePermissionFromRoleController::class)
     ->name('roles.permissions.destroy');

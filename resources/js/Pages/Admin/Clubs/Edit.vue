@@ -17,21 +17,22 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  permissions: Array,
+  users: Array,
 });
 const form = useForm({
   name: props.club.name,
-  permissions: [],
+  coach: props.club.coach,
+  logo_path: props.club.logo_path,
+  users: [],
 });
 
 onMounted(() => {
-  form.permissions = props.role?.permissions;
+  form.users = props.club?.users;
 });
-
+/*
 watch(
-  () => props.role,
-  () => (form.permissions = props.role?.permissions)
-);
+  () => props.users,
+);*/
 </script>
 
 <template>
@@ -47,7 +48,7 @@ watch(
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar rol</h1>
+        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar usuario</h1>
         <form @submit.prevent="form.put(route('clubs.update', club.id))">
           <div class="mt-4">
             <InputLabel for="name" value="Nombre" />
@@ -62,15 +63,39 @@ watch(
 
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
+          <div>
+            <InputLabel for="coach" value="Profesor" />
+            <TextInput
+              id="coach"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.coach"
+              autofocus
+              autocomplete="clubcoach"
+            />
+            <InputError class="mt-2" :message="form.errors.coach" />
+          </div>
           <div class="mt-4">
-            <InputLabel for="permissions" value="Permiso" />
+            <InputLabel for="logo_path" value="Logo" />
+            <TextInput
+              id="logo_path"
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.logo_path"
+              autofocus
+              autocomplete="clublogo_path"
+            />
+            <InputError class="mt-2" :message="form.errors.logo_path" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="users" value="Delegado" />
             <VueMultiselect
-              id="permissions"
-              v-model="form.permissions"
-              :options="permissions"
+              id="users"
+              v-model="form.users"
+              :options="users"
               :multiple="true"
               :close-on-select="true"
-              placeholder="Escoge algunos"
+              placeholder="Escoge delegados"
               label="name"
               track-by="id"
             />
@@ -86,8 +111,9 @@ watch(
           </div>
         </form>
       </div>
+
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Permisos</h1>
+        <h1 class="text-2xl font-semibold text-indigo-700">Delegados</h1>
         <div class="bg-white">
           <Table>
             <template #header>
@@ -99,18 +125,18 @@ watch(
             </template>
             <template #default>
               <TableRow
-                v-for="rolePermission in role.permissions"
-                :key="rolePermission.id"
+                v-for="clubUser in club.users"
+                :key="clubUser.id"
                 class="border-b"
               >
-                <TableDataCell>{{ rolePermission.id }}</TableDataCell>
-                <TableDataCell>{{ rolePermission.name }}</TableDataCell>
+                <TableDataCell>{{ clubUser.id }}</TableDataCell>
+                <TableDataCell>{{ clubUser.name }}</TableDataCell>
                 <TableDataCell class="space-x-4">
                   <Link
                     :href="
-                      route('roles.permissions.destroy', [
-                        role.id,
-                        rolePermission.id,
+                      route('clubs.destroy', [
+                        club.id,
+                        clubUser.id,
                       ])
                     "
                     method="DELETE"

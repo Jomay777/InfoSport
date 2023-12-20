@@ -48,23 +48,28 @@ const deleteUser = (id) => {
         <Table>
           <template #header>
             <TableRow>
+             
               <TableHeaderCell>ID</TableHeaderCell>
               <TableHeaderCell>Nombre</TableHeaderCell>
               <TableHeaderCell>Correo electrónico</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>
+              
             </TableRow>
           </template>
           <template #default>
+                                    
             <TableRow v-for="user in users" :key="user.id" class="border-b">
-              <TableDataCell>{{ user.id }}</TableDataCell>
-              <TableDataCell>{{ user.name }}</TableDataCell>
+                           
+              
+              <TableDataCell>{{ user.id }}</TableDataCell>                  
+              <TableDataCell>{{ user.name }}</TableDataCell>                
               <TableDataCell>{{ user.email }}</TableDataCell>
               <TableDataCell class="space-x-4">
                 <Link
                   :href="route('users.edit', user.id)"
                   class="text-green-400 hover:text-green-600"
-                  >Edit</Link
-                >
+                  >Edit
+                </Link>
                <button @click="confirmDeleteUser" class="text-red-400 hover:text-red-600">Eliminar</button>
                <Modal :show="showConfirmDeleteUserModal" @close="closeModal">
                  <div class="p-6">
@@ -76,6 +81,7 @@ const deleteUser = (id) => {
                  </div>
                </Modal>
               </TableDataCell>
+              
             </TableRow>
           </template>
         </Table>
