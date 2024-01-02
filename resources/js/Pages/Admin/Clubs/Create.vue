@@ -1,6 +1,7 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Checkbox from "@/Components/Checkbox.vue";
@@ -18,6 +19,15 @@ const form = useForm({
   logo_path: "",
   users: [],
 });
+
+const handleFileChange = () => {
+  const fileInput = ref(null);
+
+  // Guarda el archivo directamente en el formulario
+  if (fileInput.value && fileInput.value.files && fileInput.value.files.length > 0) {
+    form.logo_path = fileInput.value.files[0];
+  }
+};
 </script>
 
 <template>
@@ -34,7 +44,7 @@ const form = useForm({
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo club</h1>
-        <form @submit.prevent="form.post(route('clubs.store'))">
+        <form @submit.prevent="form.post(route('clubs.store'))" enctype="multipart/form-data">
           <div class="mt-4">
             <InputLabel for="name" value="Nombre" />
             <TextInput
@@ -54,8 +64,7 @@ const form = useForm({
               id="coach"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.coach"
-              autofocus
+              v-model="form.coach"              
               autocomplete="clubcoach"
             />
 
@@ -63,14 +72,7 @@ const form = useForm({
           </div>
           <div class="mt-4">
             <InputLabel for="logo_path" value="Logo" />
-            <TextInput
-              id="logo_path"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.logo_path"
-              autofocus
-              autocomplete="clublogo_path"
-            />
+            <input type="file" id="logo_path" ref="logoInput" @change="handleFileChange" />
 
             <InputError class="mt-2" :message="form.errors.logo_path" />
           </div>

@@ -24,7 +24,7 @@ class CreateClubRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'coach' => [ 'string', 'max:255'],
-            'logo_path' => ['string', 'max:255'],
+            'logo_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             
             'users' => ['sometimes', 'array']
         ];

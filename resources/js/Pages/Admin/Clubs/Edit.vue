@@ -69,8 +69,7 @@ watch(
               id="coach"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.coach"
-              autofocus
+              v-model="form.coach"              
               autocomplete="clubcoach"
             />
             <InputError class="mt-2" :message="form.errors.coach" />
@@ -81,8 +80,7 @@ watch(
               id="logo_path"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.logo_path"
-              autofocus
+              v-model="form.logo_path"              
               autocomplete="clublogo_path"
             />
             <InputError class="mt-2" :message="form.errors.logo_path" />
@@ -112,7 +110,7 @@ watch(
         </form>
       </div>
 
-      <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
+      <!--<div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-semibold text-indigo-700">Delegados</h1>
         <div class="bg-white">
           <Table>
@@ -149,7 +147,7 @@ watch(
             </template>
           </Table>
         </div>
-      </div>
+      </div>-->
     </div>
   </AdminLayout>
 </template>

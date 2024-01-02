@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -44,20 +45,17 @@ class ClubController extends Controller
             return back()->withErrors(['club' => 'Failed to create the club.']);
         }
 
-        
-            $userIds = collect($request->input('users.*.name'))->map(function ($name) {
-                return User::where('name', $name)->first()->id;
-                
+        $userIds = collect($request->input('users.*.name'))->map(function ($name) {
+            return User::where('name', $name)->first()->id;    
             })->toArray();
 
-            // Attach only valid user IDs
-            foreach ($userIds as $userId) {
-                // Verificar si la relación ya existe antes de adjuntar
-                if (!$club->users->contains($userId)) {
-                    $club->users()->attach($userId);
-                }
+        // Attach only valid user IDs
+        foreach ($userIds as $userId) {
+            // Verificar si la relación ya existe antes de adjuntar
+            if (!$club->users->contains($userId)) {                
+                $club->users()->attach($userId);
             }
-        
+        }        
         return redirect()->route('clubs.index');
     }
 
@@ -82,36 +80,45 @@ class ClubController extends Controller
         ]);
     }
     
-    public function update(CreateClubRequest $request, string $id)
+    
+    public function update(CreateClubRequest $request, string $id):RedirectResponse
     {
         $club = Club::find($id);
+
         $club->update([
             'name' => $request->name,
             'coach' => $request->coach,
             'logo_path' => $request->logo_path,
         ]);
 
-        $userIds = collect($request->input('users.*.name'))->map(function ($name) {
+        $newUserIds = collect($request->input('users.*.name'))->map(function ($name) {
             return User::where('name', $name)->first()->id;
         })->toArray();
 
-        foreach ($userIds as $userId) {
-            // Verificar si la relación ya existe antes de adjuntar
+        // Obtén los IDs de los usuarios actualmente relacionados con el club
+        $existingUserIds = $club->users->pluck('id')->toArray();
+
+        // IDs de usuarios que deben eliminarse
+        $usersToRemove = array_diff($existingUserIds, $newUserIds);
+
+        // Elimina las relaciones que deben eliminarse
+        $club->users()->detach($usersToRemove);
+
+        // Adjunta los nuevos usuarios (evitando duplicados)
+        foreach ($newUserIds as $userId) {
             if (!$club->users->contains($userId)) {
                 $club->users()->attach($userId);
             }
         }
 
-        return back();
+        return to_route('clubs.show', $club->id);
     }
-    public function delete(Club $club, User $user): RedirectResponse
+    public function destroy(Club $club, User $user): RedirectResponse
     {
-        // Utiliza wherePivot para especificar condiciones al eliminar la relación
-        $club->users()->wherePivot('user_id', $user->id)->detach();
-    
-        return back();
-    }
-    public function destroy(){
-        
-    }
+        $existingUserIds = $club->users->pluck('id')->toArray();
+        $club->users()->detach($existingUserIds);
+
+        $club->delete();
+        return to_route('clubs.index');
+    }    
 }

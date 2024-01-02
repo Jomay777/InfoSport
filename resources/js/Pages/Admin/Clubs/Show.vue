@@ -1,16 +1,11 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { ref } from "vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import InputError from "@/Components/InputError.vue";
-import TextInput from "@/Components/TextInput.vue";
-import VueMultiselect from "vue-multiselect";
-import Table from "@/Components/Table.vue";
-import TableRow from "@/Components/TableRow.vue";
-import TableDataCell from "@/Components/TableDataCell.vue";
-import TableHeaderCell from "@/Components/TableHeaderCell.vue";
-import { onMounted, watch } from "vue";
+
+import Modal from "@/Components/Modal.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
   club: {
@@ -18,14 +13,26 @@ const props = defineProps({
     required: true,
   }
 });
+
 const form = useForm({
-  logo_path: props.club.logo_path,
-  id: props.club.id,
-  name: props.club.name,
-  coach: props.club.coach,
-  users: props.club.users
+  _method: "DELETE",
 });
 
+const showConfirmDeleteClubModal = ref(false)
+
+const confirmDeleteClub = () => {
+      showConfirmDeleteClubModal.value = true;
+}
+
+const closeModal = () => {
+  showConfirmDeleteClubModal.value = false;
+}
+
+const deleteClub = (id) => {
+   form.delete(route('clubs.destroy', id), {
+    onSuccess: () => closeModal()
+   });
+}
 </script>
 
 <template>
@@ -40,32 +47,59 @@ const form = useForm({
           >Back</Link
         >
       </div>
-      <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Ver Club</h1>
-        <form @submit.prevent="form.put(route('clubs.edit', club.id))">
-          <div class="mt-4">
-            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white" for="id" value="Identificador">Identificador</h2>
-            <label for="id">{{ form.id }}</label>
-            <InputLabel for="logo" value="Logo"></InputLabel>
-            <img class=" bg-cover bg-center" :src="form.logo_path" alt="logo de club"/>
-            
-            <InputLabel for="name" value="Nombre"></InputLabel>
-            <label for="name">{{ form.name }}</label>
-            <InputLabel for="coach" value="Coach"></InputLabel>
-            <label for="coach">{{ form.coach }}</label>
-            <InputLabel for="user" value="Delegado"></InputLabel>
-            
-            <ul v-if="form.users.length > 0">
-              <li v-for="user in form.users" :key="user.id">
-                {{ user.name }}
-              </li>
-            </ul>
-            <p v-else>Sin Deledado</p>
-            <InputError class="mt-2" :message="form.errors.name" />
-          </div>
-          
-        </form>
-      </div>
+      <div class=" mt-5 flex flex-col justify-center items-center ">
+            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-white bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
+                <div class="mt-2 mb-8  text-gray-700 w-full">
+                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700 dark:text-white">
+                    Club {{ club.name }}
+                    </h4>
+                    <div class="mt-5 flex justify-center">
+                      <img class=" bg-cover bg-center max-w-20" :src="club.logo_path" alt="logo de club"/> 
+                    </div>
+                </div> 
+                <div class="grid grid-cols-2 gap-4 px-2 w-full">
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">Identificador</p>
+                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ club.id }}
+                    </p>
+                    </div>
+
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">Profesor</p>
+                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ club.coach }}
+                    </p>
+                    </div>
+
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
+                    <p class="text-sm text-gray-600">Delegado</p>
+                    <p class="text-base font-medium text-navy-700 dark:text-navy" v-if="club.users.length > 0" >
+                  
+                      <span  v-for="user in club.users" :key="user.id" >
+                      {{ user.name }}
+                      <br> 
+                      </span>                                                                    
+                    </p>
+                    <p v-else>Delegado no asignado</p>
+                    </div>                    
+                </div>
+                <div class="flex justify-center mt-6">
+                    <Link :href="route('clubs.edit', club.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
+                    <button @click="confirmDeleteClub" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
+                    <Modal :show="showConfirmDeleteClubModal" @close="closeModal">
+                        <div class="p-6">
+                            <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este club?</h2>
+                            <div class="mt-6 flex space-x-4">
+                                <DangerButton @click="deleteClub(club.id)">Eliminar</DangerButton>
+                                <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
+                            </div>
+                        </div>
+                    </Modal>
+                    </div>
+            </div>  
+            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación de <a href="https://horizon-ui.com?ref=tailwindcomponents.com" target="_blank" class="text-brand-500 font-bold">Club</a></p>  
+        </div>
     </div>
   </AdminLayout>
 </template>

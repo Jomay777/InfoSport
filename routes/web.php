@@ -41,6 +41,7 @@ Route::resource('/clubs', ClubController::class);
 Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
 
 
+
 //
 Route::resource('/roles', RoleController::class);
 Route::resource('/permissions', PermissionController::class);
