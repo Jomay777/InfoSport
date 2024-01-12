@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateClubRequest extends FormRequest
+class CreateCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +22,9 @@ class CreateClubRequest extends FormRequest
      */
     public function rules(): array
     {
-        //dd(request()->all());
-
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'coach' => [ 'string', 'max:255'],
-            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            //'logo_path' => ['nullable', 'string'],
-            'users' => ['sometimes', 'array']
+            'name' => ['required', 'string', 'max:100', Rule::unique('categories', 'name')->ignore($this->category)],
+            'description' => ['nullable', 'max:255']
         ];
     }
 }

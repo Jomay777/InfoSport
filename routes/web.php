@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
 use App\Http\Controllers\RevokePermissionFromUserController;
 use App\Http\Controllers\RemoveRoleFromUserController;
+use App\Http\Controllers\TournamentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,7 +42,12 @@ Route::resource('/users', UserController::class);
 Route::resource('/clubs', ClubController::class);
 Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
 
+//Routes for categories
+Route::resource('/categories', CategoryController::class);
 
+//Routes for tournaments
+Route::resource('/tournaments', TournamentController::class);
+Route::get('tournaments/{tournament}', [TournamentController::class, 'show'])->name('tournaments.show');
 
 //
 Route::resource('/roles', RoleController::class);

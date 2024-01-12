@@ -14,14 +14,14 @@ defineProps(["permissions"]);
 
 const form = useForm({})
 
-const showConfirmDeletePermissionModal = ref(false)
+const showConfirmDeletePermissionModal = ref(null)
 
-const confirmDeletePermission = () => {
-      showConfirmDeletePermissionModal.value = true;
+const confirmDeletePermission = (id) => {
+      showConfirmDeletePermissionModal.value = id;
 }
 
 const closeModal = () => {
-  showConfirmDeletePermissionModal.value = false;
+  showConfirmDeletePermissionModal.value = null;
 }
 
 const deletePermission = (id) => {
@@ -67,10 +67,10 @@ const deletePermission = (id) => {
                   class="text-green-400 hover:text-green-600"
                   >Editar</Link
                 >
-              <button @click="confirmDeletePermission" class="text-red-400 hover:text-red-600">Eliminar</button>
-               <Modal :show="showConfirmDeletePermissionModal" @close="closeModal">
+              <button @click="() =>confirmDeletePermission(permission.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
+               <Modal :show="showConfirmDeletePermissionModal === permission.id" @close="closeModal">
                  <div class="p-6">
-                  <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este permiso?</h2>
+                  <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el permiso {{ permission.name }}?</h2>
                   <div class="mt-6 flex space-x-4">
                     <DangerButton @click="deletePermission(permission.id)">Eliminar</DangerButton>
                     <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

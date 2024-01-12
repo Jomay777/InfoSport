@@ -13,14 +13,13 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 defineProps(["roles"]);
 const form = useForm({})
 
-const showConfirmDeleteRoleModal = ref(false)
+const showConfirmDeleteRoleModal = ref(null)
 
-const confirmDeleteRole = () => {
-      showConfirmDeleteRoleModal.value = true;
+const confirmDeleteRole = (id) => {
+      showConfirmDeleteRoleModal.value = id;
 }
-
 const closeModal = () => {
-  showConfirmDeleteRoleModal.value = false;
+  showConfirmDeleteRoleModal.value = null;
 }
 
 const deleteRole = (id) => {
@@ -54,10 +53,10 @@ const deleteRole = (id) => {
                 <TableDataCell>{{ role.name }}</TableDataCell>
                 <TableDataCell class="space-x-4">
                     <Link :href="route('roles.edit', role.id)" class="text-green-400 hover:text-green-600">Editar</Link>
-                    <button @click="confirmDeleteRole" class="text-red-400 hover:text-red-600">Eliminar</button>
-                    <Modal :show="showConfirmDeleteRoleModal" @close="closeModal">
+                    <button @click="() => confirmDeleteRole(role.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
+                    <Modal :show="showConfirmDeleteRoleModal === role.id" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este rol?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el rol {{role.name}}?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteRole(role.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

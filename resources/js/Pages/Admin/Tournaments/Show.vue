@@ -89,7 +89,7 @@ const deleteClub = (id) => {
                     <button @click="confirmDeleteClub" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
                     <Modal :show="showConfirmDeleteClubModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el club {{club.name}}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800">¿Está seguro de eliminar este club?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteClub(club.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

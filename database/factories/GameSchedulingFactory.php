@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\GameRole;
+use App\Models\Tournament;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class GameSchedulingFactory extends Factory
         return [
             'name' => $this->faker->unique()->sentence(3),
             'game_role_id' => GameRole::all()->random()->id,
+            'tournament_id' => Tournament::all()->random()->id,
         ];
     }
 }

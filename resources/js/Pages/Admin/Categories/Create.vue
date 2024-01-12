@@ -1,48 +1,34 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
-import VueMultiselect from "vue-multiselect";
 
-
-defineProps({
-  users: Array
-});
 const form = useForm({
   name: "",
-  coach: "",
-  logo_path: "",
-  users: [],
+  description: "",
 });
 
-const handleFileChange = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.logo_path = event.target.files[0];
-  }
-};
 </script>
 
 <template>
-  <Head title="Crear nuevo club" />
+  <Head title="Crear nueva categoría" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('clubs.index')"
+          :href="route('categories.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Volver</Link
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo club</h1>
-        <form @submit.prevent="form.post(route('clubs.store'))" enctype="multipart/form-data">
+        <h1 class="text-2xl font-semibold text-indigo-700">Crear nueva categoría</h1>
+        <form @submit.prevent="form.post(route('categories.store'))">
           <div class="mt-4">
             <InputLabel for="name" value="Nombre" />
             <TextInput
@@ -51,42 +37,24 @@ const handleFileChange = (event) => {
               class="mt-1 block w-full"
               v-model="form.name"
               autofocus
-              autocomplete="clubname"
+              autocomplete="categoryname"
             />
 
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
           <div>
-            <InputLabel for="coach" value="Profesor" />
+            <InputLabel for="description" value="Dsecripción" />
             <TextInput
-              id="coach"
+              id="description"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.coach"              
-              autocomplete="clubcoach"
+              v-model="form.description"              
+              autocomplete="categorydescription"
             />
 
-            <InputError class="mt-2" :message="form.errors.coach" />
+            <InputError class="mt-2" :message="form.errors.description" />
           </div>
-          <div class="mt-4">
-            <InputLabel for="logo_path" value="Logo" />
-            <input type="file" id="logo_path" ref="logoInput" @change="handleFileChange" />
-
-            <InputError class="mt-2" :message="form.errors.logo_path" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="users" value="Delegado" />
-            <VueMultiselect
-              id="users"
-              v-model="form.users"
-              :options="users"
-              :multiple="true"
-              :close-on-select="true"
-              placeholder="Escoge delegados"
-              label="name"
-              track-by="id"
-            />
-          </div>
+          
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

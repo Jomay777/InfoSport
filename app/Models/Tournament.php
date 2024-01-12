@@ -5,9 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Category;
+use App\Models\User;
+use App\Models\GameRole;
+
 class Tournament extends Model
 {
     use HasFactory;
+    protected $fillable = ['name', 'description', 'category_id'];
+
 
     //polymorphic many-to-many relationship
     public function users(){

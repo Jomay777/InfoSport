@@ -21,9 +21,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = User::all();
+        $users = User::query();
+
+        if ($request->search) {
+            $users->where('users.name', 'like', '%' . $request->search . '%');
+        }
+
+        $users = $users->get();
         return Inertia::render('Admin/Users/UserIndex', [
             'users' => UserResource::collection($users)
         ]);

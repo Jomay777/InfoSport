@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateClubRequest extends FormRequest
+class CreateTournamentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +21,10 @@ class CreateClubRequest extends FormRequest
      */
     public function rules(): array
     {
-        //dd(request()->all());
-
         return [
             'name' => ['required', 'string', 'max:255'],
-            'coach' => [ 'string', 'max:255'],
-            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            //'logo_path' => ['nullable', 'string'],
-            'users' => ['sometimes', 'array']
+            'description' => [ 'nullable', 'max:500'],
+            'category' => ['nullable', 'array']
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\GameScheduling;
+use App\Models\Tournament;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,6 +25,7 @@ class GameFactory extends Factory
             'result' => $this->faker->randomNumber(2) . '-' . $this->faker->randomNumber(2),
             'observation' => $this->faker->text(200),
             'game_scheduling_id' => GameScheduling::all()->random()->id,
+            'tournament_id' => Tournament::all()->random()->id,
         ];
     }
 }

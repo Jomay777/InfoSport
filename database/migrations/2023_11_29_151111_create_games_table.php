@@ -29,6 +29,14 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
+            //one-to-many relationship
+            $table->unsignedBigInteger('tournament_id');
+
+            $table->foreign('tournament_id')
+                ->references('id')
+                ->on('tournaments')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->timestamps();
         });
