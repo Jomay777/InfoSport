@@ -56,15 +56,21 @@ class TournamentController extends Controller
 
             $tournament->update(['category_id' => $categoryId]);
         }        
-        return redirect()->route('tournaments.index')->with('success', 'Torneo creado correctamente');
+        return redirect()->route('tournaments.show', $tournament->id)->with('success', 'Torneo creado correctamente');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Tournament $tournament): Response
     {
-        //
+        
+        $category = $tournament->category;
+
+        return Inertia::render('Admin/Tournaments/Show', [
+            'tournament' => new TournamentResource($tournament),
+            'category' => $category,
+        ]);
     }
 
     /**

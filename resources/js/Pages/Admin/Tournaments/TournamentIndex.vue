@@ -109,8 +109,10 @@ const deleteTournament = (id) => {
                     {{ tournament.name }} 
                    </Link>  
                 </TableDataCell>
-                <TableDataCell v-if="tournament.category" >                  
+                <TableDataCell v-if="tournament.category" >   
+                  <Link :href="route('tournaments.show', tournament.id)">                    
                     {{ tournament.category.name }}
+                  </Link>  
                     <br> 
                 </TableDataCell>
                 <TableDataCell v-else>
@@ -119,7 +121,11 @@ const deleteTournament = (id) => {
                    </Link>   
                 </TableDataCell>               
                 
-                <TableDataCell >{{ tournament.description }}</TableDataCell>  
+                <TableDataCell >
+                  <Link :href="route('tournaments.show', tournament.id)">     
+                    {{ tournament.description }}
+                  </Link>  
+                </TableDataCell>  
                 <TableDataCell class="space-x-4">
                     <Link :href="route('tournaments.edit', tournament.id)" class="text-green-400 hover:text-green-600">Editar</Link>
                     <button @click="() => confirmDeleteTournament(tournament.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
