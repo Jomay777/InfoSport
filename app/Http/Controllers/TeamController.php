@@ -21,7 +21,9 @@ class TeamController extends Controller
      */
     public function index(Request $request): Response
     {
-        $teams = Team::with('category', 'club');
+        $teams = Team::with('category', 'club')
+        ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
+        ->take(20);  
 
         if ($request->search) {
             $teams->where('teams.name', 'like', '%' . $request->search . '%');
@@ -63,16 +65,24 @@ class TeamController extends Controller
             $validatedData['category_id']= $categoryId;
         }  
 
-        Team::create($validatedData);                     
-        return redirect()->route('teams.index')->with('success', 'Torneo creado correctamente');
+        $team = Team::create($validatedData);                     
+        return redirect()->route('teams.show', $team->id)->with('success', 'Torneo creado correctamente');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Team $team): Response
     {
-        //
+        
+        $club = $team->club;
+        $category = $team->category;
+
+        return Inertia::render('Admin/Teams/Show', [
+            'team' => new TeamResource($team),
+            'club' => $club,
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -107,7 +117,7 @@ class TeamController extends Controller
             $team->update(['category_id' => $categoryId]);
         }  
         
-        return to_route('teams.index');
+        return to_route('teams.show', $team->id);
     }
 
     /**

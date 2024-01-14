@@ -23,7 +23,9 @@ class UserController extends Controller
      */
     public function index(Request $request): Response
     {
-        $users = User::query();
+        $users = User::query()
+        ->latest()  
+        ->take(20); 
 
         if ($request->search) {
             $users->where('users.name', 'like', '%' . $request->search . '%');

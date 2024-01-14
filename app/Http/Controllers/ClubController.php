@@ -24,7 +24,9 @@ class ClubController extends Controller
 {
     public function index(Request $request): Response
     {
-        $clubs = Club::with('users');
+        $clubs = Club::with('users')
+        ->latest()
+        ->take(20);
 
         if ($request->search) {
             $clubs->where('clubs.name', 'like', '%' . $request->search . '%');

@@ -16,8 +16,12 @@ class PermissionController extends Controller
      */
     public function index(): Response
     {
+        $permission = Permission::query()
+        ->latest()
+        ->take(20); 
+        $permission = $permission->get();
         return Inertia::render('Admin/Permissions/PermissionIndex',[
-            'permissions' => PermissionResource::collection(Permission::all())
+            'permissions' =>  PermissionResource::collection($permission)
         ]);
     }
 

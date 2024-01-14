@@ -17,7 +17,9 @@ class CategoryController extends Controller
      */
     public function index(Request $request): Response
     {
-        $categories = Category::query();
+        $categories = Category::query()
+        ->latest()
+        ->take(20); 
 
         if ($request->search) {
             $categories->where('categories.name', 'like', '%' . $request->search . '%');

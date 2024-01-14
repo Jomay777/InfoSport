@@ -18,8 +18,12 @@ class RoleController extends Controller
      */
     public function index(): Response
     {
+        $roles = Role::query()
+        ->latest()
+        ->take(20); 
+        $roles = $roles->get();
         return Inertia::render('Admin/Roles/RoleIndex', [
-            'roles' => RoleResource::collection(Role::all())
+            'roles' => RoleResource::collection($roles)
         ]);
     }
 

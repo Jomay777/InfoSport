@@ -19,7 +19,9 @@ class TournamentController extends Controller
      */
     public function index(Request $request): Response
     {
-        $tournaments = Tournament::with('category');
+        $tournaments = Tournament::with('category')
+        ->latest()  
+        ->take(20); 
 
         if ($request->search) {
             $tournaments->where('tournaments.name', 'like', '%' . $request->search . '%');
