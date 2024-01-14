@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
 use App\Http\Controllers\RevokePermissionFromUserController;
 use App\Http\Controllers\RemoveRoleFromUserController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,10 @@ Route::resource('/categories', CategoryController::class);
 //Routes for tournaments
 Route::resource('/tournaments', TournamentController::class);
 Route::get('tournaments/{tournament}', [TournamentController::class, 'show'])->name('tournaments.show');
+
+//Routes for teams
+Route::resource('/teams', TeamController::class);
+Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
 
 //
 Route::resource('/roles', RoleController::class);
