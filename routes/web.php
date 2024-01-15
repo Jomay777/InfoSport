@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -53,6 +54,10 @@ Route::get('tournaments/{tournament}', [TournamentController::class, 'show'])->n
 //Routes for teams
 Route::resource('/teams', TeamController::class);
 Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+
+//Routes for players
+Route::resource('/players', PlayerController::class);
+Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
 
 //
 Route::resource('/roles', RoleController::class);

@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Player extends Model
 {
+    protected $fillable = ['first_name', 'second_name', 'last_name'
+    ,'mother_last_name' ,'bith_date' ,'c_i' ,'nacionality' ,'country_birth'
+    ,'region_birh', 'state', 'team_id'];
+
     use HasFactory;
 
     //polymorphic many-to-many relationship
@@ -31,8 +35,6 @@ class Player extends Model
 
     //one-to-one relationship
     public function photoPlayer(){
-        //$gameStatistic = GameStatistic::where('game_id', $this->id)->first();
-
         return $this->hasOne(PhotoPlayer::class);
     }
 }
