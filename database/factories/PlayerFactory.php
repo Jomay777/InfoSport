@@ -22,11 +22,11 @@ class PlayerFactory extends Factory
             'second_name' => $this->faker->optional()->firstName,
             'last_name' => $this->faker->lastName,
             'mother_last_name' => $this->faker->optional()->lastName,
-            'bith_date' => $this->faker->date,
+            'birth_date' => $this->faker->date,
             'c_i' => $this->faker->unique()->randomNumber(8),
             'nacionality' => $this->faker->randomElement(['Venezolana', 'Colombiana', 'Boliviana', 'Argentina']),
             'country_birth' => $this->faker->randomElement(['Venezuela', 'Colombia', 'Bolivia', 'Argentina']),
-            'region_birh' => $this->faker->city,
+            'region_birth' => $this->faker->city,
             'state' => $this->faker->randomElement([1, 2]),
             'team_id' => Team::all()->random()->id,
         ];

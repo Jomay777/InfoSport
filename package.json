@@ -18,6 +18,8 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
+        "@vuepic/vue-datepicker": "^7.4.1",
+        "date-fns": "^3.2.0",
         "vue-multiselect": "^3.0.0-beta.3"
     }
 }

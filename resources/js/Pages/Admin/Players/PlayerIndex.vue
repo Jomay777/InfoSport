@@ -73,7 +73,7 @@ const deletePlayer = (id) => {
           <div class="relative flex items-center text-gray-400 focus-within:text-cyan-400">                        
             <input v-model="search"
             @keydown.enter.prevent="searchPlayer" 
-             type="search" name="search" id="search" placeholder="Buscar torneo" class="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition">
+             type="search" name="search" id="search" placeholder="Buscar jugador" class="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition">
             <button @click.prevent="searchPlayer" class="absolute left-4 h-6 flex items-center pr-3 border-r border-gray-300">
               <svg xmlns="http://ww50w3.org/2000/svg" class="w-4 fill-current" viewBox="0 0 35.997 36.004">
                 <path id="Icon_awesome-search-md" data-name="search" d="M35.508,31.127l-7.01-7.01a1.686,1.686,0,0,0-1.2-.492H26.156a14.618,14.618,0,1,0-2.531,2.531V27.3a1.686,1.686,0,0,0,.492,1.2l7.01,7.01a1.681,1.681,0,0,0,2.384,0l1.99-1.99a1.7,1.7,0,0,0,.007-2.391Zm-20.883-7.5a9,9,0,1,1,9-9A8.995,8.995,0,0,1,14.625,23.625Z"></path>
@@ -123,7 +123,7 @@ const deletePlayer = (id) => {
                 </TableDataCell>
                 <TableDataCell>   
                   <Link :href="route('players.show', player.id)">                    
-                    {{ player.state == 1 ? 'inabilitado': 'habilitado'}}
+                    {{ player.state == 1 ? 'inhabilitado': 'habilitado'}}
                   </Link>  
                     <br> 
                 </TableDataCell>                                           
@@ -140,12 +140,12 @@ const deletePlayer = (id) => {
 
                 <TableDataCell class="space-x-4">
                     <Link :href="route('players.edit', player.id)" class="text-green-400 hover:text-green-600">Editar</Link>
-                    <button @click="() => confirmDeleteTeam(player.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
-                    <Modal :show="showConfirmDeleteTeamModal === player.id" @close="closeModal">
+                    <button @click="() => confirmDeletePlayer(player.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
+                    <Modal :show="showConfirmDeletePlayerModal === player.id" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el equipo {{ player.name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar al jugador {{ player.first_name }} {{ player.second_name }} {{ player.last_name }} {{ player.mother_last_name }} ?</h2>
                             <div class="mt-6 flex space-x-4">
-                                <DangerButton @click="deleteTeam(player.id)">Eliminar</DangerButton>
+                                <DangerButton @click="deletePlayer(player.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                             </div>
                         </div>

@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('second_name')->nullable();
             $table->string('last_name');
             $table->string('mother_last_name')->nullable();
-            $table->date('bith_date');
+            $table->date('birth_date');
             $table->string('c_i');
 
             $table->string('nacionality');
             $table->string('country_birth');
-            $table->string('region_birh');
+            $table->string('region_birth');
             
             $table->enum('state', [1,2])->default(1);
             
