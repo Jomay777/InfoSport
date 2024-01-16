@@ -39,6 +39,26 @@ const deletePlayer = (id) => {
     onSuccess: () => closeModal()
    });
 }
+
+function calculateAge(dateOfBirth) {
+  const birthDate = new Date(dateOfBirth);
+  const currentDate = new Date();
+
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+  // Adjust age if birthday hasn't occurred yet in the current year
+  if (
+    currentDate.getMonth() < birthDate.getMonth() ||
+    (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+}
+const age = calculateAge(props.player.birth_date);
+
 </script>
 
 <template>
@@ -113,6 +133,12 @@ const deletePlayer = (id) => {
                       <p class="text-base font-medium text-navy-700 dark:text-navy">
                         {{ player.state == 1? "inhabilitado" : "habilitado"}}
                       </p> 
+                    </div>  
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                      <p class="text-sm text-gray-600">Edad de jugador</p>
+                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ age }} años
+                      </p> 
                     </div>                                   
                 </div>
                 <div class="mt-5 px-2 w-full">
@@ -129,7 +155,7 @@ const deletePlayer = (id) => {
                       <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
                     </div> 
                 </div>
-                <div class="mt-3 px-2 w-full">
+                <div v-if="age < 18" class="mt-3 px-2 w-full">
                   <p class="text-xl text-gray-600 dark:text-white">Foto de autorización parental</p>
                   <div class="mt-3 flex justify-center">
                       <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_parental_authorization" alt="foto de carnet de identidad"/> 
