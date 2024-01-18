@@ -57,8 +57,7 @@ class ClubController extends Controller
             // Store the file in the 'public/logos' directory
             $logoPath = $request->file('logo_path')->store('public/logos');
 
-            /*// Update the 'logo_path' attribute of the club with the stored path
-            $club->update(['logo_path' => str_replace('public/', 'storage/', $logoPath)]);*/
+
             $validatedData['logo_path'] = str_replace('public/', '/storage/', $logoPath);
         }
 

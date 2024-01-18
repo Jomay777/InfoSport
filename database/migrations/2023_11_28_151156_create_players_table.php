@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('mother_last_name')->nullable();
             $table->date('birth_date');
             $table->string('c_i');
+            $table->string('gender', 20);
+
 
             $table->string('nacionality');
             $table->string('country_birth');

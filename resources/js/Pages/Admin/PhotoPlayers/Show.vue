@@ -129,23 +129,17 @@ const age = calculateAge(props.player.birth_date);
                     </p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Estado de jugador /@</p>
+                      <p class="text-sm text-gray-600">Estado de jugador</p>
                       <p class="text-base font-medium text-navy-700 dark:text-navy">
                         {{ player.state == 1? "inhabilitado" : "habilitado"}}
                       </p> 
                     </div>  
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Edad de jugador /@</p>
+                      <p class="text-sm text-gray-600">Edad de jugador</p>
                       <p class="text-base font-medium text-navy-700 dark:text-navy">
                         {{ age }} años
                       </p> 
-                    </div>   
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Género de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.gender}}
-                      </p> 
-                    </div>                                  
+                    </div>                                   
                 </div>
                 <div class="mt-5 px-2 w-full">
                   <p class="text-xl text-gray-700 dark:text-white">Foto de carnet de identidad</p>
@@ -174,7 +168,7 @@ const age = calculateAge(props.player.birth_date);
                     <button @click="confirmDeletePlayer" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
                     <Modal :show="showConfirmDeletePlayerModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el jugador /@ {{ player.first_name }} {{ player.second_name }} {{ player.last_name }} {{ player.mother_last_name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el jugador {{ player.first_name }} {{ player.second_name }} {{ player.last_name }} {{ player.mother_last_name }}?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deletePlayer(player.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

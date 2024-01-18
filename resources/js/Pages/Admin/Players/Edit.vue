@@ -24,7 +24,8 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  team: Object
+  team: Object,
+  photo_player: Array
 });
 
 
@@ -33,6 +34,7 @@ const form = useForm({
   second_name: props.player?.second_name,
   last_name: props.player?.last_name,
   mother_last_name: props.player?.mother_last_name,
+  gender:"",
   birth_date: "",
   c_i: props.player?.c_i,
   nacionality: props.player?.nacionality,
@@ -40,11 +42,19 @@ const form = useForm({
   region_birth: props.player?.region_birth,
   state: "",
   team: null,
+  photo_player: {
+    photo_path: null,
+    photo_c_i: null,
+    photo_birth_certificate: null,
+    photo_parental_authorization: null,
+  },
   _method: "put"
 });
 
 onMounted(() => {
   form.team = props.player?.team;
+  form.gender = props.player?.gender == 'Hombre'? { id: 1, name: 'Hombre' }: { id: 2, name: 'Mujer' };  
+
   form.state = props.player?.state == 1? { id: 1, name: 'inhabilitado' }: { id: 2, name: 'habilitado' };  
   form.birth_date = props.player.birth_date ? props.player.birth_date+'T13:10:00.000Z' :"";
 });
@@ -52,7 +62,30 @@ const updatePlayer= () => {
   form.post(route('players.update', props.player?.id));
 };
 
-
+const handleFileChangePP = (event) => {
+  // Guarda el archivo directamente en el formulario
+  if (event.target.files && event.target.files.length > 0) {
+    form.photo_player.photo_path = event.target.files[0];
+  }
+};
+const handleFileChangeCI = (event) => {
+  // Guarda el archivo directamente en el formulario
+  if (event.target.files && event.target.files.length > 0) {
+    form.photo_player.photo_c_i = event.target.files[0];
+  }
+};
+const handleFileChangeBC = (event) => {
+  // Guarda el archivo directamente en el formulario
+  if (event.target.files && event.target.files.length > 0) {
+    form.photo_player.photo_birth_certificate = event.target.files[0];
+  }
+};
+const handleFileChangePA = (event) => {
+  // Guarda el archivo directamente en el formulario
+  if (event.target.files && event.target.files.length > 0) {
+    form.photo_player.photo_parental_authorization = event.target.files[0];
+  }
+};
 </script>
 
 <template>
@@ -116,6 +149,21 @@ const updatePlayer= () => {
               autocomplete="teammother_last_name"
             />
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="gender" value="Género" />
+            <VueMultiselect
+              id="gender"
+              v-model="form.gender"
+              :options="[{ id: 1, name: 'Hombre' }, { id: 2, name: 'Mujer' }]"
+              :multiple="false"
+              :close-on-select="true"
+              placeholder="Elige el estado del jugador"
+              label="name"
+              track-by="id"
+              required
+            />
+            <InputError class="mt-2" :message="form.errors.gender" />
           </div>
           <div class="mt-4">
             <InputLabel for="birth_date" value="Fecha de nacimiento"/>  
@@ -205,19 +253,22 @@ const updatePlayer= () => {
               track-by="id"
             />
           </div>
-          <!-- <div class="mt-4">
-            <InputLabel for="photo_player" value="Fotos de jugador" />
-            <VueMultiselect
-              id="photo_player"
-              v-model="form.photo_player"
-              :options="photo_player"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige las fotos del jugador"
-              label="name"
-              track-by="id"
-            />
-          </div> -->
+          <div class="mt-4">
+            <InputLabel for="photo_player.photo_path" value="Foto de jugador" />
+            <input type="file" id="photo_player.photo_path" @change="handleFileChangePP" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="photo_player.photo_c_i" value="Foto del carnet de identidad" />
+            <input type="file" id="photo_player.photo_c_i" @change="handleFileChangeCI" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="photo_player.photo_birth_certificate" value="foto del certificado de nacimiento" />
+            <input type="file" id="photo_player.photo_birth_certificate" @change="handleFileChangeBC" />
+          </div>          
+          <div class="mt-4">
+            <InputLabel for="photo_player.photo_parental_authorization" value="foto de autorización parental" />
+            <input type="file" id="photo_player.photo_parental_authorization" @change="handleFileChangePA" />
+          </div>    
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

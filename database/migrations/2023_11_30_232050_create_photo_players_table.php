@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('photo_path');
             $table->string('photo_c_i');
             $table->string('photo_birth_certificate');
-            $table->string('photo_parental_authorization');
+            $table->string('photo_parental_authorization')->nullable();
             
             //one-to-one relationship
             $table->unsignedBigInteger('player_id')->unique();

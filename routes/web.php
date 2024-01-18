@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -59,6 +60,9 @@ Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
 Route::resource('/players', PlayerController::class);
 Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
 
+//Routes for photo_players
+Route::resource('/photo_players', PhotoPlayerController::class);
+Route::get('photo_players/{photo_player}', [PhotoPlayerController::class, 'show'])->name('photo_players.show');
 //
 Route::resource('/roles', RoleController::class);
 Route::resource('/permissions', PermissionController::class);

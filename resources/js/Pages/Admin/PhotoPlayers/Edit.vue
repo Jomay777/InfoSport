@@ -1,73 +1,62 @@
+<script>
+  export default {
+    name: 'PlayerEdit'
+  }
+</script>
+
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import TableDataCell from "@/Components/TableDataCell.vue";
 import TextInput from "@/Components/TextInput.vue";
+import TableDataCell from "@/Components/TableDataCell.vue"
 import VueMultiselect from "vue-multiselect";
+
+import { onMounted, ref } from "vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { parseISO, format } from 'date-fns';
 
-import { ref } from "vue";
-
-
-defineProps({
-  team: Object,
-  photo_player: Array
+const props = defineProps({
+  player: {
+    type: Object,
+    required: true
+  },
+  team: Object
 });
+
+
 const form = useForm({
-  first_name: "",
-  second_name: "",
-  last_name: "",
-  mother_last_name: "",
-  gender:"",
-  birth_date: ref(""),
-  c_i: "",
-  nacionality: "",
-  country_birth: "",
-  region_birth: "",
+  first_name: props.player?.first_name,
+  second_name: props.player?.second_name,
+  last_name: props.player?.last_name,
+  mother_last_name: props.player?.mother_last_name,
+  birth_date: "",
+  c_i: props.player?.c_i,
+  nacionality: props.player?.nacionality,
+  country_birth: props.player?.country_birth,
+  region_birth: props.player?.region_birth,
   state: "",
   team: null,
-  photo_player: {
-    photo_path: null,
-    photo_c_i: null,
-    photo_birth_certificate: null,
-    photo_parental_authorization: null,
-  }
+  _method: "put"
 });
-const storePlayer = () =>{
-  form.post(route('players.store'));
-}
-const handleFileChangePP = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_path = event.target.files[0];
-  }
+
+onMounted(() => {
+  form.team = props.player?.team;
+  form.state = props.player?.state == 1? { id: 1, name: 'inhabilitado' }: { id: 2, name: 'habilitado' };  
+  form.birth_date = props.player.birth_date ? props.player.birth_date+'T13:10:00.000Z' :"";
+});
+const updatePlayer= () => {
+  form.post(route('players.update', props.player?.id));
 };
-const handleFileChangeCI = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_c_i = event.target.files[0];
-  }
-};
-const handleFileChangeBC = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_birth_certificate = event.target.files[0];
-  }
-};
-const handleFileChangePA = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_parental_authorization = event.target.files[0];
-  }
-};
+
+
 </script>
 
 <template>
-  <Head title="Crear nuevo jugador" />
+  <Head title="Actualizar jugador" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
@@ -79,8 +68,8 @@ const handleFileChangePA = (event) => {
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo jugador</h1>
-        <form @submit.prevent="storePlayer" enctype="multipart/form-data">
+        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar Equipo</h1>
+        <form @submit.prevent="updatePlayer">
           <div class="mt-4">
             <InputLabel for="first_name" value="Primer nombre" />
             <TextInput
@@ -129,28 +118,14 @@ const handleFileChangePA = (event) => {
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
           </div>
           <div class="mt-4">
-            <InputLabel for="gender" value="Género" />
-            <VueMultiselect
-              id="gender"
-              v-model="form.gender"
-              :options="[{ id: 1, name: 'Hombre' }, { id: 2, name: 'Mujer' }]"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige el estado del jugador"
-              label="name"
-              track-by="id"
-              required
-            />
-            <InputError class="mt-2" :message="form.errors.gender" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="birth_date" value="Fecha de nacimiento" />            
+            <InputLabel for="birth_date" value="Fecha de nacimiento"/>  
             <VueDatePicker 
               v-model="form.birth_date" 
               format="dd-MM-yyyy" 
               locale="es" 
               id="birth_date"
-              required>
+              required
+              >
             </VueDatePicker>
             <InputError class="mt-2" :message="form.errors.birth_date" />
           </div>
@@ -230,29 +205,26 @@ const handleFileChangePA = (event) => {
               track-by="id"
             />
           </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_path" value="Foto de jugador" />
-            <input type="file" id="photo_player.photo_path" @change="handleFileChangePP" required/>
-          </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_c_i" value="Foto del carnet de identidad" />
-            <input type="file" id="photo_player.photo_c_i" @change="handleFileChangeCI" required/>
-          </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_birth_certificate" value="Foto del certificado de nacimiento" />
-            <input type="file" id="photo_player.photo_birth_certificate" @change="handleFileChangeBC" required/>
-          </div>          
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_parental_authorization" value="Foto de autorización parental" />
-            <input type="file" id="photo_player.photo_parental_authorization" @change="handleFileChangePA" />
-          </div>          
+          <!-- <div class="mt-4">
+            <InputLabel for="photo_player" value="Fotos de jugador" />
+            <VueMultiselect
+              id="photo_player"
+              v-model="form.photo_player"
+              :options="photo_player"
+              :multiple="false"
+              :close-on-select="true"
+              placeholder="Elige las fotos del jugador"
+              label="name"
+              track-by="id"
+            />
+          </div> -->
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"
               :class="{ 'opacity-25': form.processing }"
               :disabled="form.processing"
             >
-              Crear
+              Actualizar
             </PrimaryButton>
           </div>
         </form>

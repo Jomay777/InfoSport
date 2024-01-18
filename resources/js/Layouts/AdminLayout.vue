@@ -13,8 +13,8 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <div class="w-full h-full">
-        <aside class="ml-[-100%] fixed z-10 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%]">
-    <div>
+ <aside class="ml-[-100%] fixed z-10 top-0 pb-3 pl-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%]">
+  <div class="overflow-y-auto overflow-x-hidden">
         <div class="-mx-6 px-6 py-4">
             {{ $page.props.auth.user.name }}
         </div>
@@ -110,7 +110,16 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Jugadores</span>
                 </SidebarLink>
             </li>
-    
+            <li>
+                <SidebarLink
+                :href="route('photo_players.index')" 
+                :active="route().current('photo_players.*')">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                    <path d="M320 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM125.7 175.5c9.9-9.9 23.4-15.5 37.5-15.5c1.9 0 3.8 .1 5.6 .3L137.6 254c-9.3 28 1.7 58.8 26.8 74.5l86.2 53.9-25.4 88.8c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l28.7-100.4c5.9-20.6-2.6-42.6-20.7-53.9L238 299l30.9-82.4 5.1 12.3C289 264.7 323.9 288 362.7 288H384c17.7 0 32-14.3 32-32s-14.3-32-32-32H362.7c-12.9 0-24.6-7.8-29.5-19.7l-6.3-15c-14.6-35.1-44.1-61.9-80.5-73.1l-48.7-15c-11.1-3.4-22.7-5.2-34.4-5.2c-31 0-60.8 12.3-82.7 34.3L57.4 153.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l23.1-23.1zM91.2 352H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h69.6c19 0 36.2-11.2 43.9-28.5L157 361.6l-9.5-6c-17.5-10.9-30.5-26.8-37.9-44.9L91.2 352z"/>
+                </svg>
+                <span class="-mr-1 font-medium">Fotos de Jugadores</span>
+                </SidebarLink>
+            </li>
         </ul>
     </div>
 
@@ -124,7 +133,7 @@ const showingNavigationDropdown = ref(false);
         </Link>
     </div>
     
-</aside>
+ </aside>
 <div class="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
     <div class="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
         <div class="px-6 flex items-center justify-between space-x-4 2xl:container">
@@ -230,6 +239,10 @@ const showingNavigationDropdown = ref(false);
                 <ResponsiveNavLink :href="route('players.index')" 
                     :active="route().current('players.*')">
                     Jugadores
+                </ResponsiveNavLink>
+                <ResponsiveNavLink :href="route('photo_players.index')" 
+                    :active="route().current('photo_players.*')">
+                    Fotos de Jugadores
                 </ResponsiveNavLink>
             </div>  
             <Link :href="route('logout')" method="post" as="button"

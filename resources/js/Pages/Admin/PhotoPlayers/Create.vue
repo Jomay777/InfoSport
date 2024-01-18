@@ -15,14 +15,13 @@ import { ref } from "vue";
 
 defineProps({
   team: Object,
-  photo_player: Array
+  //photo_player: Object
 });
 const form = useForm({
   first_name: "",
   second_name: "",
   last_name: "",
   mother_last_name: "",
-  gender:"",
   birth_date: ref(""),
   c_i: "",
   nacionality: "",
@@ -30,40 +29,14 @@ const form = useForm({
   region_birth: "",
   state: "",
   team: null,
-  photo_player: {
-    photo_path: null,
-    photo_c_i: null,
-    photo_birth_certificate: null,
-    photo_parental_authorization: null,
-  }
+  //photo_player: null
 });
 const storePlayer = () =>{
+  //form.birth_date = form.birth_date.toISOString().split('T')[0];
+
   form.post(route('players.store'));
 }
-const handleFileChangePP = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_path = event.target.files[0];
-  }
-};
-const handleFileChangeCI = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_c_i = event.target.files[0];
-  }
-};
-const handleFileChangeBC = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_birth_certificate = event.target.files[0];
-  }
-};
-const handleFileChangePA = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_parental_authorization = event.target.files[0];
-  }
-};
+
 </script>
 
 <template>
@@ -80,7 +53,7 @@ const handleFileChangePA = (event) => {
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo jugador</h1>
-        <form @submit.prevent="storePlayer" enctype="multipart/form-data">
+        <form @submit.prevent="storePlayer">
           <div class="mt-4">
             <InputLabel for="first_name" value="Primer nombre" />
             <TextInput
@@ -129,28 +102,12 @@ const handleFileChangePA = (event) => {
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
           </div>
           <div class="mt-4">
-            <InputLabel for="gender" value="Género" />
-            <VueMultiselect
-              id="gender"
-              v-model="form.gender"
-              :options="[{ id: 1, name: 'Hombre' }, { id: 2, name: 'Mujer' }]"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige el estado del jugador"
-              label="name"
-              track-by="id"
-              required
-            />
-            <InputError class="mt-2" :message="form.errors.gender" />
-          </div>
-          <div class="mt-4">
             <InputLabel for="birth_date" value="Fecha de nacimiento" />            
             <VueDatePicker 
               v-model="form.birth_date" 
               format="dd-MM-yyyy" 
               locale="es" 
-              id="birth_date"
-              required>
+              id="birth_date">
             </VueDatePicker>
             <InputError class="mt-2" :message="form.errors.birth_date" />
           </div>
@@ -213,7 +170,6 @@ const handleFileChangePA = (event) => {
               placeholder="Elige el estado del jugador"
               label="name"
               track-by="id"
-              required
             />
             <InputError class="mt-2" :message="form.errors.state" />
           </div>                    
@@ -230,22 +186,19 @@ const handleFileChangePA = (event) => {
               track-by="id"
             />
           </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_path" value="Foto de jugador" />
-            <input type="file" id="photo_player.photo_path" @change="handleFileChangePP" required/>
-          </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_c_i" value="Foto del carnet de identidad" />
-            <input type="file" id="photo_player.photo_c_i" @change="handleFileChangeCI" required/>
-          </div>
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_birth_certificate" value="Foto del certificado de nacimiento" />
-            <input type="file" id="photo_player.photo_birth_certificate" @change="handleFileChangeBC" required/>
-          </div>          
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_parental_authorization" value="Foto de autorización parental" />
-            <input type="file" id="photo_player.photo_parental_authorization" @change="handleFileChangePA" />
-          </div>          
+          <!-- <div class="mt-4">
+            <InputLabel for="photo_player" value="Fotos de jugador" />
+            <VueMultiselect
+              id="photo_player"
+              v-model="form.photo_player"
+              :options="photo_player"
+              :multiple="false"
+              :close-on-select="true"
+              placeholder="Elige las fotos del jugador"
+              label="name"
+              track-by="id"
+            />
+          </div> -->
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"
