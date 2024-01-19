@@ -9,6 +9,7 @@ use App\Http\Resources\TournamentResource;
 use App\Models\GameRole;
 use App\Models\Pitch;
 use App\Models\Tournament;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -82,24 +83,43 @@ class GameRoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
+    public function edit(GameRole $game_role): Response
+    {    
+        $game_role->load('tournament','pitch');
+        return Inertia::render('Admin/GameRoles/Edit', [
+            'game_role' => new GameRoleResource($game_role),
+            'tournament' => TournamentResource::collection(Tournament::all()),
+            'pitch' => PitchResource::collection(Pitch::all())
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(GameRoleRequest $request, string $id):RedirectResponse
+    {        
+        $game_role = GameRole::find($id);               
+        $validatedData = $request->validated();
+        if ($request->has('tournament')) {
+            $validatedData['tournament_id'] = $request->input('tournament.id');
+        } 
+        if ($request->has('pitch')) {
+            $validatedData['pitch_id'] = $request->input('pitch.id');
+        } 
+        if (isset($validatedData['date'])) {
+            $validatedData['date'] = Carbon::parse($validatedData['date'])->toDateString();
+        }
+       //dd($validatedData);
+        $game_role->update($validatedData);     
+        return to_route('game_roles.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(GameRole $game_role): RedirectResponse
     {
-        //
+        $game_role->delete();
+        return to_route('game_roles.index');
     }
 }

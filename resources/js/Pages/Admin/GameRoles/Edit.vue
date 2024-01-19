@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'TournamentEdit'
+    name: 'GameRoleEdit'
   }
 </script>
 
@@ -12,30 +12,37 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 import { onMounted, ref } from "vue";
 
 const props = defineProps({
-  tournament: {
+  game_role: {
     type: Object,
     required: true
   },
-  category: Object
+  tournament: Object,
+  pitch: Object
 });
 
 const form = useForm({
-  name: props.tournament?.name,
-  description: props.tournament?.description,
-  category: null,
+  name: props.game_role?.name,
+  date: "",
+  tournament: null,
+  pitch: null,
   _method: "put"
 });
 
 onMounted(() => {
-  form.category = props.tournament?.category;
+  form.tournament = props.game_role?.tournament;
+  form.pitch = props.game_role?.pitch;
+  form.date = props.game_role.date ? props.game_role.date+'T13:10:00.000Z' :"";
+
 });
 
-const updateTournament= () => {
-  form.post(route('tournaments.update', props.tournament?.id));
+const updateGameRole= () => {
+  form.post(route('game_roles.update', props.game_role?.id));
 };
 
 </script>
@@ -47,14 +54,14 @@ const updateTournament= () => {
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('tournaments.index')"
+          :href="route('game_roles.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Volver</Link
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar Torneo</h1>
-        <form @submit.prevent="updateTournament">
+        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar rol de partido</h1>
+        <form @submit.prevent="updateGameRole">
           <div class="mt-4">
             <InputLabel for="name" value="Nombre" />
             <TextInput
@@ -62,37 +69,52 @@ const updateTournament= () => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.name"
-              required
               autofocus
-              autocomplete="tournamentname"
+              autocomplete="game_rolename"
+              required
             />
+
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
           <div class="mt-4">
-            <InputLabel for="category" value="Categoría" />
+            <InputLabel for="date" value="Fecha de los partidos" />            
+            <VueDatePicker 
+              v-model="form.date" 
+              format="dd-MM-yyyy" 
+              locale="es" 
+              id="date"
+              required>
+            </VueDatePicker>
+            <InputError class="mt-2" :message="form.errors.date" />
+          </div>
+          
+          <div class="mt-4">
+            <InputLabel for="tournament" value="Torneo" />
             <VueMultiselect
-              id="category"
-              v-model="form.category"
-              :options="category"
+              id="tournament"
+              v-model="form.tournament"
+              :options="tournament"
               :multiple="false"
               :close-on-select="true"
-              placeholder="Escoge la categoría"
+              placeholder="Elige la categoría"
               label="name"
-              track-by="id"
+              track-by="id"          
             />
+            <InputError class="mt-2" :message="form.errors.tournament" />
           </div>
           <div class="mt-4">
-            <InputLabel for="description" value="Descripción" />
-            <textarea
-              id="description"
-              type="text"
-              class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
-              v-model="form.description"              
-              autocomplete="clubdescription"
+            <InputLabel for="pitch" value="Cancha" />
+            <VueMultiselect
+              id="pitch"
+              v-model="form.pitch"
+              :options="pitch"
+              :multiple="false"
+              :close-on-select="true"
+              placeholder="Elige la categoría"
+              label="name"
+              track-by="id"          
             />
-            <InputError class="mt-2" :message="form.errors.description" />
-          </div>          
-          
+          </div>
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"
