@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class GameScheduling extends Model
 {
     use HasFactory;
+    protected $fillable = ['time','game_role_id'];
+
 
     //polymorphic many-to-many relationship
     public function users(){

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Pitch;
 use App\Models\Tournament;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,9 @@ class GameRoleFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->word(),
+            'date' => $this->faker->date,
             'tournament_id' => Tournament::all()->random()->id,
+            'pitch_id' => Pitch::all()->random()->id,
         ];
     }
 }

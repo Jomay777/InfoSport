@@ -86,6 +86,10 @@ class User extends Authenticatable
     {
         return $this->morphedByMany(Tournament::class, 'userable');
     }
+    public function gameRoles(): MorphToMany
+    {
+        return $this->morphedByMany(GameRole::class, 'userable');
+    }
 
     //one-to-many relationship
     public function cardGenerations(){

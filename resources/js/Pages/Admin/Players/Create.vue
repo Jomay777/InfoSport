@@ -90,7 +90,7 @@ const handleFileChangePA = (event) => {
               v-model="form.first_name"
               autofocus
               required
-              autocomplete="teamfirst_name"
+              autocomplete="playerfirst_name"
             />
             <InputError class="mt-2" :message="form.errors.first_name" />
           </div>
@@ -101,7 +101,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.second_name"              
-              autocomplete="teamsecond_name"
+              autocomplete="playersecond_name"
             />
             <InputError class="mt-2" :message="form.errors.second_name" />
           </div>
@@ -113,7 +113,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.last_name"
               required              
-              autocomplete="teamlast_name"
+              autocomplete="playerlast_name"
             />
             <InputError class="mt-2" :message="form.errors.last_name" />
           </div>
@@ -124,7 +124,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.mother_last_name"              
-              autocomplete="teammother_last_name"
+              autocomplete="playermother_last_name"
             />
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
           </div>
@@ -136,6 +136,7 @@ const handleFileChangePA = (event) => {
               :options="[{ id: 1, name: 'Hombre' }, { id: 2, name: 'Mujer' }]"
               :multiple="false"
               :close-on-select="true"
+              :preselect-first="true" 
               placeholder="Elige el estado del jugador"
               label="name"
               track-by="id"
@@ -162,7 +163,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.c_i" 
               required             
-              autocomplete="teamc_i"
+              autocomplete="playerc_i"
             />
             <InputError class="mt-2" :message="form.errors.c_i" />
           </div>        
@@ -174,7 +175,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.nacionality"  
               required            
-              autocomplete="teamnacionality"
+              autocomplete="playernacionality"
             />
             <InputError class="mt-2" :message="form.errors.nacionality" />
           </div>
@@ -186,7 +187,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.country_birth"  
               required            
-              autocomplete="teamcountry_birth"
+              autocomplete="playercountry_birth"
             />
             <InputError class="mt-2" :message="form.errors.country_birth" />
           </div>
@@ -198,7 +199,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.region_birth"  
               required            
-              autocomplete="teamregion_birth"
+              autocomplete="playerregion_birth"
             />
             <InputError class="mt-2" :message="form.errors.region_birth" />
           </div>
@@ -210,6 +211,7 @@ const handleFileChangePA = (event) => {
               :options="[{ id: 1, name: 'inhabilitado' }, { id: 2, name: 'habilitado' }]"
               :multiple="false"
               :close-on-select="true"
+              :preselect-first="true"
               placeholder="Elige el estado del jugador"
               label="name"
               track-by="id"
@@ -225,6 +227,7 @@ const handleFileChangePA = (event) => {
               :options="team"
               :multiple="false"
               :close-on-select="true"
+              :preselect-first="true"
               placeholder="Elige el equipo al que pertenece"
               label="name"
               track-by="id"

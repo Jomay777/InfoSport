@@ -13,6 +13,7 @@ use App\Models\GameScheduling;
 use App\Models\GameStatistic;
 use App\Models\PassRequest;
 use App\Models\PhotoPlayer;
+use App\Models\Pitch;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\Tournament;
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder
 
         Tournament::factory(10)->create();
 
+        Pitch::factory(4)->create();
         GameRole::factory(10)->create();
         GameScheduling::factory(10)->create();
         Game::factory(9)->create();

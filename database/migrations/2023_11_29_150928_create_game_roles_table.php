@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('game_roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->date('date');
             
             //one-to-many relationship
             $table->unsignedBigInteger('tournament_id');
@@ -22,6 +23,15 @@ return new class extends Migration
                 ->references('id')
                 ->on('tournaments')
                 ->onDelete('cascade')
+                ->onUpdate('cascade');
+            
+                //one-to-many relationship
+            $table->unsignedBigInteger('pitch_id')->nullable();
+
+            $table->foreign('pitch_id')
+                ->references('id')
+                ->on('pitches')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
             $table->timestamps();
         });

@@ -26,9 +26,14 @@ class TeamController extends Controller
         ->take(20);  
 
         if ($request->search) {
-            $teams->where('teams.name', 'like', '%' . $request->search . '%');
+            $teams->where(function ($query) use ($request) {
+                $query->where('teams.name', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('club', function ($subQuery) use ($request) {
+                        $subQuery->where('clubs.name', 'like', '%' . $request->search . '%');
+                    });
+            });
         }
-
+        
         $teams = $teams->get();
 
         return Inertia::render('Admin/Teams/TeamIndex', [

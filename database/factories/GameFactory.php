@@ -19,13 +19,9 @@ class GameFactory extends Factory
     public function definition(): array
     {
         return [
-            'game_date' => $this->faker->dateTimeBetween('-1 month', '+1 month'),
-            'game_time' => $this->faker->time('H:i'),
-            'location' => $this->faker->city,
             'result' => $this->faker->randomNumber(2) . '-' . $this->faker->randomNumber(2),
             'observation' => $this->faker->text(200),
             'game_scheduling_id' => GameScheduling::all()->random()->id,
-            'tournament_id' => Tournament::all()->random()->id,
         ];
     }
 }

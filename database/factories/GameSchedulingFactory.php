@@ -19,9 +19,8 @@ class GameSchedulingFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->sentence(3),
+            'time' => $this->faker->time(),
             'game_role_id' => GameRole::all()->random()->id,
-            'tournament_id' => Tournament::all()->random()->id,
         ];
     }
 }
