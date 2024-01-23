@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\GameRoleController;
+use App\Http\Controllers\GameSchedulingController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
@@ -61,9 +62,13 @@ Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
 Route::resource('/players', PlayerController::class);
 Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
 
-//Routes for players
+//Routes for game_roles
 Route::resource('/game_roles', GameRoleController::class);
 Route::get('game_roles/{game_role}', [GameRoleController::class, 'show'])->name('game_roles.show');
+
+//Routes for game_schedulings
+Route::resource('/game_schedulings', GameSchedulingController::class);
+Route::get('game_schedulings/{game_scheduling}', [GameSchedulingController::class, 'show'])->name('game_schedulings.show');
 
 //Routes for photo_players
 Route::resource('/photo_players', PhotoPlayerController::class);
