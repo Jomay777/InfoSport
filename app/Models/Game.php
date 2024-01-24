@@ -8,13 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Game extends Model
 {
     use HasFactory;
+    protected $fillable = ['result',
+    'observation',
+    'game_scheduling_id'];
 
     //polymorphic many-to-many relationship
     public function users(){
         return $this->morphToMany(User::class, 'userable');
     }
 
-    //one-to-many inverse relationship 
+    //one-to-one inverse relationship 
     public function gameScheduling(){
         return $this->belongsTo(GameScheduling::class);
     }    

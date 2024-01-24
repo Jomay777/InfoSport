@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class GameSchedulingRequest extends FormRequest
+class GameRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,19 +22,15 @@ class GameSchedulingRequest extends FormRequest
      */
     public function rules(): array
     {
+        $gameId = $this->route('game'); // Obtener el ID del juego actual
+
         return [
-            'time' => ['required', 'string'],
-            'teams' => [
+            'observation' => ['nullable', 'max:400'],
+            'result' => ['required', 'string', 'max:255'],
+            'game_scheduling' => [
                 'required',
-                'array',
-                function ($attribute, $value, $fail) {
-                    if (count($value) !== 2) {
-                        $fail("El campo $attribute debe contener exactamente 2 equipos.");
-                    }
-                },
+                Rule::unique('games', 'game_scheduling_id')->ignore($gameId),
             ],
-            'gameRole' => ['required', 'array'],
         ];
-        
     }
 }

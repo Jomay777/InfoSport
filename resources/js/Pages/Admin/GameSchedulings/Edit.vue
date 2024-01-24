@@ -22,7 +22,7 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  game_role: Array,
+  gameRole: Array,
   teams:{
     type: Array,
     required: true
@@ -31,14 +31,14 @@ const props = defineProps({
 
 const form = useForm({
   time: props.game_scheduling?.time,
-  game_role: null, 
+  gameRole: null, 
   teams: [],
   _method: "put"
 });
 
 onMounted(() => {
   form.teams = props.game_scheduling?.teams;
-  form.game_role = props.game_scheduling?.game_role;
+  form.gameRole = props.game_scheduling?.gameRole;
 
 });
 
@@ -95,18 +95,18 @@ const updateGameScheduling = () => {
           </div>
           
           <div class="mt-4">
-            <InputLabel for="game_role" value="Rol de partido" />
+            <InputLabel for="gameRole" value="Rol de partido" />
             <VueMultiselect
-              id="game_role"
-              v-model="form.game_role"
-              :options="game_role"
+              id="gameRole"
+              v-model="form.gameRole"
+              :options="gameRole"
               :multiple="false"
               :close-on-select="true"
               placeholder="Escoge rol de partido"
               label="name"
               track-by="id"
             />
-            <InputError class="mt-2" :message="form.errors.game_role" />
+            <InputError class="mt-2" :message="form.errors.gameRole" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

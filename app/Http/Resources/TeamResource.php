@@ -20,6 +20,7 @@ class TeamResource extends JsonResource
             'description' => $this->description,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'club' => new ClubResource($this->whenLoaded('club')),
+            'gameSchedulings' => GameSchedulingResource::collection($this->whenLoaded('gameSchedulings')),
 
         ];
     }

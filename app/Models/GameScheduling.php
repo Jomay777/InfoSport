@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\GameRole;
 class GameScheduling extends Model
 {
     use HasFactory;
@@ -26,8 +26,8 @@ class GameScheduling extends Model
         return $this->belongsTo(GameRole::class);
     }
 
-     //one-to-many relationship
-     public function games(){
-        return $this->hasMany(Game::class);
+    //one-to-one relationship
+    public function game(){
+        return $this->hasOne(Game::class);
     }
 }

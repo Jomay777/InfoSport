@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ClubResource extends JsonResource
+class GameResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,11 +18,13 @@ class ClubResource extends JsonResource
 
         /* return [
             'id' => $this->id,
-            'name' => $this->name,
-            'coach' => $this->coach,
-            'logo_path' => $this->logo_path,
-            //'users' => UserResource::collection($this->users),
+            'result' => $this->result,
+            'observation' => $this->observation,
+            'game_scheduling_id' => $this->game_scheduling_id,
             'users' => UserResource::collection($this->whenLoaded('users')),
+            'gameScheduling' => new GameSchedulingResource($this->whenLoaded('gameScheduling')),
+            'gameStatistic' => new GameStatisticResource($this->whenLoaded('gameStatistic')),
+            // Agrega otras propiedades según sea necesario
         ]; */
     }
 }

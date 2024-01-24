@@ -77,6 +77,8 @@ const storeTeam = () =>{
               label="name"
               track-by="id"
             />
+            <InputError class="mt-2" :message="form.errors.club" />
+
           </div>
           <div class="mt-4">
             <InputLabel for="category" value="Categoría" />
@@ -90,6 +92,7 @@ const storeTeam = () =>{
               label="name"
               track-by="id"
             />
+            <InputError class="mt-2" :message="form.errors.category" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

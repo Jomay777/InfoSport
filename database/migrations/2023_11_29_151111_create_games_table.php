@@ -16,10 +16,10 @@ return new class extends Migration
             
             $table->string('result');
             
-            $table->text('observation');
+            $table->text('observation')->nullable();
 
             //one-to-many relationship
-            $table->unsignedBigInteger('game_scheduling_id');
+            $table->unsignedBigInteger('game_scheduling_id')->unique();
             $table->foreign('game_scheduling_id')
                 ->references('id')
                 ->on('game_schedulings')

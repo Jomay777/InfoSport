@@ -111,7 +111,7 @@ const deleteGameScheduling = (id) => {
                 </TableDataCell>
                 <TableDataCell>
                   <Link :href="route('game_schedulings.show', game_scheduling.id)">     
-                    {{ game_scheduling.game_role.name }} 
+                    {{ game_scheduling.gameRole.name }} 
                    </Link>   
                 </TableDataCell>               
                 <TableDataCell v-if="game_scheduling.teams.length > 0" >

@@ -18,10 +18,12 @@ class GameFactory extends Factory
      */
     public function definition(): array
     {
+        $gameScheduling = GameScheduling::factory()->create();
+
         return [
             'result' => $this->faker->randomNumber(2) . '-' . $this->faker->randomNumber(2),
             'observation' => $this->faker->text(200),
-            'game_scheduling_id' => GameScheduling::all()->random()->id,
+            'game_scheduling_id' => $gameScheduling->id,
         ];
     }
 }

@@ -9,10 +9,8 @@ use App\Http\Resources\TeamResource;
 use App\Models\GameRole;
 use App\Models\GameScheduling;
 use App\Models\Team;
-use Illuminate\Contracts\Support\ValidatedData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -94,7 +92,7 @@ class GameSchedulingController extends Controller
         return Inertia::render('Admin/GameSchedulings/Edit', [
             'game_scheduling' => new GameSchedulingResource($game_scheduling),
             'teams' => TeamResource::collection(Team::all()),
-            'game_role' => GameRoleResource::collection(GameRole::all())
+            'gameRole' => GameRoleResource::collection(GameRole::all())
         ]);
     }
       /**
@@ -110,8 +108,8 @@ class GameSchedulingController extends Controller
 
         $validatedData = $request->validated();
 
-        if ($request->has('game_role.id')) {
-            $validatedData['game_role_id'] = $request->input('game_role.id');
+        if ($request->has('gameRole.id')) {
+            $validatedData['game_role_id'] = $request->input('gameRole.id');
         } 
 
         $gameScheduling->update($validatedData);
