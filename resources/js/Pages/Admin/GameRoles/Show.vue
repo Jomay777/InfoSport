@@ -8,11 +8,11 @@ import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
-  tournament: {
+  game_role: {
     type: Object,
     required: true,
   }, 
-  category: {
+  game_scheduling: {
     type: Object,
     required: true,
   }
@@ -22,31 +22,31 @@ const form = useForm({
   _method: "DELETE",
 });
 
-const showConfirmDeleteTournamentModal = ref(false)
+const showConfirmDeleteGameRoleModal = ref(false)
 
-const confirmDeleteTournament = () => {
-      showConfirmDeleteTournamentModal.value = true;
+const confirmDeleteGameRole = () => {
+      showConfirmDeleteGameRoleModal.value = true;
 }
 
 const closeModal = () => {
-  showConfirmDeleteTournamentModal.value = false;
+  showConfirmDeleteGameRoleModal.value = false;
 }
 
-const deleteTournament = (id) => {
-   form.delete(route('tournaments.destroy', id), {
+const deleteGameRole = (id) => {
+   form.delete(route('game_roles.destroy', id), {
     onSuccess: () => closeModal()
    });
 }
 </script>
 
 <template>
-  <Head title="Ver Torneo" />
+  <Head title="Ver Rol de Partido" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('tournaments.index')"
+          :href="route('game_roles.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Back</Link
         >
@@ -54,48 +54,66 @@ const deleteTournament = (id) => {
       <div class=" mt-5 flex flex-col justify-center items-center ">
             <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
-                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700 dark:text-white">
-                    Torneo {{ tournament.name }}
+                    <h4 class=" mt-5 px-2 text-2xl font-bold text-navy-700 dark:text-white">
+                    Torneo {{ game_role.name }}
                     </h4>                    
                 </div> 
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">
-                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                    <p class="text-sm text-gray-600">Identificador</p>
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">ID</p>
                     <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ tournament.id }}
+                        {{ game_role.id }}
                     </p>
                     </div>
 
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                    <p class="text-sm text-gray-600">Categoría</p>
-                    <p v-if="tournament.category" class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ tournament.category.name }}
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">Fecha del rol de partidos</p>
+                    <p  class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game_role.date }}
                     </p>
-                    <p v-else>Categoría no asignada</p>
+                    </div>
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">Cancha</p>
+                    <p v-if="game_role.pitch" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game_role.pitch.name }}
+                    </p>
+                    <p v-else>Cancha no asignada</p>
                     </div>
 
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <p class="text-sm text-gray-600">Torneo</p>
+                    <p v-if="game_role.tournament" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game_role.tournament.name }}
+                    </p>
+                    <p v-else>Torneo no asignada</p>
+                    </div>
+                    
                                        
                 </div>
-                <div class="mt-3 mb-8 px-2 w-full">
-                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
-                    <p class="text-sm text-gray-600">Descripción</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">                  
-                      <span>
-                      {{ tournament.description }}
-                      <br> 
-                      </span>                                                                    
-                    </p>
+                <div class="mt-3 mb-8 px-2 w-full" v-if="game_role.game_schedulings">
+                  <div v-for="game_scheduling in game_role.game_schedulings" :key="game_scheduling.id"
+                    class="mt-3 rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+
+                    <p class="text-m text-gray-600">Partido</p>
                     
-                    </div> 
+                    <p class="text-xl dark:text-navy">
+                      <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
+                      <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>
+                    </p>
+
+                  </div>
                 </div>
+
+
+                 
                 <div class="flex justify-center mt-6">
-                    <Link :href="route('tournaments.edit', tournament.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
-                    <button @click="confirmDeleteTournament" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
-                    <Modal :show="showConfirmDeleteTournamentModal" @close="closeModal">
+                    <Link :href="route('game_roles.edit', game_role.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
+                    <button @click="confirmDeleteGameRole" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
+                    <Modal :show="showConfirmDeleteGameRoleModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el torneo {{ tournament.name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el rol de partidos {{ game_role.name }}?</h2>
                             <div class="mt-6 flex space-x-4">
-                                <DangerButton @click="deleteTournament(tournament.id)">Eliminar</DangerButton>
+                                <DangerButton @click="deleteGameRole(game_role.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                             </div>
                         </div>

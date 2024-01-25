@@ -75,9 +75,14 @@ class GameRoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(GameRole $game_role): Response
     {
-        //
+        $game_role->load('gameSchedulings.teams', 'tournament', 'pitch');
+
+        //dd($game_role);
+        return Inertia::render('Admin/GameRoles/Show', [
+            'game_role' => new GameRoleResource($game_role),
+        ]);
     }
 
     /**
