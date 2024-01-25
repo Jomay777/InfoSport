@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'PlayerEdit'
+    name: 'GameEdit'
   }
 </script>
 
@@ -20,255 +20,160 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { parseISO, format } from 'date-fns';
 
 const props = defineProps({
-  player: {
+  game: {
     type: Object,
     required: true
   },
-  team: Object,
-  photo_player: Array
+  game_scheduling: Array,
+  game_statistic: Object,
 });
 
 
 const form = useForm({
-  first_name: props.player?.first_name,
-  second_name: props.player?.second_name,
-  last_name: props.player?.last_name,
-  mother_last_name: props.player?.mother_last_name,
-  gender:"",
-  birth_date: "",
-  c_i: props.player?.c_i,
-  nacionality: props.player?.nacionality,
-  country_birth: props.player?.country_birth,
-  region_birth: props.player?.region_birth,
-  state: "",
-  team: null,
-  photo_player: {
-    photo_path: null,
-    photo_c_i: null,
-    photo_birth_certificate: null,
-    photo_parental_authorization: null,
+  result: props.game.result,
+  observation: props.game.observation,
+  //game_scheduling_id: props.game.game_scheduling_id,  
+  game_scheduling: null,
+  game_statistic: {
+    goals_team_a: "",
+    goals_team_b: "",
+    yellow_cards_a: "",
+    yellow_cards_b: "",
+    red_cards_a: "",
+    red_cards_b: ""
   },
   _method: "put"
 });
 
 onMounted(() => {
-  form.team = props.player?.team;
-  form.gender = props.player?.gender == 'Hombre'? { id: 1, name: 'Hombre' }: { id: 2, name: 'Mujer' };  
-
-  form.state = props.player?.state == 1? { id: 1, name: 'inhabilitado' }: { id: 2, name: 'habilitado' };  
-  form.birth_date = props.player.birth_date ? props.player.birth_date+'T13:10:00.000Z' :"";
+  form.game_scheduling = props.game?.game_scheduling;
+  form.game_statistic.goals_team_a = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_a): "";
+  form.game_statistic.goals_team_b = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_b): "";
+  form.game_statistic.yellow_cards_a = props.game.game_statistic? String(props.game?.game_statistic?.yellow_cards_a): "";
+  form.game_statistic.yellow_cards_b = props.game.game_statistic? String(props.game?.game_statistic?.yellow_cards_b): "";
+  form.game_statistic.red_cards_a = props.game.game_statistic? String(props.game?.game_statistic?.red_cards_a): "";
+  form.game_statistic.red_cards_b = props.game.game_statistic? String(props.game?.game_statistic?.red_cards_b): "";
 });
-const updatePlayer= () => {
-  form.post(route('players.update', props.player?.id));
-};
 
-const handleFileChangePP = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_path = event.target.files[0];
-  }
-};
-const handleFileChangeCI = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_c_i = event.target.files[0];
-  }
-};
-const handleFileChangeBC = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_birth_certificate = event.target.files[0];
-  }
-};
-const handleFileChangePA = (event) => {
-  // Guarda el archivo directamente en el formulario
-  if (event.target.files && event.target.files.length > 0) {
-    form.photo_player.photo_parental_authorization = event.target.files[0];
-  }
+const updateGame= () => {
+  form.post(route('games.update', props.game?.id));
 };
 </script>
 
 <template>
-  <Head title="Actualizar jugador" />
+  <Head title="Actualizar partido" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('players.index')"
+          :href="route('games.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Volver</Link
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar Equipo</h1>
-        <form @submit.prevent="updatePlayer">
-          <div class="mt-4">
-            <InputLabel for="first_name" value="Primer nombre" />
+        <h1 class="text-2xl font-semibold text-indigo-700">Actualizar partido</h1>
+        <form @submit.prevent="updateGame">
+         
+          <div class="mt-4">            
+            <InputLabel  value="Partido" />
+            <span class=" flex justify-center text-lg font-bold">
+              {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
+            </span>          
+          </div>
+          <div class="mt-4">            
+            <InputLabel for="result" value="Resultado" />
             <TextInput
-              id="first_name"
+              id="result"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.first_name"
+              v-model="form.result"
               autofocus
               required
-              autocomplete="teamfirst_name"
+              autocomplete="gameresult"
             />
-            <InputError class="mt-2" :message="form.errors.first_name" />
+            <InputError class="mt-2" :message="form.errors.result" />
           </div>
           <div class="mt-4">
-            <InputLabel for="second_name" value="Segundo nombre" />
+            <InputLabel for="observation" value="Observación" />
             <TextInput
-              id="second_name"
+              id="observation"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.second_name"              
-              autocomplete="teamsecond_name"
+              v-model="form.observation"              
+              autocomplete="gameobservation"
             />
-            <InputError class="mt-2" :message="form.errors.second_name" />
-          </div>
+            <InputError class="mt-2" :message="form.errors.observation" />
+          </div>                         
+          
           <div class="mt-4">
-            <InputLabel for="last_name" value="Apellido paterno" />
+            <InputLabel for="game_statistic.goals_team_a" value="Goles del equipo A" />
             <TextInput
-              id="last_name"
-              type="text"
+              id="game_statistic.goals_team_a"
+              type="number"
               class="mt-1 block w-full"
-              v-model="form.last_name"
-              required              
-              autocomplete="teamlast_name"
-            />
-            <InputError class="mt-2" :message="form.errors.last_name" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="mother_last_name" value="Apellido materno" />
-            <TextInput
-              id="mother_last_name"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.mother_last_name"              
-              autocomplete="teammother_last_name"
-            />
-            <InputError class="mt-2" :message="form.errors.mother_last_name" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="gender" value="Género" />
-            <VueMultiselect
-              id="gender"
-              v-model="form.gender"
-              :options="[{ id: 1, name: 'Hombre' }, { id: 2, name: 'Mujer' }]"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige el estado del jugador"
-              label="name"
-              track-by="id"
+              v-model="form.game_statistic.goals_team_a"              
+              autocomplete="gamegame_statistic.goals_team_a"
               required
             />
-            <InputError class="mt-2" :message="form.errors.gender" />
+            <InputError class="mt-2" :message="form.errors.goals_team_a" />
           </div>
           <div class="mt-4">
-            <InputLabel for="birth_date" value="Fecha de nacimiento"/>  
-            <VueDatePicker 
-              v-model="form.birth_date" 
-              format="dd-MM-yyyy" 
-              locale="es" 
-              id="birth_date"
-              required
-              >
-            </VueDatePicker>
-            <InputError class="mt-2" :message="form.errors.birth_date" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="c_i" value="Numero de carnet de identidad" />
+            <InputLabel for="game_statistic.goals_team_b" value="Goles del equipo B" />
             <TextInput
-              id="c_i"
-              type="text"
+              id="game_statistic.goals_team_b"
+              type="number"
               class="mt-1 block w-full"
-              v-model="form.c_i" 
-              required             
-              autocomplete="teamc_i"
-            />
-            <InputError class="mt-2" :message="form.errors.c_i" />
-          </div>        
-          <div class="mt-4">
-            <InputLabel for="nacionality" value="Nacionalidad" />
-            <TextInput
-              id="nacionality"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.nacionality"  
-              required            
-              autocomplete="teamnacionality"
-            />
-            <InputError class="mt-2" :message="form.errors.nacionality" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="country_birth" value="Ciudad de nacimiento" />
-            <TextInput
-              id="country_birth"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.country_birth"  
-              required            
-              autocomplete="teamcountry_birth"
-            />
-            <InputError class="mt-2" :message="form.errors.country_birth" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="region_birth" value="Región de nacimiento" />
-            <TextInput
-              id="region_birth"
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.region_birth"  
-              required            
-              autocomplete="teamregion_birth"
-            />
-            <InputError class="mt-2" :message="form.errors.region_birth" />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="state" value="Estado de jugador" />
-            <VueMultiselect
-              id="state"
-              v-model="form.state"
-              :options="[{ id: 1, name: 'inhabilitado' }, { id: 2, name: 'habilitado' }]"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige el estado del jugador"
-              label="name"
-              track-by="id"
+              v-model="form.game_statistic.goals_team_b"              
+              autocomplete="gamegame_statistic.goals_team_b"
               required
             />
-            <InputError class="mt-2" :message="form.errors.state" />
-          </div>                    
+          </div>
           <div class="mt-4">
-            <InputLabel for="team" value="Equipo" />
-            <VueMultiselect
-              id="team"
-              v-model="form.team"
-              :options="team"
-              :multiple="false"
-              :close-on-select="true"
-              placeholder="Elige el equipo al que pertenece"
-              label="name"
-              track-by="id"
+            <InputLabel for="game_statistic.yellow_cards_a" value="Tarjetas amarillas del equipo A" />
+            <TextInput
+              id="game_statistic.yellow_cards_a"
+              type="number"
+              class="mt-1 block w-full"
+              v-model="form.game_statistic.yellow_cards_a"              
+              autocomplete="gamegame_statistic.yellow_cards_a"
+              required
             />
           </div>
           <div class="mt-4">
-            <InputLabel for="photo_player.photo_path" value="Foto de jugador" />
-            <input type="file" id="photo_player.photo_path" @change="handleFileChangePP" />
+            <InputLabel for="game_statistic.yellow_cards_b" value="Tarjetas amarillas del equipo B" />
+            <TextInput
+              id="game_statistic.yellow_cards_b"
+              type="number"
+              class="mt-1 block w-full"
+              v-model="form.game_statistic.yellow_cards_b"              
+              autocomplete="gamegame_statistic.yellow_cards_b"
+              required
+            />
           </div>
           <div class="mt-4">
-            <InputLabel for="photo_player.photo_c_i" value="Foto del carnet de identidad" />
-            <input type="file" id="photo_player.photo_c_i" @change="handleFileChangeCI" />
+            <InputLabel for="game_statistic.red_cards_a" value="Tarjetas rojas del equipo A" />
+            <TextInput
+              id="game_statistic.red_cards_a"
+              type="number"
+              class="mt-1 block w-full"
+              v-model="form.game_statistic.red_cards_a"              
+              autocomplete="gamegame_statistic.red_cards_a"
+              required
+            />
           </div>
           <div class="mt-4">
-            <InputLabel for="photo_player.photo_birth_certificate" value="foto del certificado de nacimiento" />
-            <input type="file" id="photo_player.photo_birth_certificate" @change="handleFileChangeBC" />
-          </div>          
-          <div class="mt-4">
-            <InputLabel for="photo_player.photo_parental_authorization" value="foto de autorización parental" />
-            <input type="file" id="photo_player.photo_parental_authorization" @change="handleFileChangePA" />
-          </div>    
+            <InputLabel for="game_statistic.red_cards_b" value="Tarjetas rojas del equipo B" />
+            <TextInput
+              id="game_statistic.red_cards_b"
+              type="number"
+              class="mt-1 block w-full"
+              v-model="form.game_statistic.red_cards_b"              
+              autocomplete="gamegame_statistic.red_cards_b"
+              required
+            />
+          </div>   
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

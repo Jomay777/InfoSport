@@ -8,67 +8,48 @@ import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
-  player: {
+  game: {
     type: Object,
     required: true,
   }, 
-  team: {
-    type: Object,
+  /* game_scheduling: {
+    type: Array,
   },
-  photo_player: {
+  game_statistic: {
     type: Object,
-  }
+  } */
 });
 
 const form = useForm({
   _method: "DELETE",
 });
 
-const showConfirmDeletePlayerModal = ref(false)
+const showConfirmDeleteGameModal = ref(false)
 
-const confirmDeletePlayer = () => {
-      showConfirmDeletePlayerModal.value = true;
+const confirmDeleteGame = () => {
+      showConfirmDeleteGameModal.value = true;
 }
 
 const closeModal = () => {
-  showConfirmDeletePlayerModal.value = false;
+  showConfirmDeleteGameModal.value = false;
 }
 
-const deletePlayer = (id) => {
-   form.delete(route('players.destroy', id), {
+const deleteGame = (id) => {
+   form.delete(route('games.destroy', id), {
     onSuccess: () => closeModal()
    });
 }
 
-function calculateAge(dateOfBirth) {
-  const birthDate = new Date(dateOfBirth);
-  const currentDate = new Date();
-
-  let age = currentDate.getFullYear() - birthDate.getFullYear();
-
-  // Adjust age if birthday hasn't occurred yet in the current year
-  if (
-    currentDate.getMonth() < birthDate.getMonth() ||
-    (currentDate.getMonth() === birthDate.getMonth() &&
-      currentDate.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
-
-  return age;
-}
-const age = calculateAge(props.player.birth_date);
-
 </script>
 
 <template>
-  <Head title="Ver Jugador" />
+  <Head title="Ver Partido" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('players.index')"
+          :href="route('games.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Back</Link
         >
@@ -77,106 +58,84 @@ const age = calculateAge(props.player.birth_date);
             <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
                     <h4 class=" mt-5 px-2 text-xl font-bold dark:text-white">
-                    Jugador {{ player.first_name }} {{ player.second_name }} {{ player.last_name }} {{ player.mother_last_name }}
-                    </h4>  
-                    <div class="mt-5 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_path" alt="foto de jugador"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de jugador"/> 
-                    </div>                  
+                    Partido {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
+                    </h4>                                      
                 </div> 
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Identificador</p>
                     <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.id }}
+                        {{ game.id }}
                     </p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">CI</p>
+                      <p class="text-sm text-gray-600">Resultado</p>
                       <p class="text-base font-medium text-navy-700 dark:text-navy">
-                          {{ player.c_i}}
+                          {{ game.result}}
                       </p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                    <p class="text-sm text-gray-600">Equipo</p>
-                    <p v-if="player.team" class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.team.name }}
+                    <p class="text-sm text-gray-600">Goles del equipo A</p>
+                    <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.goals_team_a }}
                     </p>
-                    <p v-else>Equipo no asignado</p>
+                    <p v-else>Goles no registrados</p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Fecha de nacimiento</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                          {{ player.birth_date}}
+                      <p class="text-sm text-gray-600">Goles del equipo B</p>
+                      <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.goals_team_b }}
                       </p>
+                      <p v-else>Goles no registrados</p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                    <p class="text-sm text-gray-600">Nacionalidad</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.nacionality }}
+                    <p class="text-sm text-gray-600">Tarjetas amarillas del equipo A</p>
+                    <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.yellow_cards_a }}
                     </p>
+                    <p v-else>Número de tarjetas no registrado</p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Ciudad de nacimiento</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                          {{ player.country_birth}}
-                      </p>
+                      <p class="text-sm text-gray-600">Tarjetas amarillas del equipo B</p>
+                      <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.yellow_cards_b }}
+                    </p>
+                    <p v-else>Número de tarjetas no registrado</p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                    <p class="text-sm text-gray-600">Región de nacimiento</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
-                      {{ player.region_birth }}
+                    <p class="text-sm text-gray-600">Tarjetas rojas del equipo A</p>
+                    <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.red_cards_a }}
                     </p>
+                    <p v-else>Número de tarjetas no registrado</p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Estado de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.state == 1? "inhabilitado" : "habilitado"}}
-                      </p> 
+                      <p class="text-sm text-gray-600">Tarjetas rojas del equipo B</p>
+                      <p v-if="game.game_statistic" class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.game_statistic.red_cards_b }}
+                    </p>
+                    <p v-else>Número de tarjetas no registrado</p>
                     </div>  
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Edad de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ age }} años
-                      </p> 
-                    </div>   
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                      <p class="text-sm text-gray-600">Género de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.gender}}
-                      </p> 
-                    </div>                                  
+                                                 
                 </div>
                 <div class="mt-5 px-2 w-full">
-                  <p class="text-xl text-gray-700 dark:text-white">Foto de carnet de identidad</p>
+                  <p class="text-xl text-gray-700 dark:text-white">Observación</p>
                   <div class="mt-3 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_c_i" alt="foto de carnet de identidad"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
+                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                        {{ game.observation}}
+                    </p> 
                   </div> 
                 </div>
-                <div class="mt-3 px-2 w-full">
-                  <p class="text-xl text-gray-600 dark:text-white">Foto de certificado de nacimiento</p>
-                  <div class="mt-3 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_birth_certificate" alt="foto de carnet de identidad"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
-                    </div> 
-                </div>
-                <div v-if="age < 18" class="mt-3 px-2 w-full">
-                  <p class="text-xl text-gray-600 dark:text-white">Foto de autorización parental</p>
-                  <div class="mt-3 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_parental_authorization" alt="foto de carnet de identidad"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
-                    </div> 
-                </div>
+             
                 
                 <div class="flex justify-center mt-6">
-                    <Link :href="route('players.edit', player.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
-                    <button @click="confirmDeletePlayer" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
-                    <Modal :show="showConfirmDeletePlayerModal" @close="closeModal">
+                    <Link :href="route('games.edit', game.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
+                    <button @click="confirmDeleteGame" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
+                    <Modal :show="showConfirmDeleteGameModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el jugador /@ {{ player.first_name }} {{ player.second_name }} {{ player.last_name }} {{ player.mother_last_name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar al partido /@ {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}?</h2>
                             <div class="mt-6 flex space-x-4">
-                                <DangerButton @click="deletePlayer(player.id)">Eliminar</DangerButton>
+                                <DangerButton @click="deleteGame(game.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
                             </div>
                         </div>

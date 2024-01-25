@@ -6,9 +6,12 @@ use App\Http\Requests\GameRequest;
 use App\Http\Resources\GameResource;
 use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\GameStatisticResource;
+use App\Http\Resources\TeamResource;
 use App\Models\Game;
 use App\Models\GameScheduling;
 use App\Models\GameStatistic;
+use App\Models\Team;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -86,32 +89,83 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Game $game): Response
     {
-        //
+        $game->load('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
+
+      /*   $gameScheduling = $game->gameScheduling;
+        $gameStatistic = $game->gameStatistic; */
+//        dd($photogame);
+
+        return Inertia::render('Admin/Games/Show', [
+            'game' => new gameResource($game),
+           /*  'game_scheduling' => $gameScheduling,
+            'game_statistic' => $gameStatistic, */
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
+    public function edit(Game $game): Response
+    {    
+        $game->load('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
+        $gameSchedulings = GameScheduling::with('teams','gameRole','game')->get();
+
+        return Inertia::render('Admin/Games/Edit', [
+            'game' => new GameResource($game),
+            'gameScheduling' => GameSchedulingResource::collection($gameSchedulings),
+            'game_statistic' => GameStatisticResource::collection(GameStatistic::all()),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(GameRequest $request, string $id): RedirectResponse
+    {                
+        $game = Game::find($id);
+
+        if (!$game) {
+            return redirect()->back()->withErrors(['error' => 'Partido no encontrado.']);
+        }
+
+        $validatedData = $request->validated();
+        if ($request->has('game_scheduling')) {
+            $validatedData['game_scheduling_id']= $request->input('game_scheduling.id');
+        } 
+        //dd($request->input('game_statistic.goals_team_a'));
+        //dd($validatedData);
+        $game->update($validatedData); 
+        if ($game->gameStatistic) {
+            $game->gameStatistic()->update([
+                'goals_team_a' => $request->input('game_statistic.goals_team_a'),
+                'goals_team_b' => $request->input('game_statistic.goals_team_b'),
+                'yellow_cards_a' => $request->input('game_statistic.yellow_cards_a'),
+                'yellow_cards_b' => $request->input('game_statistic.yellow_cards_b'),
+                'red_cards_a' => $request->input('game_statistic.red_cards_a'),
+                'red_cards_b' => $request->input('game_statistic.red_cards_b'),
+            ]);
+        } else {
+            $game->gameStatistic()->create([
+                'goals_team_a' => $request->input('game_statistic.goals_team_a'),
+                'goals_team_b' => $request->input('game_statistic.goals_team_b'),
+                'yellow_cards_a' => $request->input('game_statistic.yellow_cards_a'),
+                'yellow_cards_b' => $request->input('game_statistic.yellow_cards_b'),
+                'red_cards_a' => $request->input('game_statistic.red_cards_a'),
+                'red_cards_b' => $request->input('game_statistic.red_cards_b'),
+            ]);
+        }   
+        
+        return redirect()->route('games.index')->with('success', 'Partido actualizada correctamente');        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(Game $game): RedirectResponse
+    {       
+        $game->delete();       
+        return to_route('games.index');
     }
 }

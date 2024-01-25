@@ -16,7 +16,7 @@ class GameResource extends JsonResource
     {
         return parent::toArray($request);
 
-        /* return [
+       /*  return [
             'id' => $this->id,
             'result' => $this->result,
             'observation' => $this->observation,
@@ -25,6 +25,6 @@ class GameResource extends JsonResource
             'gameScheduling' => new GameSchedulingResource($this->whenLoaded('gameScheduling')),
             'gameStatistic' => new GameStatisticResource($this->whenLoaded('gameStatistic')),
             // Agrega otras propiedades según sea necesario
-        ]; */
+        ];  */
     }
 }

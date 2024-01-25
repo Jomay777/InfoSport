@@ -15,12 +15,12 @@ import VueTimepicker from 'vue3-timepicker'
 import 'vue3-timepicker/dist/VueTimepicker.css'
 defineProps({
   teams: Array,
-  game_role: Object
+  gameRole: Object
 });
 const form = useForm({
   time: "", 
   teams: [],
-  game_role: "",
+  gameRole: "",
 });
 
 </script>
@@ -72,18 +72,18 @@ const form = useForm({
           </div>
           
           <div class="mt-4">
-            <InputLabel for="game_role" value="Rol de partido" />
+            <InputLabel for="gameRole" value="Rol de partido" />
             <VueMultiselect
-              id="game_role"
-              v-model="form.game_role"
-              :options="game_role"
+              id="gameRole"
+              v-model="form.gameRole"
+              :options="gameRole"
               :multiple="false"
               :close-on-select="true"
               placeholder="Escoge el rol de partido"
               label="name"
               track-by="id"
             />
-            <InputError class="mt-2" :message="form.errors.game_role" />
+            <InputError class="mt-2" :message="form.errors.gameRole" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

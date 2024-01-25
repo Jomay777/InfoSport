@@ -52,7 +52,7 @@ class GameSchedulingController extends Controller
     {
         return Inertia::render('Admin/GameSchedulings/Create', [
             'teams' => TeamResource::collection(Team::all()),
-            'game_role' => GameRoleResource::collection(GameRole::all())
+            'gameRole' => GameRoleResource::collection(GameRole::all())
         ]);
     }
     /**
@@ -62,8 +62,8 @@ class GameSchedulingController extends Controller
     {
         $validatedData = $request->validated();
 
-        if ($request->has('game_role')) {
-            $validatedData['game_role_id'] = $request->input('game_role.id');
+        if ($request->has('gameRole')) {
+            $validatedData['game_role_id'] = $request->input('gameRole.id');
         } 
        
         $game_scheduling = GameScheduling::create($validatedData);

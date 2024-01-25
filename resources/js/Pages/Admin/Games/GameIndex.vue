@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: '¨GameIndex',
+    name: 'GameIndex',
     data()
     {
       return{
