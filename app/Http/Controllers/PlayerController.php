@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Storage;
 //use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class PlayerController extends Controller
 {
@@ -41,7 +43,15 @@ class PlayerController extends Controller
             'search' => $request->search, 
         ]);
     }
-
+    public function pdf(Player $player)
+    {
+       
+        $player->load('team.club','photoPlayer');
+        //dd($player);
+        $pdf = Pdf::loadView('Players.player_pdf', compact('player'));
+        return $pdf->stream();
+        
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -122,7 +132,7 @@ class PlayerController extends Controller
      */
     public function show(Player $player): Response
     {
-        
+
         $team = $player->team;
         $photoPlayer = $player->photoPlayer;
 //        dd($photoPlayer);
@@ -131,7 +141,7 @@ class PlayerController extends Controller
             'player' => new PlayerResource($player),
             'team' => $team,
             'photoPlayer' => $photoPlayer,
-        ]);
+        ]); 
     }
 
     /**

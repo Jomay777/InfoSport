@@ -42,6 +42,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::get('players/{player}/pdf', [PlayerController::class, 'pdf'])->name('players.pdf');
 
 Route::resource('/users', UserController::class);
 //Routes for clubs
@@ -62,6 +63,7 @@ Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
 //Routes for players
 Route::resource('/players', PlayerController::class);
 Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
+
 
 //Routes for game_roles
 Route::resource('/game_roles', GameRoleController::class);

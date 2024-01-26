@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GameRoleRequest;
 use App\Http\Resources\GameRoleResource;
+use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\PitchResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\GameRole;
+use App\Models\GameScheduling;
 use App\Models\Pitch;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
@@ -82,6 +84,7 @@ class GameRoleController extends Controller
         //dd($game_role);
         return Inertia::render('Admin/GameRoles/Show', [
             'game_role' => new GameRoleResource($game_role),
+            'game_scheduling' => GameSchedulingResource::collection(GameScheduling::all()),
         ]);
     }
 

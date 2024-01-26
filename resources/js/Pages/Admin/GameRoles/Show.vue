@@ -1,3 +1,17 @@
+<script>
+export default {  
+  name: 'PlayerShow',
+  computed: {
+    sortedGameSchedulings() {
+      // Ordenar los partidos por la hora
+      return this.game_role.game_schedulings.slice().sort((a, b) => {
+        // Suponiendo que 'time' es una cadena en formato 'HH:mm:ss'
+        return a.time.localeCompare(b.time);
+      });
+    }
+  }
+};
+</script>
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { ref } from "vue";
@@ -13,7 +27,7 @@ const props = defineProps({
     required: true,
   }, 
   game_scheduling: {
-    type: Object,
+    type: Array,
     required: true,
   }
 });
@@ -91,11 +105,11 @@ const deleteGameRole = (id) => {
                                        
                 </div>
                 <div class="mt-3 mb-8 px-2 w-full" v-if="game_role.game_schedulings">
-                  <div v-for="game_scheduling in game_role.game_schedulings" :key="game_scheduling.id"
+                  <div v-for="game_scheduling in sortedGameSchedulings" :key="game_scheduling.id"
                     class="mt-3 rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
 
                     <p class="text-m text-gray-600">Partido</p>
-                    
+
                     <p class="text-xl dark:text-navy">
                       <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
                       <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>

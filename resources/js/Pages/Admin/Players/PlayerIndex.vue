@@ -130,7 +130,8 @@ const deletePlayer = (id) => {
                 <TableDataCell v-if="player.photo_player" >
                   <Link :href="route('players.show', player.id)">     
                     <img class="bg-cover bg-center max-w-20" 
-                   :src="player.photo_player.photo_path " alt="logo de club"/>                   </Link>  
+                   :src="player.photo_player.photo_path " alt="logo de club"/>                   
+                  </Link>  
                 </TableDataCell>                  
                 <TableDataCell v-else>
                   <Link :href="route('players.show', player.id)">     
