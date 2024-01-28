@@ -20,6 +20,34 @@ class AdminSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-        ])->assignRole('admin');
+        ])->assignRole('Administrador');
+        User::create([
+            'name' => 'commite',
+            'email' => 'commite@example.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ])->assignRole('Comite Técnico');
+        User::create([
+            'name' => 'delegate',
+            'email' => 'delegate@example.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ])->assignRole('Delegado');
+        User::create([
+            'name' => 'assistant',
+            'email' => 'assistant@example.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ])->assignRole('Asistente');
+        User::create([
+            'name' => 'directive',
+            'email' => 'directive@example.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ])->assignRole('Directiva');
     }
 }

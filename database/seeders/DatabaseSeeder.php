@@ -29,8 +29,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleSeeder::class);
-        $this->call(AdminSeeder::class);
+        $this->call([
+          RoleSeeder::class,
+          AdminSeeder::class,
+          PitchSeeder::class
+        ]);
+        
 
         User::factory(10)->create();
 
@@ -44,7 +48,7 @@ class DatabaseSeeder extends Seeder
 
         Tournament::factory(10)->create();
 
-        Pitch::factory(4)->create();
+        //Pitch::factory(4)->create();
         GameRole::factory(10)->create();
         GameScheduling::factory(10)->create();
         Game::factory(9)->create();
