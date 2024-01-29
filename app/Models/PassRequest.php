@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PassRequest extends Model
 {
     use HasFactory;
-
+    protected $fillable = ['request_photo_path', 'player_id'];
     //polymorphic many-to-many relationship
     public function users(){
         return $this->morphToMany(User::class, 'userable');
