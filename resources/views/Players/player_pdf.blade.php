@@ -10,7 +10,7 @@
             
             width: 400px;
             height: auto;
-            background-color: #f2f2f2;
+            background-color: #cee4e2;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             padding: 10px;    
@@ -44,7 +44,7 @@
 </head>
 <body>
   <?php
-  $expirationDate = (new DateTime())->add(new DateInterval('P3M'))->format('d/m/Y');
+  $expirationDate = (new DateTime())->add(new DateInterval('P4M'))->format('d/m/Y');
   ?>
     <div class="card">
         <table>
@@ -93,7 +93,7 @@
                         </p>
                         <p class="position">
                           <span>Estado: </span>
-                          {{ $player->state =1 ? "Inhabilitado": "Habilitado" }}
+                          {{ $player->state == 1 ? "Inhabilitado": "Habilitado" }}
                         </p>
                         <p class="position">
                           <span>Válido hasta: </span>
@@ -102,11 +102,18 @@
                     </div>
                 </td>
             </tr>
-            <br><br>
-            <tr >
-              
-              <td>Sello AMFSB</td>
-              <td style="text-align: center">Firma</td>
+            <br>
+            <tr >              
+              <td style="color: #cee4e2">Sello AMFSB</td>
+              <td style="text-align: center; color: #cee4e2;">
+                <div style="border-bottom: 1.5px solid black; display: inline; padding-bottom: 2px;">
+                  línea de Firma deljugador
+                </div>
+              </td>            
+            </tr>3
+            <tr >              
+              <td style="text-align: center; border-top: 1.3px solid black;">Sello AMFSB</td>
+              <td style="text-align: center ">Firma del Jugador</td>
             </tr>
         </table>
     </div>
