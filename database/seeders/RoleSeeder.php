@@ -77,10 +77,10 @@ class RoleSeeder extends Seeder
         $permission_delete_game_role = Permission::create(['name' => 'Eliminar rol de partido']);  
 
         //creating permissions for game_scheduling CRUD
-        $permission_create_game_scheduling = Permission::create(['name' => 'Crear progrmación de partido']);
-        $permission_read_game_scheduling = Permission::create(['name' => 'Ver progrmación de partido']);
-        $permission_update_game_scheduling = Permission::create(['name' => 'Actualizar progrmación de partido']);
-        $permission_delete_game_scheduling = Permission::create(['name' => 'Eliminar progrmación de partido']); 
+        $permission_create_game_scheduling = Permission::create(['name' => 'Crear programación de partido']);
+        $permission_read_game_scheduling = Permission::create(['name' => 'Ver programación de partido']);
+        $permission_update_game_scheduling = Permission::create(['name' => 'Actualizar programación de partido']);
+        $permission_delete_game_scheduling = Permission::create(['name' => 'Eliminar programación de partido']); 
 
         //creating permissions for game CRUD
         $permission_create_game = Permission::create(['name' => 'Crear partido']);
@@ -129,9 +129,8 @@ class RoleSeeder extends Seeder
         $permission_read_game_scheduling,
         $permission_read_game];
 
-        $role_admin->syncPermissions($permissions_commite);
-        $role_commite->syncPermissions($permissions_admin);
-        $role_delegate->syncPermissions($permissions_commite);
+        $role_admin->syncPermissions($permissions_admin);
+        $role_commite->syncPermissions($permissions_commite);
         $role_delegate->syncPermissions($permissions_delegate);
         $role_assistant->syncPermissions($permissions_assitant);
         $role_directive->syncPermissions($permissions_directive);
