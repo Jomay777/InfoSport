@@ -32,7 +32,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('pitches')
                 ->onDelete('set null')
-                ->onUpdate('cascade');
+                ->onUpdate('cascade'); 
+                                            
             $table->timestamps();
         });
     }

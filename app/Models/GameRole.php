@@ -10,7 +10,7 @@ class GameRole extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'date', 'tournament_id', 'pitch_id'];
-
+    
     //polymorphic many-to-many relationship
     public function users(){
         return $this->morphToMany(User::class, 'userable');
