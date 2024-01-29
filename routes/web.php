@@ -3,9 +3,11 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameRoleController;
 use App\Http\Controllers\GameSchedulingController;
+use App\Http\Controllers\PassRequestController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
@@ -68,6 +70,8 @@ Route::get('players/{player}', [PlayerController::class, 'show'])->name('players
 //Routes for game_roles
 Route::resource('/game_roles', GameRoleController::class);
 Route::get('game_roles/{game_role}', [GameRoleController::class, 'show'])->name('game_roles.show');
+Route::get('game_roles/{game_role}/publish', [GameRoleController::class, 'publish'])->name('game_roles.publish');
+
 
 //Routes for game_schedulings
 Route::resource('/game_schedulings', GameSchedulingController::class);
@@ -76,6 +80,10 @@ Route::get('game_schedulings/{game_scheduling}', [GameSchedulingController::clas
 //Routes for games
 Route::resource('/games', GameController::class);
 Route::get('games/{game}', [GameController::class, 'show'])->name('games.show');
+
+//Routes for pass_requests
+Route::resource('/pass_requests', PassRequestController::class);
+Route::get('pass_requests/{pass_request}', [PassRequestController::class, 'show'])->name('pass_requests.show');
 
 //Routes for photo_players
 Route::resource('/photo_players', PhotoPlayerController::class);
@@ -91,9 +99,9 @@ Route::delete('/users/{user}/permissions/{permission}', RevokePermissionFromUser
 Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
     ->name('users.roles.destroy');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
