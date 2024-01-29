@@ -232,6 +232,7 @@ const handleFileChangePA = (event) => {
               label="name"
               track-by="id"
             />
+            <InputError class="mt-2" :message="form.errors.team" />
           </div>
           <div class="mt-4">
             <InputLabel for="photo_player.photo_path" value="Foto de jugador" />

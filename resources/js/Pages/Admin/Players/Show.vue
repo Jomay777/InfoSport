@@ -94,62 +94,62 @@ const age = calculateAge(props.player.birth_date);
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Identificador</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                         {{ player.id }}
                     </p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">CI</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                      <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                           {{ player.c_i}}
                       </p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Equipo</p>
-                    <p v-if="player.team" class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p v-if="player.team" class="text-base font-medium text-navy-700 dark:text-gray-700">
                         {{ player.team.name }}
                     </p>
                     <p v-else>Equipo no asignado</p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">Fecha de nacimiento</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                      <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                           {{ player.birth_date}}
                       </p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Nacionalidad</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                         {{ player.nacionality }}
                     </p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">Ciudad de nacimiento</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                      <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                           {{ player.country_birth}}
                       </p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Región de nacimiento</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                       {{ player.region_birth }}
                     </p>
                     </div>
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">Estado de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player.state == 1? "inhabilitado" : "habilitado"}}
+                      <p :class="{ 'text-red-500 text-base font-medium ': player.state == 1, 'text-base font-medium  text-green-500': player.state != 1 }">
+                        {{ player.state == 1? "Inhabilitado" : "Habilitado"}}
                       </p> 
                     </div>  
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">Edad de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                      <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                         {{ age }} años
                       </p> 
                     </div>   
                     <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                       <p class="text-sm text-gray-600">Género de jugador /@</p>
-                      <p class="text-base font-medium text-navy-700 dark:text-navy">
+                      <p class="text-base font-medium text-navy-700 dark:text-gray-700">
                         {{ player.gender}}
                       </p> 
                     </div>                                  
