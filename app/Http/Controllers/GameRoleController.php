@@ -130,4 +130,12 @@ class GameRoleController extends Controller
         $game_role->delete();
         return to_route('game_roles.index');
     }
+    /**
+     * Publish GameRole
+     */
+    public function publish(GameRole $game_role){
+        //dd($game_role);
+        $game_role->touch();
+        return to_route('dashboard');
+    }
 }
