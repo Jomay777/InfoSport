@@ -77,7 +77,7 @@ const deleteGameRole = (id) => {
             <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
                     <h4 class=" mt-5 px-2 text-2xl font-bold text-navy-700 dark:text-white">
-                    Torneo {{ game_role.name }}
+                    Rol de partido {{ game_role.name }}
                     </h4>                    
                 </div> 
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">

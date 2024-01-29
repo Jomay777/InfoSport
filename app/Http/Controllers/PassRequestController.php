@@ -84,9 +84,16 @@ class PassRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(PassRequest $pass_request): Response
     {
-        //
+
+        $player = $pass_request->player;
+//        dd($photopass_request);
+
+        return Inertia::render('Admin/PassRequests/Show', [
+            'pass_request' => new PassRequestResource($pass_request),
+            'player' => $player,
+        ]); 
     }
 
     /**
