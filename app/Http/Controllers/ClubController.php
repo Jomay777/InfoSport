@@ -24,9 +24,21 @@ class ClubController extends Controller
 {
     public function index(Request $request): Response
     {
-        $clubs = Club::with('users')
-        ->latest()
-        ->take(20);
+        $user = Auth::user();
+        $user->load('clubs');
+
+        //dd($user);
+        if ($user->clubs->isNotEmpty()) {
+            $clubIds = $user->clubs->pluck('id')->toArray();
+            $clubs = Club::with('users')
+                ->whereIn('id', $clubIds) // Filtrar por los IDs de los clubes del usuario
+                ->latest()
+                ->take(20);
+        } else {
+            $clubs = Club::with('users')
+                ->latest()
+                ->take(20);
+        }          
 
         if ($request->search) {
             $clubs->where('clubs.name', 'like', '%' . $request->search . '%');
@@ -42,6 +54,7 @@ class ClubController extends Controller
     
     public function create(): Response
     {
+        $this->authorize('create', Club::class);
         return Inertia::render('Admin/Clubs/Create', [
             'users' => UserResource::collection(User::all())
         ]);
@@ -49,6 +62,8 @@ class ClubController extends Controller
 
     public function store(CreateClubRequest $request)
     {
+        $this->authorize('create', Club::class);
+
         $validatedData = $request->validated();
         
 
@@ -95,6 +110,7 @@ class ClubController extends Controller
 
     public function edit(Club $club): Response
     {    
+        $this->authorize('update', $club);
         $club->load('users');
         return Inertia::render('Admin/Clubs/Edit', [
             'club' => new ClubResource($club),
@@ -105,9 +121,10 @@ class ClubController extends Controller
     
     public function update(UpdateClubRequest $request, string $id):RedirectResponse
     {
-        //Log::info('Form Data:', $request->all());        
-        //dd(request()->all());
-        $club = Club::find($id);       
+
+        $club = Club::find($id);   
+        $this->authorize('update', $club);
+    
         
         $validatedData = $request->validated();
 
@@ -154,6 +171,7 @@ class ClubController extends Controller
     }
     public function destroy(Club $club, User $user): RedirectResponse
     {
+        $this->authorize('delete', $club);
         if ($club->logo_path) {
             // Extraer el nombre del archivo de la URL almacenada en la base de datos
             $filename = basename($club->logo_path);
