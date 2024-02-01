@@ -52,6 +52,8 @@ class GameController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Game::class);
+
         $gameSchedulings = GameScheduling::with('teams','gameRole','game')->get();
         $gameStatistics = GameStatistic::all();
         //dd($gameSchedulings);
@@ -66,7 +68,8 @@ class GameController extends Controller
      */
     public function store(GameRequest $request)
     {
-        
+        $this->authorize('create', Game::class);
+
         $validatedData = $request->validated();
         if ($request->has('game_scheduling')) {
             $game_schedulingId = $request->input('game_scheduling.id');
@@ -109,6 +112,8 @@ class GameController extends Controller
      */
     public function edit(Game $game): Response
     {    
+        $this->authorize('update', $game);
+
         $game->load('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
         $gameSchedulings = GameScheduling::with('teams','gameRole','game')->get();
 
@@ -125,6 +130,7 @@ class GameController extends Controller
     public function update(GameRequest $request, string $id): RedirectResponse
     {                
         $game = Game::find($id);
+        $this->authorize('update', $game);
 
         if (!$game) {
             return redirect()->back()->withErrors(['error' => 'Partido no encontrado.']);
@@ -165,6 +171,8 @@ class GameController extends Controller
      */
     public function destroy(Game $game): RedirectResponse
     {       
+        $this->authorize('delete', $game);
+
         $game->delete();       
         return to_route('games.index');
     }
