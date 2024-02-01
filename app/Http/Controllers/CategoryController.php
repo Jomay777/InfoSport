@@ -38,6 +38,8 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Category::class);
+
         return Inertia::render('Admin/Categories/Create');
     }
 
@@ -46,6 +48,8 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request): RedirectResponse
     {
+        $this->authorize('create', Category::class);
+
         Category::create($request->validated());
         return to_route('categories.index');
     }
@@ -63,6 +67,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category): Response
     {
+        $this->authorize('update', $category);
+
         return Inertia::render('Admin/Categories/Edit', [
             'category' => new CategoryResource($category)
         ]);
@@ -73,6 +79,8 @@ class CategoryController extends Controller
      */
     public function update(CreateCategoryRequest $request, Category $category): RedirectResponse
     {
+        $this->authorize('update', $category);
+
         $category->update($request->validated());
         return to_route('categories.index');
     }
@@ -83,6 +91,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $this->authorize('delete', $category);
+
         $category->delete();
         return back();
     }
