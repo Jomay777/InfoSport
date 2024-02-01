@@ -18,7 +18,9 @@ import { onMounted, ref } from "vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { parseISO, format } from 'date-fns';
+import { usePermission } from "@/composables/permissions"
 
+const { hasRole } = usePermission();
 const props = defineProps({
   pass_request: {
     type: Object,
@@ -82,6 +84,7 @@ const handleFileChange = (event) => {
               placeholder="Elige el jugador"
               label= "name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
             />
             <InputError class="mt-2" :message="form.errors.player" />
           </div>
