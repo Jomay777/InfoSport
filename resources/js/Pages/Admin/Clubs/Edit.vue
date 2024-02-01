@@ -14,7 +14,9 @@ import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
 
 import { onMounted, ref } from "vue";
+import { usePermission } from "@/composables/permissions"
 
+const { hasRole } = usePermission();
 const props = defineProps({
   club: {
     type: Object,
@@ -100,6 +102,7 @@ const onLogoChange = (event) => {
               placeholder="Escoge delegados"
               label="name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
             />
           </div>
           <div class="flex items-center mt-4">
