@@ -9,9 +9,12 @@ import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { usePermission } from "@/composables/permissions"
+
 
 import { ref } from "vue";
 
+const { hasRole } = usePermission();
 
 defineProps({
   team: Object,
@@ -37,7 +40,11 @@ const form = useForm({
     photo_parental_authorization: null,
   }
 });
+
 const storePlayer = () =>{
+  if(form.state == ""){
+    form.state = { id: 1, name: 'inhabilitado' };
+  }
   form.post(route('players.store'));
 }
 const handleFileChangePP = (event) => {
@@ -64,6 +71,8 @@ const handleFileChangePA = (event) => {
     form.photo_player.photo_parental_authorization = event.target.files[0];
   }
 };
+
+
 </script>
 
 <template>
@@ -90,7 +99,7 @@ const handleFileChangePA = (event) => {
               v-model="form.first_name"
               autofocus
               required
-              autocomplete="playerfirst_name"
+              autocomplete="name"
             />
             <InputError class="mt-2" :message="form.errors.first_name" />
           </div>
@@ -101,7 +110,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.second_name"              
-              autocomplete="playersecond_name"
+              autocomplete="additional-name"
             />
             <InputError class="mt-2" :message="form.errors.second_name" />
           </div>
@@ -113,7 +122,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.last_name"
               required              
-              autocomplete="playerlast_name"
+              autocomplete="family-name"
             />
             <InputError class="mt-2" :message="form.errors.last_name" />
           </div>
@@ -124,7 +133,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.mother_last_name"              
-              autocomplete="playermother_last_name"
+              autocomplete="family-name"
             />
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
           </div>
@@ -187,7 +196,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.country_birth"  
               required            
-              autocomplete="playercountry_birth"
+              autocomplete="country-name"
             />
             <InputError class="mt-2" :message="form.errors.country_birth" />
           </div>
@@ -215,6 +224,7 @@ const handleFileChangePA = (event) => {
               placeholder="Elige el estado del jugador"
               label="name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
               required
             />
             <InputError class="mt-2" :message="form.errors.state" />
@@ -230,7 +240,7 @@ const handleFileChangePA = (event) => {
               :preselect-first="true"
               placeholder="Elige el equipo al que pertenece"
               label="name"
-              track-by="id"
+              track-by="id"              
             />
             <InputError class="mt-2" :message="form.errors.team" />
           </div>
