@@ -10,6 +10,7 @@ use App\Models\PassRequest;
 use App\Models\Player;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,12 +22,22 @@ class PassRequestController extends Controller
      */
     public function index(Request $request): Response
     {
-        $pass_requests = PassRequest::with('player')
-        ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
-        ->take(20);  
-       
+        $user = Auth::user();
+        $user->load('clubs.teams.players');
+
+        $passRequests = PassRequest::with('player')
+            ->latest()
+            ->take(20);
+
+        // Filtrar según las relaciones del usuario con clubes, equipos y jugadores
+        if (!$user->clubs->isEmpty() && !$user->clubs->pluck('teams')->isEmpty()) {
+            $playerIds = $user->clubs->pluck('teams.*.players.*.id')->flatten()->toArray();
+            $passRequests->whereIn('player_id', $playerIds);
+        }
+
+        // Aplicar la búsqueda si se proporciona un término de búsqueda
         if ($request->search) {
-            $pass_requests->where(function ($query) use ($request) {
+            $passRequests->where(function ($query) use ($request) {
                 $query->where('pass_requests.id', 'like', '%' . $request->search . '%')
                     ->orWhereHas('player', function ($subQuery) use ($request) {
                         $subQuery->where('first_name', 'like', '%' . $request->search . '%');
@@ -42,20 +53,32 @@ class PassRequestController extends Controller
                     });
             });
         }
-        $pass_requests = $pass_requests->get();
+
+        // Obtener los resultados finales
+        $passRequests = $passRequests->get();
+
         return Inertia::render('Admin/PassRequests/PassRequestIndex', [
-            'pass_requests' => PassRequestResource::collection($pass_requests),
+            'pass_requests' => PassRequestResource::collection($passRequests),
             'search' => $request->search, 
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(): Response
     {
-        $players = Player::all();
-        //dd($pass_requests);
+        $this->authorize('create', PassRequest::class);
+
+        $user = Auth::user();
+        $user->load('clubs.teams.players');
+
+        // Obtén todos los jugadores si el usuario no tiene asignado un club o equipos
+        // De lo contrario, obtén solo los jugadores relacionados con los clubes y equipos del usuario
+        $players = $user->clubs->isEmpty() || $user->clubs->pluck('teams')->isEmpty()
+            ? Player::with('team')->get()
+            : $user->clubs->pluck('teams.*.players')->flatten();
         return Inertia::render('Admin/PassRequests/Create', [
             'player' =>  PlayerResource::collection($players),
         ]);
@@ -66,7 +89,7 @@ class PassRequestController extends Controller
      */
     public function store(PassRequestRequest $request)
     {
-        //dd($request->all());
+        $this->authorize('create', PassRequest::class);
         $validatedData = $request->validated();
         if ($request->has('player')) {
             $validatedData['player_id']= $request->input('player.id');
@@ -101,6 +124,8 @@ class PassRequestController extends Controller
      */
     public function edit(PassRequest $pass_request): Response
     {    
+        $this->authorize('update', $pass_request);
+
         $pass_request->load('player');
         return Inertia::render('Admin/PassRequests/Edit', [
             'pass_request' => new PassRequestResource($pass_request),
@@ -114,6 +139,8 @@ class PassRequestController extends Controller
     public function update(UpdatePassRequestRequest $request, string $id)
     {
         $pass_request = PassRequest::find($id);
+        $this->authorize('update', $pass_request);
+
          //dd($request->all());
         $validatedData = $request->validated();
         if ($request->has('player')) {
@@ -142,6 +169,8 @@ class PassRequestController extends Controller
      */
     public function destroy(PassRequest $pass_request): RedirectResponse
     {
+        $this->authorize('delete', $pass_request);
+
         //destroy file of public
         if ($pass_request->request_photo_path) {
             $filename = basename($pass_request->request_photo_path);
