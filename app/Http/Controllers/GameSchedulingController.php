@@ -50,6 +50,8 @@ class GameSchedulingController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', GameScheduling::class);
+
         return Inertia::render('Admin/GameSchedulings/Create', [
             'teams' => TeamResource::collection(Team::all()),
             'gameRole' => GameRoleResource::collection(GameRole::all())
@@ -60,6 +62,8 @@ class GameSchedulingController extends Controller
      */
     public function store(GameSchedulingRequest $request)
     {
+        $this->authorize('create', GameScheduling::class);
+
         $validatedData = $request->validated();
 
         if ($request->has('gameRole')) {
@@ -87,6 +91,8 @@ class GameSchedulingController extends Controller
      */
     public function edit(GameScheduling $game_scheduling): Response
     {    
+        $this->authorize('update', $game_scheduling);
+
         $game_scheduling->load('teams','gameRole');
  
         return Inertia::render('Admin/GameSchedulings/Edit', [
@@ -101,6 +107,8 @@ class GameSchedulingController extends Controller
     public function update(GameSchedulingRequest $request, string $id): RedirectResponse
     {                
         $gameScheduling = GameScheduling::find($id);
+        $this->authorize('update', $gameScheduling);
+
 
         if (!$gameScheduling) {
             return redirect()->back()->withErrors(['error' => 'Programación de partido no encontrada.']);
@@ -135,6 +143,7 @@ class GameSchedulingController extends Controller
      */
     public function destroy(GameScheduling $game_scheduling): RedirectResponse
     {
+        $this->authorize('delete', $game_scheduling);
         
         $game_scheduling->teams()->detach();
         $game_scheduling->delete();
