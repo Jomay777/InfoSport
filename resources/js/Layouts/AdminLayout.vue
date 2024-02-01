@@ -7,6 +7,9 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import SidebarLink from '@/Components/SidebarLink.vue';
+import { usePermission } from "@/composables/permissions"
+
+const { hasPermission } = usePermission();
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -32,7 +35,7 @@ const showingNavigationDropdown = ref(false);
                     <span class="-mr-1 font-medium">Inicio</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver usuario')">
                 <SidebarLink
                 :href="route('users.index')" 
                 :active="route().current('users.*')">
@@ -42,7 +45,7 @@ const showingNavigationDropdown = ref(false);
                     <span class="-mr-1 font-medium">Usuarios</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver rol')">
                 <SidebarLink
                 :href="route('roles.index')" 
                 :active="route().current('roles.*')">
@@ -52,7 +55,7 @@ const showingNavigationDropdown = ref(false);
                     <span class="-mr-1 font-medium">Roles</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver permiso')">
                 <SidebarLink
                 :href="route('permissions.index')" 
                 :active="route().current('permissions.*')">
@@ -62,7 +65,7 @@ const showingNavigationDropdown = ref(false);
                     <span class="-mr-1 font-medium">Permisos</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver club')">
                 <SidebarLink
                 :href="route('clubs.index')" 
                 :active="route().current('clubs.*')">
@@ -70,7 +73,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Clubs</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver categoría')">
                 <SidebarLink
                 :href="route('categories.index')" 
                 :active="route().current('categories.*')">
@@ -80,7 +83,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Categorías</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver torneo')">
                 <SidebarLink
                 :href="route('tournaments.index')" 
                 :active="route().current('tournaments.*')">
@@ -90,7 +93,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Torneos</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver equipo')">
                 <SidebarLink
                 :href="route('teams.index')" 
                 :active="route().current('teams.*')">
@@ -100,7 +103,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Equipos</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver jugador')">
                 <SidebarLink
                 :href="route('players.index')" 
                 :active="route().current('players.*')">
@@ -110,17 +113,17 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Jugadores</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver pase')">
                 <SidebarLink
                 :href="route('pass_requests.index')" 
                 :active="route().current('pass_requests.*')">
-                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
-                    <path d="M320 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM125.7 175.5c9.9-9.9 23.4-15.5 37.5-15.5c1.9 0 3.8 .1 5.6 .3L137.6 254c-9.3 28 1.7 58.8 26.8 74.5l86.2 53.9-25.4 88.8c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l28.7-100.4c5.9-20.6-2.6-42.6-20.7-53.9L238 299l30.9-82.4 5.1 12.3C289 264.7 323.9 288 362.7 288H384c17.7 0 32-14.3 32-32s-14.3-32-32-32H362.7c-12.9 0-24.6-7.8-29.5-19.7l-6.3-15c-14.6-35.1-44.1-61.9-80.5-73.1l-48.7-15c-11.1-3.4-22.7-5.2-34.4-5.2c-31 0-60.8 12.3-82.7 34.3L57.4 153.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l23.1-23.1zM91.2 352H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h69.6c19 0 36.2-11.2 43.9-28.5L157 361.6l-9.5-6c-17.5-10.9-30.5-26.8-37.9-44.9L91.2 352z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" height="17" width="14" viewBox="0 0 384 512"> 
+                    <path fill="#020203" d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z"/>
                 </svg>
                 <span class="-mr-1 font-medium">Solicitud de pases</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver rol de partido')">
                 <SidebarLink
                 :href="route('game_roles.index')" 
                 :active="route().current('game_roles.*')">
@@ -130,7 +133,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Roles de Partidos</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver programación de partido')">
                 <SidebarLink
                 :href="route('game_schedulings.index')" 
                 :active="route().current('game_schedulings.*')">
@@ -140,7 +143,7 @@ const showingNavigationDropdown = ref(false);
                 <span class="-mr-1 font-medium">Programación de Partidos</span>
                 </SidebarLink>
             </li>
-            <li>
+            <li v-if="hasPermission('Ver partido')">
                 <SidebarLink
                 :href="route('games.index')" 
                 :active="route().current('games.*')">
@@ -198,36 +201,25 @@ const showingNavigationDropdown = ref(false);
                                 </svg>
                             </button>
                 </div>
-                
-            <div class="flex space-x-4">
-                <!--search bar -->
-                <div hidden class="md:block">
-                    <div class="relative flex items-center text-gray-400 focus-within:text-cyan-400">
-                        <span class="absolute left-4 h-6 flex items-center pr-3 border-r border-gray-300">
-                        <svg xmlns="http://ww50w3.org/2000/svg" class="w-4 fill-current" viewBox="0 0 35.997 36.004">
-                            <path id="Icon_awesome-search-md" data-name="search" d="M35.508,31.127l-7.01-7.01a1.686,1.686,0,0,0-1.2-.492H26.156a14.618,14.618,0,1,0-2.531,2.531V27.3a1.686,1.686,0,0,0,.492,1.2l7.01,7.01a1.681,1.681,0,0,0,2.384,0l1.99-1.99a1.7,1.7,0,0,0,.007-2.391Zm-20.883-7.5a9,9,0,1,1,9-9A8.995,8.995,0,0,1,14.625,23.625Z"></path>
-                        </svg>
-                        </span>
-                        <input type="search" name="leadingIcon" id="leadingIcon" placeholder="Buscar aquí" class="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition">
-                    </div>
+                            
+                <div class="flex space-x-4 p-2 lg:p-2 overflow-hidden bg-gradient-to-b from-gray-100 to-white dark:from-gray-700 dark:to-gray-900 rounded-lg">
+                    <Link rel="stylesheet" href="#" onclick="location.reload();">
+                        <div class="flex items-center"> 
+                            <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                height="20" width="20"
+                                viewBox="0 0 512 512" fill="none"
+                                class="fill-blue-900 dark:fill-gray-400 hover:fill-green-500 dark:hover:fill-gray-100 flex-shrink-0"
+                            >
+                                <path d="M417.3 360.1l-71.6-4.8c-5.2-.3-10.3 1.1-14.5 4.2s-7.2 7.4-8.4 12.5l-17.6 69.6C289.5 445.8 273 448 256 448s-33.5-2.2-49.2-6.4L189.2 372c-1.3-5-4.3-9.4-8.4-12.5s-9.3-4.5-14.5-4.2l-71.6 4.8c-17.6-27.2-28.5-59.2-30.4-93.6L125 228.3c4.4-2.8 7.6-7 9.2-11.9s1.4-10.2-.5-15l-26.7-66.6C128 109.2 155.3 89 186.7 76.9l55.2 46c4 3.3 9 5.1 14.1 5.1s10.2-1.8 14.1-5.1l55.2-46c31.3 12.1 58.7 32.3 79.6 57.9l-26.7 66.6c-1.9 4.8-2.1 10.1-.5 15s4.9 9.1 9.2 11.9l60.7 38.2c-1.9 34.4-12.8 66.4-30.4 93.6zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm14.1-325.7c-8.4-6.1-19.8-6.1-28.2 0L194 221c-8.4 6.1-11.9 16.9-8.7 26.8l18.3 56.3c3.2 9.9 12.4 16.6 22.8 16.6h59.2c10.4 0 19.6-6.7 22.8-16.6l18.3-56.3c3.2-9.9-.3-20.7-8.7-26.8l-47.9-34.8z"/>
+                            </svg> 
+                            <div id="info_sport" class="flex items-center justify-between ml-3">
+                                <h3 class="title text-lg font-black text-blue-900 hover:text-green-500 dark:text-green-500 dark:hover:text-gray-100">Info</h3>
+                                <h4 class="cursive text-lg font-thin text-green-500 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-gray-100">Sport</h4>                    
+                            </div>
+                        </div>
+                    </Link>  
                 </div>
-                <!--/search bar -->
-                <button aria-label="search" class="w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200 md:hidden">
-                    <svg xmlns="http://ww50w3.org/2000/svg" class="w-4 mx-auto fill-current text-gray-600" viewBox="0 0 35.997 36.004">
-                        <path id="Icon_awesome-search" data-name="search" d="M35.508,31.127l-7.01-7.01a1.686,1.686,0,0,0-1.2-.492H26.156a14.618,14.618,0,1,0-2.531,2.531V27.3a1.686,1.686,0,0,0,.492,1.2l7.01,7.01a1.681,1.681,0,0,0,2.384,0l1.99-1.99a1.7,1.7,0,0,0,.007-2.391Zm-20.883-7.5a9,9,0,1,1,9-9A8.995,8.995,0,0,1,14.625,23.625Z"></path>
-                    </svg>
-                </button>
-                <button aria-label="chat" class="w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 m-auto text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                    </svg>
-                </button>
-                <button aria-label="notification" class="w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 m-auto text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                    </svg>
-                </button>
-            </div>
         </div>
          <!-- Responsive Navigation Menu -->
         <div
@@ -238,51 +230,74 @@ const showingNavigationDropdown = ref(false);
                 <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                     Inicio
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('users.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver usuario')"
+                    :href="route('users.index')" 
                     :active="route().current('users.*')">
                     Usuarios
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('roles.index')" 
+                <ResponsiveNavLink v-if="hasPermission('Ver rol')"
+                :href="route('roles.index')" 
                     :active="route().current('roles.*')">
                     Roles
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('permissions.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver permiso')"
+                    :href="route('permissions.index')" 
                     :active="route().current('permissions.*')">
                     Permisos
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('clubs.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver club')"
+                    :href="route('clubs.index')" 
                     :active="route().current('clubs.*')">
                     Clubs
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('categories.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver categoría')"
+                    :href="route('categories.index')" 
                     :active="route().current('categories.*')">
                     Categorías
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('tournaments.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver torneo')"
+                    :href="route('tournaments.index')" 
                     :active="route().current('tournaments.*')">
                     Torneos
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('teams.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver equipo')"
+                    :href="route('teams.index')" 
                     :active="route().current('teams.*')">
                     Equipos
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('players.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver jugador')"
+                    :href="route('players.index')" 
                     :active="route().current('players.*')">
                     Jugadores
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('pass_requests.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver pase')"
+                    :href="route('pass_requests.index')" 
                     :active="route().current('pass_requests.*')">
                     Solicitud de Pases
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('game_roles.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver rol de partido')"
+                    :href="route('game_roles.index')" 
                     :active="route().current('game_roles.*')">
                     Roles de Partidos
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('game_schedulings.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver programación de partido')"
+                    :href="route('game_schedulings.index')" 
                     :active="route().current('game_schedulings.*')">
                     Programación de Partidos
                 </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('games.index')" 
+                <ResponsiveNavLink 
+                    v-if="hasPermission('Ver partido')"
+                    :href="route('games.index')" 
                     :active="route().current('games.*')">
                     Partidos
                 </ResponsiveNavLink>
