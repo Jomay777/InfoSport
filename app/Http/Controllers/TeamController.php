@@ -11,6 +11,8 @@ use App\Models\Club;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,32 +23,42 @@ class TeamController extends Controller
      */
     public function index(Request $request): Response
     {
-        $teams = Team::with('category', 'club')
-        ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
-        ->take(20);  
+    $user = Auth::user();
+    $user->load('clubs.teams');
 
-        if ($request->search) {
-            $teams->where(function ($query) use ($request) {
-                $query->where('teams.name', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('club', function ($subQuery) use ($request) {
-                        $subQuery->where('clubs.name', 'like', '%' . $request->search . '%');
-                    });
-            });
-        }
-        
-        $teams = $teams->get();
+    $teamsQuery = Team::with('category', 'club');
 
-        return Inertia::render('Admin/Teams/TeamIndex', [
-            'teams' => TeamResource::collection($teams),
-            'search' => $request->search, 
-        ]);
+    if ($user->clubs->pluck('teams')->flatten()->isNotEmpty()) {
+        $teamIds = $user->clubs->pluck('teams.*.id')->flatten()->toArray();
+        $teamsQuery->whereIn('id', $teamIds);
+    } else {
+        $teamsQuery->latest()->take(20);
     }
+
+    if ($request->search) {
+        $teamsQuery->where(function ($query) use ($request) {
+            $query->where('teams.name', 'like', '%' . $request->search . '%')
+                ->orWhereHas('club', function ($subQuery) use ($request) {
+                    $subQuery->where('clubs.name', 'like', '%' . $request->search . '%');
+                });
+        });
+    }
+
+    $teams = $teamsQuery->latest()->take(20)->get();
+
+    return Inertia::render('Admin/Teams/TeamIndex', [
+        'teams' => TeamResource::collection($teams),
+        'search' => $request->search,
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(): Response
     {
+        $this->authorize('create', Team::class);
+
         return Inertia::render('Admin/Teams/Create', [
             'category' => CategoryResource::collection(Category::all()),
             'club' => ClubResource::collection(Club::all())
@@ -58,6 +70,8 @@ class TeamController extends Controller
      */
     public function store(TeamRequest $request)
     {
+        $this->authorize('create', Team::class);
+
         $validatedData = $request->validated();
 
         if ($request->has('club')) {
@@ -95,6 +109,8 @@ class TeamController extends Controller
      */
     public function edit(Team $team): Response
     {    
+        $this->authorize('update', $team);
+
         $team->load('club','category');
         return Inertia::render('Admin/Teams/Edit', [
             'team' => new TeamResource($team),
@@ -109,6 +125,8 @@ class TeamController extends Controller
     public function update(TeamRequest $request, string $id):RedirectResponse
     {        
         $team = Team::find($id);               
+        $this->authorize('update', $team);
+
         $validatedData = $request->validated();
         $team->update($validatedData);
         if ($request->has('club')) {
@@ -130,6 +148,8 @@ class TeamController extends Controller
      */
     public function destroy(Team $team): RedirectResponse
     {
+        $this->authorize('delete', $team);
+
         $team->delete();
         return to_route('teams.index');
     }
