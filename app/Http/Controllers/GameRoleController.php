@@ -45,6 +45,8 @@ class GameRoleController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', GameRole::class);
+
         return Inertia::render('Admin/GameRoles/Create', [
             'tournament' => TournamentResource::collection(Tournament::all()),
             'pitch' => PitchResource::collection(Pitch::all())
@@ -56,6 +58,8 @@ class GameRoleController extends Controller
      */
     public function store(GameRoleRequest $request)
     {
+        $this->authorize('create', GameRole::class);
+
         $validatedData = $request->validated();
 
         if ($request->has('tournament')) {
@@ -93,6 +97,8 @@ class GameRoleController extends Controller
      */
     public function edit(GameRole $game_role): Response
     {    
+        $this->authorize('update', $game_role);
+
         $game_role->load('tournament','pitch');
         return Inertia::render('Admin/GameRoles/Edit', [
             'game_role' => new GameRoleResource($game_role),
@@ -106,7 +112,9 @@ class GameRoleController extends Controller
      */
     public function update(GameRoleRequest $request, string $id):RedirectResponse
     {        
-        $game_role = GameRole::find($id);               
+        $game_role = GameRole::find($id);   
+        $this->authorize('update', $game_role);
+            
         $validatedData = $request->validated();
         if ($request->has('tournament')) {
             $validatedData['tournament_id'] = $request->input('tournament.id');
@@ -127,6 +135,8 @@ class GameRoleController extends Controller
      */
     public function destroy(GameRole $game_role): RedirectResponse
     {
+        $this->authorize('delete', $game_role);
+
         $game_role->delete();
         return to_route('game_roles.index');
     }
