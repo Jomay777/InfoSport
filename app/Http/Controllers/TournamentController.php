@@ -40,6 +40,7 @@ class TournamentController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Tournament::class);
         return Inertia::render('Admin/Tournaments/Create', [
             'category' => CategoryResource::collection(Category::all())
         ]);
@@ -50,6 +51,8 @@ class TournamentController extends Controller
      */
     public function store(CreateTournamentRequest $request)
     {
+        $this->authorize('create', Tournament::class);
+
         $validatedData = $request->validated();
         $tournament =  Tournament::create($validatedData);
 
@@ -66,7 +69,7 @@ class TournamentController extends Controller
      */
     public function show(Tournament $tournament): Response
     {
-        
+
         $category = $tournament->category;
 
         return Inertia::render('Admin/Tournaments/Show', [
@@ -80,6 +83,8 @@ class TournamentController extends Controller
      */
     public function edit(Tournament $tournament): Response
     {    
+        $this->authorize('update', $tournament);
+
         $tournament->load('category');
         return Inertia::render('Admin/Tournaments/Edit', [
             'tournament' => new TournamentResource($tournament),
@@ -90,8 +95,10 @@ class TournamentController extends Controller
      * Update the specified resource in storage.
      */
     public function update(CreateTournamentRequest $request, string $id):RedirectResponse
-    {        
+    {                
         $tournament = Tournament::find($id);               
+        $this->authorize('update', $tournament);
+
         $validatedData = $request->validated();
         $tournament->update($validatedData);
         if ($request->has('category')) {
@@ -108,6 +115,8 @@ class TournamentController extends Controller
      */
     public function destroy(Tournament $tournament): RedirectResponse
     {
+        $this->authorize('delete', $tournament);
+
         $tournament->delete();
         return to_route('tournaments.index');
     }
