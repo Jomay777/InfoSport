@@ -18,6 +18,9 @@ import { onMounted, ref } from "vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { parseISO, format } from 'date-fns';
+import { usePermission } from "@/composables/permissions"
+
+const { hasRole } = usePermission();
 
 const props = defineProps({
   player: {
@@ -31,9 +34,9 @@ const props = defineProps({
 
 const form = useForm({
   first_name: props.player?.first_name,
-  second_name: props.player?.second_name,
+  second_name: props.player?.second_name ? props.player?.second_name : "",
   last_name: props.player?.last_name,
-  mother_last_name: props.player?.mother_last_name,
+  mother_last_name: props.player?.mother_last_name ? props.player?.mother_last_name : "",
   gender:"",
   birth_date: "",
   c_i: props.player?.c_i,
@@ -112,7 +115,7 @@ const handleFileChangePA = (event) => {
               v-model="form.first_name"
               autofocus
               required
-              autocomplete="teamfirst_name"
+              autocomplete="name"
             />
             <InputError class="mt-2" :message="form.errors.first_name" />
           </div>
@@ -123,7 +126,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.second_name"              
-              autocomplete="teamsecond_name"
+              autocomplete="additional-name"
             />
             <InputError class="mt-2" :message="form.errors.second_name" />
           </div>
@@ -135,7 +138,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.last_name"
               required              
-              autocomplete="teamlast_name"
+              autocomplete="family-name"
             />
             <InputError class="mt-2" :message="form.errors.last_name" />
           </div>
@@ -146,7 +149,7 @@ const handleFileChangePA = (event) => {
               type="text"
               class="mt-1 block w-full"
               v-model="form.mother_last_name"              
-              autocomplete="teammother_last_name"
+              autocomplete="family-name"
             />
             <InputError class="mt-2" :message="form.errors.mother_last_name" />
           </div>
@@ -166,7 +169,7 @@ const handleFileChangePA = (event) => {
             <InputError class="mt-2" :message="form.errors.gender" />
           </div>
           <div class="mt-4">
-            <InputLabel for="birth_date" value="Fecha de nacimiento"/>  
+            <InputLabel for="off" value="Fecha de nacimiento"/>  
             <VueDatePicker 
               v-model="form.birth_date" 
               format="dd-MM-yyyy" 
@@ -185,7 +188,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.c_i" 
               required             
-              autocomplete="teamc_i"
+              autocomplete="playerc_i"
             />
             <InputError class="mt-2" :message="form.errors.c_i" />
           </div>        
@@ -197,7 +200,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.nacionality"  
               required            
-              autocomplete="teamnacionality"
+              autocomplete="playernacionality"
             />
             <InputError class="mt-2" :message="form.errors.nacionality" />
           </div>
@@ -209,7 +212,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.country_birth"  
               required            
-              autocomplete="teamcountry_birth"
+              autocomplete="country-name"
             />
             <InputError class="mt-2" :message="form.errors.country_birth" />
           </div>
@@ -221,7 +224,7 @@ const handleFileChangePA = (event) => {
               class="mt-1 block w-full"
               v-model="form.region_birth"  
               required            
-              autocomplete="teamregion_birth"
+              autocomplete="playerregion_birth"
             />
             <InputError class="mt-2" :message="form.errors.region_birth" />
           </div>
@@ -236,6 +239,7 @@ const handleFileChangePA = (event) => {
               placeholder="Elige el estado del jugador"
               label="name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
               required
             />
             <InputError class="mt-2" :message="form.errors.state" />
@@ -251,7 +255,10 @@ const handleFileChangePA = (event) => {
               placeholder="Elige el equipo al que pertenece"
               label="name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
+
             />
+            <InputError class="mt-2" :message="form.errors.team" />
           </div>
           <div class="mt-4">
             <InputLabel for="photo_player.photo_path" value="Foto de jugador" />
