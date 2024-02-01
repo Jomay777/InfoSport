@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
     {
         //creating roles
         $role_admin = Role::create(['name' => 'Administrador']);
-        $role_commite = Role::create(['name' => 'Comite técnico']);
+        $role_commite = Role::create(['name' => 'Comité técnico']);
         $role_delegate = Role::create(['name' => 'Delegado']);
         $role_assistant = Role::create(['name' => 'Asistente']);
         $role_directive = Role::create(['name' => 'Directiva']);
@@ -68,7 +68,13 @@ class RoleSeeder extends Seeder
         $permission_create_player = Permission::create(['name' => 'Crear jugador']);
         $permission_read_player = Permission::create(['name' => 'Ver jugador']);
         $permission_update_player = Permission::create(['name' => 'Actualizar jugador']);
-        $permission_delete_player = Permission::create(['name' => 'Eliminar jugador']);           
+        $permission_delete_player = Permission::create(['name' => 'Eliminar jugador']);      
+        
+        //creating permissions for pass_request CRUD
+        $permission_create_pass_request = Permission::create(['name' => 'Crear pase']);
+        $permission_read_pass_request = Permission::create(['name' => 'Ver pase']);
+        $permission_update_pass_request = Permission::create(['name' => 'Actualizar pase']);
+        $permission_delete_pass_request = Permission::create(['name' => 'Eliminar pase']);       
 
         //creating permissions for game_role CRUD
         $permission_create_game_role = Permission::create(['name' => 'Crear rol de partido']);
@@ -98,7 +104,8 @@ class RoleSeeder extends Seeder
         $permission_create_category, $permission_read_category, $permission_update_category, $permission_delete_category,        
         $permission_create_tournament, $permission_read_tournament, $permission_update_tournament, $permission_delete_tournament,     
         $permission_create_team, $permission_read_team, $permission_update_team, $permission_delete_team,
-        $permission_create_player, $permission_read_player, $permission_update_player, $permission_delete_player,         
+        $permission_create_player, $permission_read_player, $permission_update_player, $permission_delete_player, 
+        $permission_create_pass_request, $permission_read_pass_request, $permission_update_pass_request, $permission_delete_pass_request,
         $permission_create_game_role, $permission_read_game_role,$permission_update_game_role, $permission_delete_game_role, 
         $permission_create_game_scheduling,$permission_read_game_scheduling, $permission_update_game_scheduling, $permission_delete_game_scheduling, 
         $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game];
@@ -107,14 +114,17 @@ class RoleSeeder extends Seeder
         $permission_create_category, $permission_read_category, $permission_update_category, $permission_delete_category,        
         $permission_create_tournament, $permission_read_tournament, $permission_update_tournament, $permission_delete_tournament,     
         $permission_create_team, $permission_read_team, $permission_update_team, $permission_delete_team,
-        $permission_create_player, $permission_read_player, $permission_update_player, $permission_delete_player,         
+        $permission_create_player, $permission_read_player, $permission_update_player, $permission_delete_player, 
+        $permission_create_pass_request, $permission_read_pass_request, $permission_update_pass_request, $permission_delete_pass_request,        
         $permission_create_game_role, $permission_read_game_role,$permission_update_game_role, $permission_delete_game_role, 
         $permission_create_game_scheduling,$permission_read_game_scheduling, $permission_update_game_scheduling, $permission_delete_game_scheduling, 
         $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game];
 
-        $permissions_delegate = [$permission_create_club, $permission_read_club, $permission_update_club, $permission_delete_club,   
+        $permissions_delegate = [$permission_read_club, $permission_update_club,   
         $permission_read_team, $permission_update_team,
-        $permission_create_player, $permission_read_player, $permission_update_player];
+        $permission_create_player, $permission_read_player, $permission_update_player,
+        $permission_create_pass_request, $permission_read_pass_request, $permission_update_pass_request,
+        ];
 
         $permissions_assitant = [$permission_create_game_role, $permission_read_game_role,$permission_update_game_role, $permission_delete_game_role, 
         $permission_create_game_scheduling,$permission_read_game_scheduling, $permission_update_game_scheduling, $permission_delete_game_scheduling, 
@@ -125,6 +135,7 @@ class RoleSeeder extends Seeder
         $permission_read_tournament,
         $permission_read_team,
         $permission_read_player,
+        $permission_read_pass_request,
         $permission_read_game_role,
         $permission_read_game_scheduling,
         $permission_read_game];
