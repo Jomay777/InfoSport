@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Illuminate\Support\Facades\Auth;
 
 class PlayerController extends Controller
 {
@@ -26,23 +26,35 @@ class PlayerController extends Controller
      */
     public function index(Request $request): Response
     {
-        $players = Player::with('team', 'photoPlayer')
-        ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
-        ->take(20);  
+        $user = Auth::user();
+        $user->load('clubs.teams.players');
+
+        $playersQuery = Player::with('team', 'photoPlayer');
+
+        if ($user->clubs->pluck('teams')->flatten()->pluck('players')->flatten()->isNotEmpty()) {
+            $playerIds = $user->clubs->pluck('teams.*.players.*.id')->flatten()->toArray();
+            $playersQuery->whereIn('id', $playerIds);
+        } else {
+            $playersQuery->latest()->take(20);
+        }
 
         if ($request->search) {
-            $players->where('players.first_name', 'like', '%' . $request->search . '%')
-            ->orWhere('players.second_name', 'like', '%' . $request->search . '%')
-            ->orWhere('players.last_name', 'like', '%' . $request->search . '%')
-            ->orWhere('players.mother_last_name', 'like', '%' . $request->search . '%');
+            $playersQuery->where(function ($query) use ($request) {
+                $query->where('players.first_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('players.second_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('players.last_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('players.mother_last_name', 'like', '%' . $request->search . '%');
+            });
         }
-        $players = $players->get();
-        //dd($players->all());
+
+        $players = $playersQuery->latest()->take(20)->get();
+
         return Inertia::render('Admin/Players/PlayerIndex', [
             'players' => PlayerResource::collection($players),
             'search' => $request->search, 
         ]);
     }
+
     public function pdf(Player $player)
     {
        
@@ -57,8 +69,18 @@ class PlayerController extends Controller
      */
     public function create(): Response
     {
+        $this->authorize('create', Player::class);
+
+        $user = Auth::user();
+        $user->load('clubs.teams');
+    
+        // Obtén todos los equipos si el usuario no tiene asignado un club
+        // De lo contrario, obtén solo los equipos relacionados con el club del usuario
+        $teams = $user->clubs->isEmpty()
+            ? Team::with('club')->get()
+            : $user->clubs->pluck('teams')->flatten();
         return Inertia::render('Admin/Players/Create', [
-            'team' => TeamResource::collection(Team::all()),
+            'team' => TeamResource::collection($teams),
             'photoPlayer' => PhotoPlayerResource::collection(PhotoPlayer::all())
         ]);
     }
@@ -68,6 +90,8 @@ class PlayerController extends Controller
      */
     public function store(PlayerRequest $request)
     {
+        $this->authorize('create', Player::class);
+
         $validatedData = $request->validated();
 
         if ($request->has('team')) {
@@ -149,6 +173,8 @@ class PlayerController extends Controller
      */
     public function edit(Player $player): Response
     {    
+        $this->authorize('update', $player);
+
         $player->load('team','photoPlayer');
         return Inertia::render('Admin/Players/Edit', [
             'player' => new PlayerResource($player),
@@ -162,8 +188,9 @@ class PlayerController extends Controller
      */
     public function update(PlayerRequest $request, string $id):RedirectResponse
     {        
-
         $player = Player::find($id);            
+        $this->authorize('update', $player);
+
         $validatedData = $request->validated();
         if ($request->has('team')) {
             $teamId = $request->input('team.id');
@@ -205,7 +232,7 @@ class PlayerController extends Controller
 
         if ($player->photoPlayer) {
             $player->photoPlayer()->update($photoPaths);
-        } else {
+        } elseif(!$player->photoPlayer && $request->hasFile('photo_player.photo_path')) {
             $player->photoPlayer()->create($photoPaths);
         }
 
@@ -218,6 +245,8 @@ class PlayerController extends Controller
      */
     public function destroy(Player $player): RedirectResponse
     {
+        $this->authorize('delete', $player);
+
         //destroy files of public
         if ($player->photoPlayer) {
             $filename = basename($player->photoPlayer->photo_path);
