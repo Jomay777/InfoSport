@@ -14,7 +14,9 @@ import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
 
 import { onMounted, ref } from "vue";
+import { usePermission } from "@/composables/permissions"
 
+const { hasRole } = usePermission();
 const props = defineProps({
   team: {
     type: Object,
@@ -93,6 +95,8 @@ const updateTeam= () => {
               placeholder="Escoge el club al que pertence"
               label="name"
               track-by="id"
+              :disabled="hasRole('Administrador') || hasRole('Comité técnico') ? false : true"
+
             />
             <InputError class="mt-2" :message="form.errors.club" />
           </div>
