@@ -6,6 +6,9 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 import Modal from "@/Components/Modal.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { usePermission } from "@/composables/permissions"
+
+const { hasRole } = usePermission();
 
 const props = defineProps({
   player: {
@@ -154,6 +157,7 @@ const age = calculateAge(props.player.birth_date);
                       </p> 
                     </div>                                  
                 </div>
+                <template v-if="hasRole('Administrador') || hasRole('Comité técnico')">
                 <div class="mt-5 px-2 w-full">
                   <p class="text-xl text-gray-700 dark:text-white">Foto de carnet de identidad</p>
                   <div class="mt-3 flex justify-center">
@@ -175,7 +179,7 @@ const age = calculateAge(props.player.birth_date);
                       <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
                     </div> 
                 </div>
-                
+                </template>
                 <div class="flex justify-center mt-6">
                     <Link :href="route('players.edit', player.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
                     <button @click="confirmDeletePlayer" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
