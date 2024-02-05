@@ -8,7 +8,7 @@ import { Link } from '@inertiajs/vue3';
         <div>
             <Link rel="stylesheet" href="/">
                 <svg 
-                xmlns="http://www.w3.org/2000/svg" 
+                xmlns="https://www.w3.org/2000/svg" 
                 height="60" width="60"
                 viewBox="0 0 512 512" fill="none"
                 class="fill-blue-900 dark:fill-gray-400 hover:fill-green-500 dark:hover:fill-gray-100"

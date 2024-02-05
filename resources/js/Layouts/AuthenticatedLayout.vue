@@ -24,7 +24,7 @@ const { hasRole } = usePermission();
                             <div class="shrink-0 flex items-center">
                                 <Link rel="stylesheet" href="/">
                                     <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
+                                    xmlns="https://www.w3.org/2000/svg" 
                                     height="25" width="25"
                                     viewBox="0 0 512 512" fill="none"
                                     class="fill-blue-900 dark:fill-gray-400 hover:fill-green-500 dark:hover:fill-gray-100"
@@ -88,7 +88,7 @@ const { hasRole } = usePermission();
 
                                                 <svg
                                                     class="ml-2 -mr-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns="https://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
                                                 >
