@@ -18,23 +18,23 @@ jobs:
       with:
         php-version: '8.2.15'
 
-    - name: Install dependencies
-      run: composer install --no-dev --prefer-dist --no-scripts --no-progress --no-suggest
+ #   - name: Install dependencies
+  #    run: composer install --no-dev --prefer-dist --no-scripts --no-progress --no-suggest
 
-    - name: Configure env
-      env:
-        FTP_HOST: ${{ secrets.FTP_HOST }}
-        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      FTP_DESTINATION: ${{ secrets.FTP_DESTINATION }}
-      run: php artisan config:cache
-      run: php artisan migrate
-      run: php artisan db:seed
+   # - name: Configure env
+   #   env:
+    #    FTP_HOST: ${{ secrets.FTP_HOST }}
+     #   FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      # FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+#      FTP_DESTINATION: ${{ secrets.FTP_DESTINATION }}
+ #     run: php artisan config:cache
+  #    run: php artisan migrate
+   #   run: php artisan db:seed
 
-    - name: Deploy to shared hosting
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ${{ secrets.FTP_DESTINATION }}
+#    - name: Deploy to shared hosting
+ #     uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+  #    with:
+      #  server: ${{ secrets.FTP_HOST }}
+   #     username: ${{ secrets.FTP_USERNAME }}
+    #    password: ${{ secrets.FTP_PASSWORD }}
+     #   server-dir: ${{ secrets.FTP_DESTINATION }}
