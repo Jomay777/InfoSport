@@ -79,7 +79,7 @@ const deletePassRequest = (id) => {
                     </Modal>
                     </div>
             </div>  
-            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación del <a href="https://horizon-ui.com?ref=tailwindcomponents.com" target="_blank" class="text-brand-500 font-bold">Pase de jugador</a></p>  
+            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación de Pase del jugador <span class="text-brand-500 font-bold"> {{ pass_request.player.first_name }} {{ pass_request.player.second_name }} {{ pass_request.player.last_name }} {{ pass_request.player.mother_last_name }}</span></p>  
         </div>
     </div>
   </AdminLayout>

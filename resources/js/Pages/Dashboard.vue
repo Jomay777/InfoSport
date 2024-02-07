@@ -89,8 +89,10 @@ const props = defineProps({
 
                                 <p class="text-m text-gray-600">Partido</p>
 
-                                <p class="text-xl dark:text-navy">
+                                <p class="text-xl dark:text-navy ">
                                 <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
+                                <!-- <img class="bg-cover bg-center max-w-10 flex" :src=" game_scheduling.teams.map(team => team.club.logo_path)" alt="">
+                                <br> -->
                                 <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>
                                 </p>
 

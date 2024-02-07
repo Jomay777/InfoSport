@@ -102,7 +102,7 @@ const deleteTournament = (id) => {
                     </Modal>
                     </div>
             </div>  
-            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación del <a href="https://horizon-ui.com?ref=tailwindcomponents.com" target="_blank" class="text-brand-500 font-bold">Torneo</a></p>  
+            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación de <span class="text-brand-500 font-bold">{{ tournament.name }}</span></p>  
         </div>
     </div>
   </AdminLayout>

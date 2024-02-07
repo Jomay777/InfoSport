@@ -98,7 +98,7 @@ const deleteClub = (id) => {
                     </Modal>
                     </div>
             </div>  
-            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación de <a href="https://horizon-ui.com?ref=tailwindcomponents.com" target="_blank" class="text-brand-500 font-bold">Club</a></p>  
+            <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Tarjeta de Presentación de la<span class="text-brand-500 font-bold">Progamación de Partido</span></p>  
         </div>
     </div>
   </AdminLayout>

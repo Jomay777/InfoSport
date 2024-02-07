@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         $latestUpdatedGameRole = GameRole::latest('updated_at')->first();
 
-        $latestUpdatedGameRole->load('gameSchedulings.teams', 'tournament', 'pitch');
+        $latestUpdatedGameRole->load('gameSchedulings.teams.club', 'tournament', 'pitch');
 
         // Renderizar la vista de Inertia con los datos
         return Inertia::render('Dashboard', [
