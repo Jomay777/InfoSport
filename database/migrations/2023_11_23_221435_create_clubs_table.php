@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('clubs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('coach')->nullable();
+            $table->string('name', 100)->unique();
+            $table->string('coach', 80)->nullable();
 
             $table->string('logo_path')->nullable();
 

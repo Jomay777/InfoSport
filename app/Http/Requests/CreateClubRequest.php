@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Club;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateClubRequest extends FormRequest
@@ -24,8 +25,8 @@ class CreateClubRequest extends FormRequest
         //dd(request()->all());
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'coach' => [ 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:100', 'unique:' . Club::class],
+            'coach' => ['nullable', 'string', 'max:80'],
             'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             //'logo_path' => ['nullable', 'string'],
             'users' => ['sometimes', 'array']
