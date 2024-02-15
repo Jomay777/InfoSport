@@ -51,6 +51,8 @@ Route::get('players/{player}/pdf', [PlayerController::class, 'pdf'])->name('play
 Route::resource('/photo_players', PhotoPlayerController::class);
 Route::get('photo_players/{photo_player}', [PhotoPlayerController::class, 'show'])->name('photo_players.show');
 
+//adminstration panel
+Route::get('/administration', [AdminController::class, 'index'])->name('administration.index');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -63,7 +65,6 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware(['auth', 'role:Administrador'])->prefix('/admin')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-
     Route::resource('/users', UserController::class);
     Route::resource('/roles', RoleController::class);
     Route::resource('/permissions', PermissionController::class);
@@ -75,44 +76,52 @@ Route::middleware(['auth', 'role:Administrador'])->prefix('/admin')->group(funct
     Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
         ->name('users.roles.destroy');       
 });
-Route::middleware(['auth', 'role:Administrador|Comité técnico|Directiva|Delegado'])->group(function () {
+Route::middleware(['auth', 'can:Ver club'])->group(function () {
 
     //Routes for clubs
     Route::resource('/clubs', ClubController::class);
     Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
-    
+});   
+Route::middleware(['auth', 'can:Ver equipo'])->group(function () {
+
     //Routes for teams
     Route::resource('/teams', TeamController::class);
     Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
-
+});
+Route::middleware(['auth', 'can:Ver jugador'])->group(function () {
     //Routes for players
     Route::resource('/players', PlayerController::class);
     Route::get('players/{player}', [PlayerController::class, 'show'])->name('players.show');
-
+});
+Route::middleware(['auth', 'can:Ver pase'])->group(function () {
     //Routes for pass_requests
     Route::resource('/pass_requests', PassRequestController::class);
     Route::get('pass_requests/{pass_request}', [PassRequestController::class, 'show'])->name('pass_requests.show');    
 });
 
-Route::middleware(['auth', 'role:Administrador|Comité técnico|Directiva|Asistente'])->group(function () {
+Route::middleware(['auth', 'can:Ver torneo'])->group(function () {
     //Routes for tournaments
     Route::resource('/tournaments', TournamentController::class);
     Route::get('tournaments/{tournament}', [TournamentController::class, 'show'])->name('tournaments.show');
+});
+Route::middleware(['auth', 'can:Ver rol de partido'])->group(function () {
 
     //Routes for game_roles
     Route::resource('/game_roles', GameRoleController::class);
     Route::get('game_roles/{game_role}', [GameRoleController::class, 'show'])->name('game_roles.show');
     Route::get('game_roles/{game_role}/publish', [GameRoleController::class, 'publish'])->name('game_roles.publish');
-
+});
+Route::middleware(['auth', 'can:Ver programación de partido'])->group(function () {
     //Routes for game_schedulings
     Route::resource('/game_schedulings', GameSchedulingController::class);
     Route::get('game_schedulings/{game_scheduling}', [GameSchedulingController::class, 'show'])->name('game_schedulings.show');
-
+});
+Route::middleware(['auth', 'can:Ver partido'])->group(function () {
     //Routes for games
     Route::resource('/games', GameController::class);
     Route::get('games/{game}', [GameController::class, 'show'])->name('games.show');
 });
 //Routes for categories
-Route::resource('/categories', CategoryController::class)->middleware('role:Administrador|Comité técnico|Directiva');
+Route::resource('/categories', CategoryController::class)->middleware(['auth','can:Ver categoría']);
 
 require __DIR__.'/auth.php';

@@ -9,7 +9,7 @@ import { Link } from '@inertiajs/vue3';
 import { usePermission } from "@/composables/permissions"
 
 const showingNavigationDropdown = ref(false);
-const { hasRole } = usePermission();
+const { hasPermission, hasRole } = usePermission();
 </script>
 
 <template>
@@ -45,13 +45,27 @@ const { hasRole } = usePermission();
                                     v-if="hasRole('Administrador')"                         
                                     :href="route('users.index')" 
                                     :active="route().current('users.index')">
-                                    Administrador
+                                    Panel de Administrador
+                                </NavLink>
+                                <NavLink        
+                                    v-if="hasPermission('Ver club') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver equipo') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver torneo') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver categoría') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver jugador') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver pase') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver rol de partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver programación de partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')"                         
+                                    :href="route('administration.index')" 
+                                    :active="route().current('administration.index')">
+                                    Panel de Administración
                                 </NavLink>
                                 <NavLink        
                                     v-if="hasRole('Comité técnico')"                         
                                     :href="route('clubs.index')" 
                                     :active="route().current('clubs.index')">
-                                    Comité técnico
+                                    Comité Técnico
                                 </NavLink>
                                 <NavLink        
                                     v-if="hasRole('Delegado')"                         
@@ -153,6 +167,21 @@ const { hasRole } = usePermission();
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink  
+                                    v-if="hasPermission('Ver club') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver equipo') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver torneo') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver categoría') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver jugador') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver pase') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver rol de partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver programación de partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')  ||
+                                    hasPermission('Ver partido') && !hasRole('Administrador') && !hasRole('Comité técnico') && !hasRole('Delegado') && !hasRole('Asistente') && !hasRole('Directiva')"                         
+                                                             
+                                    :href="route('administration.index')" 
+                                    :active="route().current('Administration.index')">
+                                    Panel de administración
                         </ResponsiveNavLink>
                         <ResponsiveNavLink  v-if="hasRole('Administrador')"                         
                                     :href="route('users.index')" 

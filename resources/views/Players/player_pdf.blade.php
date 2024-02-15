@@ -50,7 +50,7 @@
         <table>
             <tr>
                 <td>
-                    <img src="{{ public_path($player->photoPlayer->photo_path) }}" alt="Company logo" class="logo">
+                    <img src="{{ public_path($player->photoPlayer->photo_path) }}" alt="Foto de jugador" class="logo">
                     
                 </td>                
                 <td>
