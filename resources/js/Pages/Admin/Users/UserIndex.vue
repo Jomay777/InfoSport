@@ -107,7 +107,7 @@ const deleteUser = (id) => {
                 <Link
                   :href="route('users.edit', user.id)"
                   class="text-green-400 hover:text-green-600"
-                  >Edit
+                  >Editar
                 </Link>
                <button @click="() => confirmDeleteUser(user.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
                <Modal :show="showConfirmDeleteUserModal === user.id" @close="closeModal">
