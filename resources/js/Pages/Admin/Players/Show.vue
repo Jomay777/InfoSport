@@ -157,7 +157,6 @@ const age = calculateAge(props.player.birth_date);
                       </p> 
                     </div>                                  
                 </div>
-                <template v-if="hasRole('Administrador') || hasRole('Comité técnico')">
                 <div class="mt-5 px-2 w-full">
                   <p class="text-xl text-gray-700 dark:text-white">Foto de carnet de identidad</p>
                   <div class="mt-3 flex justify-center">
@@ -168,18 +167,17 @@ const age = calculateAge(props.player.birth_date);
                 <div class="mt-3 px-2 w-full">
                   <p class="text-xl text-gray-600 dark:text-white">Foto de certificado de nacimiento</p>
                   <div class="mt-3 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_birth_certificate" alt="foto de carnet de identidad"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
+                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_birth_certificate" alt="foto de certificado de nacimiento"/> 
+                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de certificado de nacimiento"/>                     
                     </div> 
                 </div>
                 <div v-if="age < 18" class="mt-3 px-2 w-full">
                   <p class="text-xl text-gray-600 dark:text-white">Foto de autorización parental</p>
                   <div class="mt-3 flex justify-center">
-                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_parental_authorization" alt="foto de carnet de identidad"/> 
-                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de carnet de identidad"/>                     
+                      <img v-if="player.photo_player" class=" bg-cover bg-center max-w-20" :src="player.photo_player.photo_parental_authorization" alt="foto de autorización parental"/> 
+                      <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de autorización parental"/>                     
                     </div> 
                 </div>
-                </template>
                 <div class="flex justify-center mt-6">
                     <Link :href="route('players.edit', player.id)" class="text-green-400 hover:text-green-600 m-5">Editar</Link>
                     <button @click="confirmDeletePlayer" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
