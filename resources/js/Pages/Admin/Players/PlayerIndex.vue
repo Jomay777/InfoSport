@@ -92,7 +92,7 @@ const deletePlayer = (id) => {
               <TableHeaderCell>ID</TableHeaderCell>
               <TableHeaderCell>Nombre</TableHeaderCell>
               <TableHeaderCell>Equipo</TableHeaderCell>
-              <TableHeaderCell>Estado</TableHeaderCell>
+              <TableHeaderCell>CI</TableHeaderCell>
               <TableHeaderCell>Foto</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>            
             </TableRow>
@@ -121,12 +121,18 @@ const deletePlayer = (id) => {
                     Equipo no asignado
                    </Link>   
                 </TableDataCell>
-                <TableDataCell>   
+                <!-- <TableDataCell>   
                   <Link :href="route('players.show', player.id)">                    
                     {{ player.state == 1 ? 'inhabilitado': 'habilitado'}}
                   </Link>  
                     <br> 
-                </TableDataCell>                                           
+                </TableDataCell>     -->        
+                <TableDataCell>   
+                  <Link :href="route('players.show', player.id)">                    
+                    {{ player.c_i }}
+                  </Link>  
+                    <br> 
+                </TableDataCell>                                   
                 <TableDataCell v-if="player.photo_player" >
                   <Link :href="route('players.show', player.id)">     
                     <img class="bg-cover bg-center max-w-20" 

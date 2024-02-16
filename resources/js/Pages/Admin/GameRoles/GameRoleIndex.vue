@@ -114,9 +114,7 @@ const deleteGameRole = (id) => {
                    <Link :href="route('game_roles.show', game_role.id)">     
                     {{ game_role.date }} 
                    </Link>  
-                </TableDataCell>
-                              
-                
+                </TableDataCell>                                             
                 <TableDataCell >
                   <Link :href="route('game_roles.show', game_role.id)">     
                     {{ game_role.tournament.name }}

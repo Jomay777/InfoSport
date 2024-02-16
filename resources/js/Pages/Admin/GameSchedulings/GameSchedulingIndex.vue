@@ -99,29 +99,23 @@ const deleteGameScheduling = (id) => {
 
           <template #default>
             <TableRow v-for="game_scheduling in game_schedulings" :key="game_scheduling.id" class="border-b">              
-                <TableDataCell>   
-                  <Link :href="route('game_schedulings.show', game_scheduling.id)">     
-                    {{ game_scheduling.id }} 
-                  </Link>             
+                <TableDataCell>                         
+                    {{ game_scheduling.id }}                                
                 </TableDataCell>
-                <TableDataCell >
-                   <Link :href="route('game_schedulings.show', game_scheduling.id)">     
-                    {{ game_scheduling.time }} 
-                   </Link>  
+                <TableDataCell >                       
+                    {{ game_scheduling.time }}                      
                 </TableDataCell>
-                <TableDataCell>
-                  <Link :href="route('game_schedulings.show', game_scheduling.id)">     
-                    {{ game_scheduling.gameRole.name }} 
-                   </Link>   
+                <TableDataCell>                      
+                    {{ game_scheduling.gameRole.name }}                       
                 </TableDataCell>               
-                <TableDataCell v-if="game_scheduling.teams.length > 0" >
+                <TableDataCell v-if="game_scheduling.teams.length > 0" >                      
                   <span v-for="(team, index) in game_scheduling.teams" :key="team.id">
                     {{ team.name }}
                     <span v-if="index < game_scheduling.teams.length - 1">
                       <br>vs
                     </span>
                     <br>
-                  </span>                                                                    
+                  </span>                                                                                    
                 </TableDataCell>
 
                 <TableDataCell v-else>Equipos no asignados</TableDataCell>  

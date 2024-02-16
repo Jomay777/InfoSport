@@ -105,6 +105,8 @@ const deleteGame = (id) => {
                   </Link>             
                 </TableDataCell>
                 <TableDataCell v-if="game.game_scheduling.teams && game.game_scheduling.teams.length > 0">
+                  <Link :href="route('games.show', game.id)">     
+
                   ({{ game.game_scheduling.game_role.name }})
                   <br>
                   <span v-for="(team, index) in game.game_scheduling.teams" :key="team.id">
@@ -113,9 +115,14 @@ const deleteGame = (id) => {
                       <br>vs
                     </span>
                     <br>
-                  </span>                                                                    
+                  </span>   
+                </Link>                                                                 
                 </TableDataCell>
-                <TableDataCell v-else>Equipos no asignados</TableDataCell>                                 
+                <TableDataCell v-else>
+                  <Link :href="route('games.show', game.id)">     
+                  Equipos no asignados
+                  </Link>
+                </TableDataCell>                                 
 
                 <TableDataCell >
                    <Link :href="route('games.show', game.id)">     
