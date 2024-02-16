@@ -89,17 +89,28 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user): RedirectResponse
     {
+        //dd($request->all());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|' . Rule::unique('users', 'email')->ignore($user),
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'roles' => ['sometimes', 'array'],
             'permissions' => ['sometimes', 'array']
         ]);
-
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email
-        ]);
+        if(!$request->password){
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+        }else {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+        }
+       
 
         $user->syncRoles($request->input('roles.*.name'));
         $user->syncPermissions($request->input('permissions.*.name'));

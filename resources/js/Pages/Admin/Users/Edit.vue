@@ -24,6 +24,8 @@ const props = defineProps({
 const form = useForm({
   name: props.user?.name,
   email: props.user?.email,
+  password: "",
+  password_confirmation: "",
   roles: [],
   permissions: []
 });
@@ -90,7 +92,36 @@ watch(
 
           <InputError class="mt-2" :message="form.errors.email" />
         </div>
+        <div class="mt-4">
+          <InputLabel for="password" value="Cambiar contraseña" />
 
+          <TextInput
+            id="password"
+            type="password"
+            class="mt-1 block w-full"
+            v-model="form.password"            
+            autocomplete="new-password"
+          />
+
+          <InputError class="mt-2" :message="form.errors.password" />
+        </div>
+
+        <div class="mt-4">
+          <InputLabel for="password_confirmation" value="Confirmar contraseña" />
+
+          <TextInput
+            id="password_confirmation"
+            type="password"
+            class="mt-1 block w-full"
+            v-model="form.password_confirmation"            
+            autocomplete="new-password"
+          />
+
+          <InputError
+            class="mt-2"
+            :message="form.errors.password_confirmation"
+          />
+        </div>
         <div class="mt-4">
             <InputLabel for="roles" value="Roles" />
             <VueMultiselect
