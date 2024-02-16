@@ -52,6 +52,8 @@ const updateGameRole= () => {
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
+      <div class="h-10"></div>
+
       <div class="flex justify-between">
         <Link
           :href="route('game_roles.index')"

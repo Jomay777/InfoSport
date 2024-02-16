@@ -33,6 +33,8 @@ const storeGameRole = () =>{
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
+      <div class="h-10"></div>
+
       <div class="flex justify-between">
         <Link
           :href="route('game_roles.index')"
@@ -109,6 +111,7 @@ const storeGameRole = () =>{
           </div>
         </form>
       </div>
+      <div class="h-20"></div>
     </div>
   </AdminLayout>
 </template>
