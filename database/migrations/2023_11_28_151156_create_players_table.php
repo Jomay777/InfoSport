@@ -12,20 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('first_name');
-            $table->string('second_name')->nullable();
-            $table->string('last_name');
-            $table->string('mother_last_name')->nullable();
+            $table->id();          
+            $table->string('first_name', 36);
+            $table->string('second_name', 36)->nullable();
+            $table->string('last_name', 36);
+            $table->string('mother_last_name', 36)->nullable();
             $table->date('birth_date');
-            $table->string('c_i');
+            $table->string('c_i', 20)->unique();
             $table->string('gender', 20);
 
-
-            $table->string('nacionality');
-            $table->string('country_birth');
-            $table->string('region_birth');
+            $table->string('nacionality', 20);
+            $table->string('country_birth', 40);
+            $table->string('region_birth', 50);
             
             $table->enum('state', [1,2])->default(1);
             

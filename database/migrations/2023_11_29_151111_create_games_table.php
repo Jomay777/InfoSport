@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             
-            $table->string('result');
+            $table->string('result', 100);
             
-            $table->text('observation')->nullable();
+            $table->text('observation', 300)->nullable();
 
             //one-to-many relationship
             $table->unsignedBigInteger('game_scheduling_id')->unique();

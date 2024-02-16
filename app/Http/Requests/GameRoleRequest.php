@@ -22,7 +22,7 @@ class GameRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:50'],
             'date' => [ 'required','date'],
             'tournament' => ['required', 'array'],
             'pitch' => ['nullable', 'array']

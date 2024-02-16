@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TeamRequest extends FormRequest
 {
@@ -22,8 +23,8 @@ class TeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => [ 'nullable', 'max:500'],
+            'name' => ['required', 'string', 'max:50', Rule::unique('teams', 'name')->ignore($this->team)],
+            'description' => [ 'nullable', 'max:300'],
             'club' => ['required', 'array'],
             'category' => ['nullable', 'array'],
         ];

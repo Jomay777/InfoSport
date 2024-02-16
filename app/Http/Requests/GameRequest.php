@@ -25,8 +25,8 @@ class GameRequest extends FormRequest
         $gameId = $this->route('game'); // Obtener el ID del juego actual
 
         return [
-            'observation' => ['nullable', 'max:400'],
-            'result' => ['required', 'string', 'max:255'],
+            'observation' => ['nullable', 'max:300'],
+            'result' => ['required', 'string', 'max:100'],
             'game_scheduling' => [
                 'required',
                 Rule::unique('games', 'game_scheduling_id')->ignore($gameId),

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->string('name', 70)->unique();
+            $table->text('description', 300)->nullable();
 
             // one-to-many relationship
             $table->unsignedBigInteger('category_id')->nullable();

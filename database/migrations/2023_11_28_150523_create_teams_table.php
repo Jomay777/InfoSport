@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
-            $table->text('description')->nullable();
-            
+            $table->string('name', 50)->unique();
+            $table->text('description', 300)->nullable();
             //one-to-many relationship
             $table->unsignedBigInteger('club_id');
             $table->foreign('club_id')

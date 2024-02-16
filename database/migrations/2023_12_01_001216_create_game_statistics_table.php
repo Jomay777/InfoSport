@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('game_statistics', function (Blueprint $table) {
             $table->id();
-
-            $table->integer('goals_team_a');
-            $table->integer('goals_team_b');
-            $table->integer('yellow_cards_a');
-            $table->integer('yellow_cards_b');
-            $table->integer('red_cards_a');
-            $table->integer('red_cards_b');
+            
+            $table->unsignedBigInteger('goals_team_a')->nullable();
+            $table->unsignedBigInteger('goals_team_b')->nullable();
+            $table->unsignedBigInteger('yellow_cards_a')->nullable();
+            $table->unsignedBigInteger('yellow_cards_b')->nullable();
+            $table->unsignedBigInteger('red_cards_a')->nullable();
+            $table->unsignedBigInteger('red_cards_b')->nullable();
 
             //one-to-one relationship
             $table->unsignedBigInteger('game_id')->unique();
