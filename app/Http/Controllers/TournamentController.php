@@ -24,7 +24,11 @@ class TournamentController extends Controller
         ->take(20); 
 
         if ($request->search) {
-            $tournaments->where('tournaments.name', 'like', '%' . $request->search . '%');
+            $tournaments->where('tournaments.name', 'like', '%' . $request->search . '%')
+                ->orWhere('tournaments.id', 'like', '%' . $request->search . '%')
+                ->orWhereHas('category', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
         }
 
         $tournaments = $tournaments->get();

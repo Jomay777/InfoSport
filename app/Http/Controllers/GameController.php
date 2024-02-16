@@ -31,6 +31,7 @@ class GameController extends Controller
         if ($request->search) {
             $games->where(function ($query) use ($request) {
                 $query->where('games.id', 'like', '%' . $request->search . '%')
+                    ->orWhere('games.result', 'like', '%' . $request->search . '%')
                     ->orWhereHas('gameScheduling.teams', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })

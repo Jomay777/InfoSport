@@ -28,7 +28,9 @@ class UserController extends Controller
         ->take(20); 
 
         if ($request->search) {
-            $users->where('users.name', 'like', '%' . $request->search . '%');
+            $users->where('users.id', 'like', '%' . $request->search . '%')
+                ->orWhere('users.name', 'like', '%' . $request->search . '%')
+                ->orWhere('users.email', 'like', '%' . $request->search . '%');
         }
 
         $users = $users->get();

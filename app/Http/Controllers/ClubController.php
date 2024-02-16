@@ -41,7 +41,14 @@ class ClubController extends Controller
         }          
 
         if ($request->search) {
-            $clubs->where('clubs.name', 'like', '%' . $request->search . '%');
+            $clubs->where(function ($query) use ($request) {
+                $query->where('clubs.name', 'like', '%' . $request->search . '%')
+                      ->orWhere('clubs.id', 'like', '%' . $request->search . '%')
+                      ->orWhere('clubs.coach', 'like', '%' . $request->search . '%')
+                      ->orWhereHas('users', function ($query) use ($request) {
+                          $query->where('name', 'like', '%' . $request->search . '%');
+                      });
+            });
         }
 
         $clubs = $clubs->get();

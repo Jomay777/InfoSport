@@ -34,12 +34,15 @@ class TeamController extends Controller
     } else {
         $teamsQuery->latest()->take(20);
     }
-
     if ($request->search) {
         $teamsQuery->where(function ($query) use ($request) {
             $query->where('teams.name', 'like', '%' . $request->search . '%')
+                ->orWhere('teams.id', 'like', '%' . $request->search . '%')               
                 ->orWhereHas('club', function ($subQuery) use ($request) {
-                    $subQuery->where('clubs.name', 'like', '%' . $request->search . '%');
+                    $subQuery->where('name', 'like', '%' . $request->search . '%');
+                })
+                ->orWhereHas('category', function ($subQuery) use ($request) {
+                    $subQuery->where('name', 'like', '%' . $request->search . '%');
                 });
         });
     }

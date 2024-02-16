@@ -16,11 +16,15 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $roles = Role::query()
         ->latest()
         ->take(20); 
+        if ($request->search) {
+            $roles->where('roles.id', 'like', '%' . $request->search . '%')
+                ->orWhere('roles.name', 'like', '%' . $request->search . '%');
+        }
         $roles = $roles->get();
         return Inertia::render('Admin/Roles/RoleIndex', [
             'roles' => RoleResource::collection($roles)

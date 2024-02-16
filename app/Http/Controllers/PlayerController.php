@@ -37,16 +37,35 @@ class PlayerController extends Controller
         } else {
             $playersQuery->latest()->take(20);
         }
-
         if ($request->search) {
             $playersQuery->where(function ($query) use ($request) {
-                $query->where('players.first_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('players.second_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('players.last_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('players.mother_last_name', 'like', '%' . $request->search . '%');
+                $fullName = $request->search; // set fullname of search
+                
+                $names = explode(' ', $fullName);
+                $firstName = isset($names[0]) ? $names[0] : '';
+                /* $secondName = isset($names[1]) ? $names[1] : '';
+                $lastName = isset($names[2]) ? $names[2] : '';
+                $motherLastName = isset($names[3]) ? $names[3] : ''; */
+        
+                $query->where(function ($query) use ($firstName, $request) {
+                    $query->where('players.first_name', 'like', '%' . $firstName . '%')                     
+                        ->orWhere('players.first_name', 'like', '%' . $request->search . '%')
+                        ->orWhere('players.second_name', 'like', '%' . $request->search . '%')
+                        ->orWhere('players.last_name', 'like', '%' . $request->search . '%')
+                        ->orWhere('players.id', 'like', '%' . $request->search . '%')
+                        ->orWhere('players.c_i', 'like', '%' . $request->search . '%')
+                        //->orWhere('players.state', 'like', '%' . $request->search . '%')
+
+                        ->orWhereHas('team', function ($subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        });
+                         
+                })
+                // search full name
+                ->orWhereRaw("CONCAT(players.first_name, ' ', players.second_name, ' ', players.last_name, ' ', players.mother_last_name) LIKE ?", ['%' . $fullName . '%']);
             });
         }
-
+     
         $players = $playersQuery->latest()->take(20)->get();
 
         return Inertia::render('Admin/Players/PlayerIndex', [

@@ -37,22 +37,23 @@ class PassRequestController extends Controller
 
         // Aplicar la búsqueda si se proporciona un término de búsqueda
         if ($request->search) {
-            $passRequests->where(function ($query) use ($request) {
+            $fullName = $request->search;
+            $names = explode(' ', $fullName);
+            $firstName = isset($names[0]) ? $names[0] : '';
+            $passRequests->where(function ($query) use ($request, $fullName, $firstName) {
                 $query->where('pass_requests.id', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('player', function ($subQuery) use ($request) {
-                        $subQuery->where('first_name', 'like', '%' . $request->search . '%');
-                    })
-                    ->orWhereHas('player', function ($subQuery) use ($request) {
-                        $subQuery->where('second_name', 'like', '%' . $request->search . '%');
-                    })
-                    ->orWhereHas('player', function ($subQuery) use ($request) {
-                        $subQuery->where('last_name', 'like', '%' . $request->search . '%');
-                    })
-                    ->orWhereHas('player', function ($subQuery) use ($request) {
-                        $subQuery->where('mother_last_name', 'like', '%' . $request->search . '%');
+                    ->orWhereHas('player', function ($subQuery) use ($firstName, $fullName, $request) {
+                        $subQuery->where('first_name', 'like', '%' . $firstName . '%')                            
+                            ->orWhere('first_name', 'like', '%' . $request->search . '%')
+                            ->orWhere('second_name', 'like', '%' . $request->search . '%')
+                            ->orWhere('last_name', 'like', '%' . $request->search . '%')
+                            ->orWhere('mother_last_name', 'like', '%' . $request->search . '%')
+                            ->orWhereRaw("CONCAT(first_name, ' ', second_name, ' ', last_name, ' ', mother_last_name) LIKE ?", ['%' . $fullName . '%']);
                     });
             });
         }
+        
+        
 
         // Obtener los resultados finales
         $passRequests = $passRequests->get();

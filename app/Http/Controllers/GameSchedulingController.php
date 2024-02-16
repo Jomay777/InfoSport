@@ -30,10 +30,10 @@ class GameSchedulingController extends Controller
                 $query->where('game_schedulings.id', 'like', '%' . $request->search . '%')
                     ->orWhere('game_schedulings.time', 'like', '%' . $request->search . '%')
                     ->orWhereHas('gameRole', function ($subQuery) use ($request) {
-                        $subQuery->where('game_roles.name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('teams', function ($subQuery) use ($request) {
-                        $subQuery->where('teams.name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
                     });
             });
         }

@@ -29,7 +29,15 @@ class GameRoleController extends Controller
         ->take(20); 
 
         if ($request->search) {
-            $game_roles->where('game_roles.name', 'like', '%' . $request->search . '%');
+            $game_roles->where('game_roles.name', 'like', '%' . $request->search . '%')
+                ->orWhere('game_roles.id', 'like', '%' . $request->search . '%')
+                ->orWhere('game_roles.date', 'like', '%' . $request->search . '%')
+                ->orWhereHas('tournament', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
+                ->orWhereHas('pitch', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
         }
 
         $game_roles = $game_roles->get();
