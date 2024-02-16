@@ -52,7 +52,7 @@ const updateGameRole= () => {
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
-      <div class="h-10"></div>
+      <div class="h-20"></div>
 
       <div class="flex justify-between">
         <Link

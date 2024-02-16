@@ -43,7 +43,7 @@ const form = useForm({
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
           <div>
-            <InputLabel for="description" value="Dsecripción" />
+            <InputLabel for="description" value="Descripción" />
             <TextInput
               id="description"
               type="text"
