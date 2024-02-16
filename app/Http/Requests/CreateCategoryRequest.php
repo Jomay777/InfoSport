@@ -23,8 +23,8 @@ class CreateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', Rule::unique('categories', 'name')->ignore($this->category)],
-            'description' => ['nullable', 'max:255']
+            'name' => ['required', 'string', 'max:30', Rule::unique('categories', 'name')->ignore($this->category)],
+            'description' => ['nullable', 'max:350']
         ];
     }
 }
