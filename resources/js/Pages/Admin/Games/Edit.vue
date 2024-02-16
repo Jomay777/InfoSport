@@ -116,6 +116,7 @@ const updateGame= () => {
               v-model="form.game_statistic.goals_team_a"              
               autocomplete="gamegame_statistic.goals_team_a"
               required
+              min="0"
             />
             <InputError class="mt-2" :message="form.errors.goals_team_a" />
           </div>
@@ -128,6 +129,7 @@ const updateGame= () => {
               v-model="form.game_statistic.goals_team_b"              
               autocomplete="gamegame_statistic.goals_team_b"
               required
+              min="0"
             />
           </div>
           <div class="mt-4">
@@ -139,6 +141,7 @@ const updateGame= () => {
               v-model="form.game_statistic.yellow_cards_a"              
               autocomplete="gamegame_statistic.yellow_cards_a"
               required
+              min="0"
             />
           </div>
           <div class="mt-4">
@@ -150,6 +153,7 @@ const updateGame= () => {
               v-model="form.game_statistic.yellow_cards_b"              
               autocomplete="gamegame_statistic.yellow_cards_b"
               required
+              min="0"
             />
           </div>
           <div class="mt-4">
@@ -161,6 +165,7 @@ const updateGame= () => {
               v-model="form.game_statistic.red_cards_a"              
               autocomplete="gamegame_statistic.red_cards_a"
               required
+              min="0"
             />
           </div>
           <div class="mt-4">
@@ -172,6 +177,7 @@ const updateGame= () => {
               v-model="form.game_statistic.red_cards_b"              
               autocomplete="gamegame_statistic.red_cards_b"
               required
+              min="0"
             />
           </div>   
           <div class="flex items-center mt-4">
