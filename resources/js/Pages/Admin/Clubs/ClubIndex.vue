@@ -110,20 +110,32 @@ const deleteClub = (id) => {
                     {{ club.name }} 
                    </Link>  
                 </TableDataCell>
-                <TableDataCell>
+                <TableDataCell v-if="club.coach">
                   <Link :href="route('clubs.show', club.id)">     
                     {{ club.coach }} 
                    </Link>   
-                </TableDataCell>               
+                </TableDataCell> 
+                <TableDataCell v-else>
+                  Profesor no registrado
+                </TableDataCell>
                 <TableDataCell v-if="club.users.length > 0" >
-                  
+                  <Link :href="route('clubs.show', club.id)">     
                     <span  v-for="user in club.users" :key="user.id" >
                     {{ user.name }}
                     <br> 
-                    </span>                                                                    
+                    </span>  
+                  </Link>                                                                  
                 </TableDataCell>
-                <TableDataCell v-else>Delegado no asignado</TableDataCell>  
-                <TableDataCell> <img class="bg-cover bg-center max-w-20" :src="club.logo_path" alt="logo de club"/> </TableDataCell>
+                <TableDataCell v-else>
+                  <Link :href="route('clubs.show', club.id)">     
+                    Delegado no asignado
+                  </Link>  
+                </TableDataCell>  
+                <TableDataCell>
+                  <Link :href="route('clubs.show', club.id)">     
+                   <img class="bg-cover bg-center max-w-20" :src="club.logo_path" alt="logo de club"/> 
+                  </Link> 
+                </TableDataCell>
                 <TableDataCell class="space-x-4">
                     <Link :href="route('clubs.edit', club.id)" class="text-green-400 hover:text-green-600">Editar</Link>
                     <button @click="() => confirmDeleteClub(club.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
