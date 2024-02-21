@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
 use App\Http\Controllers\RevokePermissionFromUserController;
 use App\Http\Controllers\RemoveRoleFromUserController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Foundation\Application;
@@ -123,5 +124,7 @@ Route::middleware(['auth', 'can:Ver partido'])->group(function () {
 });
 //Routes for categories
 Route::resource('/categories', CategoryController::class)->middleware(['auth','can:Ver categoría']);
+//Routes for reports
+Route::resource('/reports', ReportController::class);
 
 require __DIR__.'/auth.php';
