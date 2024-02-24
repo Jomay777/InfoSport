@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClubResource;
+use App\Http\Resources\TeamResource;
+use App\Http\Resources\UserResource;
 use App\Models\Club;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,9 +20,18 @@ class ReportController extends Controller
     {
         $clubs = Club::with('users');
         $clubs = $clubs->get();
+        $users = User::with('clubs');
+        $users = $users->get();
+        $teams = Team::with('category', 'club');
+        $teams = $teams->get();
+        //dd($teams);
 
         return Inertia::render('Admin/ReportIndex', [
-            'clubs' => ClubResource::collection($clubs)
+            'clubs' => ClubResource::collection($clubs),
+            'users' => UserResource::collection($users),
+            'teams' => TeamResource::collection($teams),
+
+
         ]);
 
     }
