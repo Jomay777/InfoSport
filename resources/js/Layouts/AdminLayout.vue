@@ -314,6 +314,11 @@ const showingNavigationDropdown = ref(false);
                     :active="route().current('games.*')">
                     Partidos
                 </ResponsiveNavLink>
+                <ResponsiveNavLink 
+                    :href="route('reports.index')" 
+                    :active="route().current('reports.*')">
+                    Reportes
+                </ResponsiveNavLink>
             </div>  
             <Link :href="route('logout')" method="post" as="button"
                  class="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 group hover:text-red-400">
