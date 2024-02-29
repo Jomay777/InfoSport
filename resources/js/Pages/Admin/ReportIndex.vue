@@ -721,7 +721,8 @@ buttons10.value= [
     </DataTable> -->
  
 </template>
-
+<style src="vue-multiselect/dist/vue-multiselect.css">
+</style>
 <style>
 @import 'datatables.net-dt';
 @import 'datatables.net-buttons-dt';
@@ -730,5 +731,4 @@ buttons10.value= [
   
 </style>
 
-<style src="vue-multiselect/dist/vue-multiselect.css">
-</style>
+

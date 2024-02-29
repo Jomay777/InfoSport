@@ -112,7 +112,7 @@ const deletePlayer = (id) => {
                 </TableDataCell>
                 <TableDataCell v-if="player.team" >   
                   <Link :href="route('players.show', player.id)">                    
-                    {{ player.team.name }}
+                    {{ player.team.name }} - {{ player.team.category ? player.team.category.name : 'Cat. no asignada' }}
                   </Link>  
                     <br> 
                 </TableDataCell>

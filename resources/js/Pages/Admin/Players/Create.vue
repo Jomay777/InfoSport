@@ -234,7 +234,9 @@ const handleFileChangePA = (event) => {
             <VueMultiselect
               id="team"
               v-model="form.team"
-              :options="team"
+              :options="team.map(item => ({
+                id: item.id,
+                name: `${item.name ? item.name : ''} - ${ item.category ? item.category.name : 'Cat. no asignada'}`}))"
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"

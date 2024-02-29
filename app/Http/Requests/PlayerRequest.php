@@ -2,8 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Team;
+//use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use Ramsey\Uuid\Type\Integer;
+
+use function PHPSTORM_META\map;
 
 class PlayerRequest extends FormRequest
 {
@@ -22,7 +28,7 @@ class PlayerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return [            
             'first_name' => ['required', 'string', 'max:36'],
             'second_name' => ['nullable', 'string', 'max:36'],
             'last_name' => ['required', 'string', 'max:36'],
@@ -34,7 +40,32 @@ class PlayerRequest extends FormRequest
             'country_birth' => ['required', 'string', 'max:40'],
             'region_birth' => ['required', 'string', 'max:50'],
             'state' => ['required'],
-            'team_id' => ['nullable', 'exists:teams,id'],
+            'team' => [
+                'nullable',
+                //'exists:teams,id',
+                function ($attribute, $value, $fail) {
+                    // Obtener la fecha de nacimiento del jugador
+                    $id = $this->team['id'];
+                    $name = $value['name'];
+
+                   // dd($id);
+
+                    $birthDate = Carbon::parse($this->birth_date);
+                    // Obtener la edad actual del jugador
+                    $age = $birthDate->age;
+                    // Obtener la categoría del equipo
+                    $team = Team::findOrFail($id);
+                    //$categoryAge = intval($team->category->name);
+                    $categoryAge = ($team->category ? $team->category->name : 'libre');
+
+                    //dd($age, $categoryAge);
+
+                    // Verificar si la edad del jugador es menor o igual a la edad de la categoría del equipo
+                    if ($age >= $categoryAge) {
+                        $fail("El jugador no tiene la edad requerida para pertenecer al equipo $name $categoryAge .");
+                    }
+                },
+            ],
         ];
         
     }

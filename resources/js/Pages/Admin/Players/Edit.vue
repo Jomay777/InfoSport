@@ -28,7 +28,7 @@ const props = defineProps({
     required: true
   },
   team: Object,
-  photo_player: Array
+  photo_player: Array,
 });
 
 
@@ -55,7 +55,8 @@ const form = useForm({
 });
 
 onMounted(() => {
-  form.team = props.player?.team;
+  const category = props.player?.team?.category ?  props.player?.team?.category.name : 'Cat. no asignada';
+  form.team = { id: props.player?.team?.id, name: props.player?.team?.name  +' - '+ category};
   form.gender = props.player?.gender == 'Hombre'? { id: 1, name: 'Hombre' }: { id: 2, name: 'Mujer' };  
 
   form.state = props.player?.state == 1? { id: 1, name: 'inhabilitado' }: { id: 2, name: 'habilitado' };  
@@ -249,7 +250,9 @@ const handleFileChangePA = (event) => {
             <VueMultiselect
               id="team"
               v-model="form.team"
-              :options="team"
+              :options="team.map(item => ({
+                id: item.id,
+                name: `${item.name ? item.name : ''} - ${ item.category ? item.category.name : 'Cat. no asignada'}`}))"
               :multiple="false"
               :close-on-select="true"
               placeholder="Elige el equipo al que pertenece"

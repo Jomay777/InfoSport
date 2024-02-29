@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PlayerRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PhotoPlayerResource;
 use App\Http\Resources\PlayerResource;
 use App\Http\Resources\TeamResource;
+use App\Models\Category;
 use App\Models\PhotoPlayer;
 use App\Models\Player;
 use App\Models\Team;
@@ -29,7 +31,7 @@ class PlayerController extends Controller
         $user = Auth::user();
         $user->load('clubs.teams.players');
 
-        $playersQuery = Player::with('team', 'photoPlayer');
+        $playersQuery = Player::with('team.category', 'photoPlayer');
 
         if ($user->clubs->pluck('teams')->flatten()->pluck('players')->flatten()->isNotEmpty()) {
             $playerIds = $user->clubs->pluck('teams.*.players.*.id')->flatten()->toArray();
@@ -57,6 +59,9 @@ class PlayerController extends Controller
                         //->orWhere('players.state', 'like', '%' . $request->search . '%')
 
                         ->orWhereHas('team', function ($subQuery) use ($request) {
+                            $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        })
+                        ->orWhereHas('team.category', function ($subQuery) use ($request) {
                             $subQuery->where('name', 'like', '%' . $request->search . '%');
                         });
                          
@@ -91,13 +96,14 @@ class PlayerController extends Controller
         $this->authorize('create', Player::class);
 
         $user = Auth::user();
-        $user->load('clubs.teams');
+        $user->load('clubs.teams.category');
     
         // Obtén todos los equipos si el usuario no tiene asignado un club
         // De lo contrario, obtén solo los equipos relacionados con el club del usuario
         $teams = $user->clubs->isEmpty()
-            ? Team::with('club')->get()
+            ? Team::with('club', 'category')->get()
             : $user->clubs->pluck('teams')->flatten();
+            //dd($teams);
         return Inertia::render('Admin/Players/Create', [
             'team' => TeamResource::collection($teams),
             'photoPlayer' => PhotoPlayerResource::collection(PhotoPlayer::all())
@@ -109,6 +115,7 @@ class PlayerController extends Controller
      */
     public function store(PlayerRequest $request)
     {
+        //dd($request->all());
         $this->authorize('create', Player::class);
 
         $validatedData = $request->validated();
@@ -193,11 +200,13 @@ class PlayerController extends Controller
     public function edit(Player $player): Response
     {    
         $this->authorize('update', $player);
-
-        $player->load('team','photoPlayer');
+        $player->load('team.category')->get();
+        //dd($player);
+        $team = Team::with('category')->get();
+      
         return Inertia::render('Admin/Players/Edit', [
             'player' => new PlayerResource($player),
-            'team' => TeamResource::collection(Team::all()),
+            'team' => TeamResource::collection($team),
             'photoPlayer' => PhotoPlayerResource::collection(PhotoPlayer::all())
         ]);
     }
