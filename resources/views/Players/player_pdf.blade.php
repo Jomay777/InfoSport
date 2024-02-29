@@ -20,18 +20,49 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-
+        .watermark {
+          position: fixed; /* Fija la imagen en el fondo */
+          bottom: 52%; /* Ajusta la posición vertical al fondo */
+          left: 64%; /* Ajusta la posición horizontal al fondo */
+          index: -1; /* Coloca la imagen detrás de todo el contenido */
+          opacity: 0.2; /* Establece la opacidad de la imagen */
+          width: 120px;
+          height: auto;
+        }
+        .watermark_one  {
+          position: fixed; /* Fija la imagen en el fondo */
+          bottom: 68%; /* Ajusta la posición vertical al fondo */
+          left: 50%; /* Ajusta la posición horizontal al fondo */
+          index: -1; /* Coloca la imagen detrás de todo el contenido */
+          opacity: 0.8; /* Establece la opacidad de la imagen */
+          width: 50px;
+        }
+        .watermark_two {
+          position: fixed; /* Fija la imagen en el fondo */
+          bottom: 68%; /* Ajusta la posición vertical al fondo */
+          left: 85%; /* Ajusta la posición horizontal al fondo */
+          index: -1; /* Coloca la imagen detrás de todo el contenido */
+          opacity: 0.8; /* Establece la opacidad de la imagen */
+          width: 50px;
+        }
         .logo {
             width: 100px;
             height: auto;
             z-index: 99999;
         }
+        .expiration {
+          margin-top: 5px;
+          text-align: center;
+          font-size: 1em;
+        }
         h2,p{
           margin-left: 10px;
         }
         h2 {
+          text-align: center;
           font-size: 1em;
         }
+
         p{
           margin: 0.2;
         }
@@ -47,6 +78,13 @@
   $expirationDate = (new DateTime())->add(new DateInterval('P4M'))->format('d/m/Y');
   ?>
     <div class="card">
+      <img src="{{ public_path($player->photoPlayer->photo_c_i) }}" alt="" class="watermark ">
+
+      <img src="{{ public_path($player->team->club->logo_path) }}" alt="" class="watermark_one ">
+      <img src="{{ public_path($player->photoPlayer->photo_c_i) }}" alt="" class="watermark_two ">
+
+      <h2>AMFSB</h2>
+
         <table>
             <tr>
                 <td>
@@ -55,10 +93,10 @@
                 </td>                
                 <td>
                     <div>
-                        <h2>
+                        <p>
                           <span>Nombre: </span>
-                          {{ $player->first_name }} {{ $player->second_name }} {{ $player->last_name }}{{ $player->mother_last_name }}
-                        </h2>
+                          {{ $player->first_name }} {{ $player->second_name }} {{ $player->last_name }} {{ $player->mother_last_name }}
+                        </p>
                         <p class="gender">
                           <span>Equipo: </span>
                           {{ $player->team->name }}
@@ -95,10 +133,7 @@
                           <span>Estado: </span>
                           {{ $player->state == 1 ? "Inhabilitado": "Habilitado" }}
                         </p>
-                        <p class="position">
-                          <span>Válido hasta: </span>
-                          {{ $expirationDate }}
-                        </p>
+                        
                     </div>
                 </td>
             </tr>
@@ -110,12 +145,21 @@
                   línea de Firma deljugador
                 </div>
               </td>            
-            </tr>3
-            <tr >              
+            </tr>
+            <tr>
               <td style="text-align: center; border-top: 1.3px solid black;">Sello AMFSB</td>
               <td style="text-align: center ">Firma del Jugador</td>
             </tr>
+            
         </table>
+      <div>
+        <p class="expiration">
+          <span>Válido hasta: </span> 
+          {{ $expirationDate }}
+
+        </p>      
+        
+      </div>    
     </div>
 </body>
 </html>

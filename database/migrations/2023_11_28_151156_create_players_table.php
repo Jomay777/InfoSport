@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('last_name', 36);
             $table->string('mother_last_name', 36)->nullable();
             $table->date('birth_date');
-            $table->string('c_i', 20)->unique();
+            $table->string('c_i', 150)->unique();
             $table->string('gender', 20);
 
             $table->string('nacionality', 20);

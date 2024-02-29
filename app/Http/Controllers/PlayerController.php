@@ -20,6 +20,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Hash;
 
 class PlayerController extends Controller
 {
@@ -117,9 +118,10 @@ class PlayerController extends Controller
     {
         //dd($request->all());
         $this->authorize('create', Player::class);
-
         $validatedData = $request->validated();
+        //$validatedData['c_i'] = encrypt($request->c_i);
 
+        //dd($validatedData);
         if ($request->has('team')) {
             $teamId = $request->input('team.id');
             $validatedData['team_id']= $teamId;
