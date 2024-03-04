@@ -34,7 +34,7 @@ class ReportController extends Controller
     {
         $clubs = Club::with('users');
         $clubs = $clubs->get();
-        $users = User::with('clubs');
+        $users = User::with('clubs', 'roles');
         $users = $users->get();
         $teams = Team::with('category', 'club');
         $teams = $teams->get();
@@ -53,7 +53,7 @@ class ReportController extends Controller
 
         $games = Game::with('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
         $games = $games->get();
-        //dd($game_schedulings);
+        //dd($users);
 
 
 

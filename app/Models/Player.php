@@ -37,4 +37,9 @@ class Player extends Model
     public function photoPlayer(){
         return $this->hasOne(PhotoPlayer::class);
     }
+    
+    //one-to-many relationship
+    public function playerSanctions(){
+        return $this->hasMany(PlayerSanction::class);
+    }
 }

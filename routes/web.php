@@ -11,6 +11,7 @@ use App\Http\Controllers\PassRequestController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\PlayerSanctionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -126,5 +127,7 @@ Route::middleware(['auth', 'can:Ver partido'])->group(function () {
 Route::resource('/categories', CategoryController::class)->middleware(['auth','can:Ver categoría']);
 //Routes for reports
 Route::resource('/reports', ReportController::class);
+//Routes for player_sanctions
+Route::resource('/player_sanctions', PlayerSanctionController::class);
 
 require __DIR__.'/auth.php';

@@ -70,7 +70,17 @@ columns1.value = [
     }
   },
   { data: 'name' },
-  { data: 'email' }
+  { data: 'email' },
+  { data: null, render: function(data, type, row) {
+      if (row.roles.length > 0) {
+        return row.roles.map(function(role) {
+          return role.name;
+        }).join(', '+'<br>');
+      } else {
+        return 'Rol no asignado';
+      }
+    }
+  },
 ];
 columns2.value = [
   { data: null, render: function(data, type, row, meta) {
@@ -560,7 +570,9 @@ buttons10.value= [
                         <tr class="bg-gray-100">
                             <th class="px-2 py-2">#</th>
                             <th class="px-2 py-2">Nombre</th>
-                            <th class="px-2 py-2">Correo electrónico</th>                        
+                            <th class="px-2 py-2">Correo electrónico</th>        
+                            <th class="px-2 py-2">Rol</th>                        
+                
                         </tr>
                     </thead>
                     </DataTable>

@@ -28,4 +28,9 @@ class Game extends Model
 
         return $this->hasOne(GameStatistic::class);
     }
+
+    //one-to-many relationship
+    public function playerSanctions(){
+        return $this->hasMany(PlayerSanction::class);
+    }
 }

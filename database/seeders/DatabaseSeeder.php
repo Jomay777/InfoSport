@@ -15,6 +15,7 @@ use App\Models\PassRequest;
 use App\Models\PhotoPlayer;
 use App\Models\Pitch;
 use App\Models\Player;
+use App\Models\PlayerSanction;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\User;
@@ -58,6 +59,7 @@ class DatabaseSeeder extends Seeder
         GameStatistic::factory(9)->create();
         PassRequest::factory(10)->create();
         PhotoPlayer::factory(10)->create();
+        PlayerSanction::factory(10)->create();
       //  UserableFactory::factory(10)->create();
         
 

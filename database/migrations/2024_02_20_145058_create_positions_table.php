@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('poinst');
-            $table->integer('games_played');
-            $table->integer('games_won');
-            $table->integer('games_drawn');
-            $table->integer('games_lost');
-            $table->integer('goals_scored');
-            $table->integer('goals_against');
+            $table->unsignedInteger('poinst');
+            $table->unsignedInteger('games_played');
+            $table->unsignedInteger('games_won');
+            $table->unsignedInteger('games_drawn');
+            $table->unsignedInteger('games_lost');
+            $table->unsignedInteger('goals_scored');
+            $table->unsignedInteger('goals_against');
         
             //one-to-one relationship
             $table->unsignedBigInteger('tournament_id')->unique();            
              $table->foreign('tournament_id')
                  ->references('id')
-                 ->on('tournament')
+                 ->on('tournaments')
                  ->onDelete('cascade')
                  ->onUpdate('cascade');
             
@@ -35,7 +35,7 @@ return new class extends Migration
             
              $table->foreign('team_id')
                  ->references('id')
-                 ->on('team')
+                 ->on('teams')
                  ->onDelete('cascade')
                  ->onUpdate('cascade');
                  
