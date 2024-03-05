@@ -20,6 +20,7 @@ use App\Http\Controllers\RevokePermissionFromUserController;
 use App\Http\Controllers\RemoveRoleFromUserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamSanctionController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -129,5 +130,7 @@ Route::resource('/categories', CategoryController::class)->middleware(['auth','c
 Route::resource('/reports', ReportController::class);
 //Routes for player_sanctions
 Route::resource('/player_sanctions', PlayerSanctionController::class);
+//Routes for team_sanctions
+Route::resource('/team_sanctions', TeamSanctionController::class);
 
 require __DIR__.'/auth.php';

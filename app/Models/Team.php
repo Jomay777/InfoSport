@@ -35,4 +35,8 @@ class Team extends Model
     public function category(){
         return $this->belongsTo(Category::class);
     }    
+    //one-to-many relationship
+    public function teamSanctions(){
+        return $this->hasMany(TeamSanction::class);
+    }
 }

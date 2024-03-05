@@ -92,7 +92,7 @@ const dispatchAction = () => {
             <InputError class="mt-2" :message="form.errors.players" />
           </div>
           <div class="mt-4">
-            <InputLabel for="games" value="Equipo - Rol de Partido - Torneo" />
+            <InputLabel for="games" value="Equipos - Rol de Partido - Torneo" />
             <VueMultiselect
               id="games"
               v-model="form.games"           

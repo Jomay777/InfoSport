@@ -17,6 +17,7 @@ use App\Models\Pitch;
 use App\Models\Player;
 use App\Models\PlayerSanction;
 use App\Models\Team;
+use App\Models\TeamSanction;
 use App\Models\Tournament;
 use App\Models\User;
 use Database\Factories\GameSchedulingTeamFactory;
@@ -60,6 +61,8 @@ class DatabaseSeeder extends Seeder
         PassRequest::factory(10)->create();
         PhotoPlayer::factory(10)->create();
         PlayerSanction::factory(10)->create();
+        TeamSanction::factory(10)->create();
+
       //  UserableFactory::factory(10)->create();
         
 

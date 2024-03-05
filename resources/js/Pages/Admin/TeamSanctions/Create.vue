@@ -7,8 +7,6 @@ import InputError from "@/Components/InputError.vue";
 import TableDataCell from "@/Components/TableDataCell.vue";
 import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
 
 import { ref } from "vue";
 import { watch } from "vue";
@@ -16,23 +14,25 @@ import { watch } from "vue";
 
 defineProps({
   games: Array,
-  players: Array
+  teams: Array
 });
 const form = useForm({
   sanction: "",
+  observation: "",
   state: "",
-  yellow_cards: '',
-  red_card: '',
+
   games: [],
-  players: [],
+  teams: [],
 });
-const storePlayerSanction = () =>{
+const storeTeamSanction = () =>{
 //  form.game_scheduling_id = form.game_scheduling ? form.game_scheduling.id : null;
 
-  form.post(route('player_sanctions.store'));
+  form.post(route('team_sanctions.store'));
 }
 
-
+const dispatchAction = () => {
+  form.games = {id:'' , name:''}
+}
 
 </script>
 
@@ -43,46 +43,41 @@ const storePlayerSanction = () =>{
     <div class="max-w-7xl mx-auto py-4">
       <div class="flex justify-between">
         <Link
-          :href="route('player_sanctions.index')"
+          :href="route('team_sanctions.index')"
           class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
           >Volver</Link
         >
       </div>
       <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
-        <h1 class="text-2xl font-semibold text-indigo-700">Crear nueva sanción al jugador</h1>
-        <form @submit.prevent="storePlayerSanction">
+        <h1 class="text-2xl font-semibold text-indigo-700">Crear nueva sanción al equipo</h1>
+        <form @submit.prevent="storeTeamSanction">
           <div class="mt-4">
-            <InputLabel for="players" value="Jugador - Equipo" />
+            <InputLabel for="teams" value="Equipo" />
             <VueMultiselect
-              id="players"
-              v-model="form.players"
-              :options="players
-                .filter(item => item.state === '2') // Utiliza '===' en lugar de '=' para comparar el estado
-                .map(item => ({
-                  id: item.id,
-                  name: `${item.first_name} ${item.second_name ? item.second_name : ''} ${item.last_name} ${item.mother_last_name ? item.mother_last_name : ''}
-                  - ${item.team ? item.team.name : ''}`
-                }))"
+              id="teams"
+              v-model="form.teams"
+              :options="teams"
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"
-              placeholder="Elige el jugador"
+              placeholder="Elige el equipo"
               label="name"
               track-by="id"
+              @select="dispatchAction"
               required
             />
-            <InputError class="mt-2" :message="form.errors.players" />
+            <InputError class="mt-2" :message="form.errors.teams" />
           </div>
           <div class="mt-4">
             <InputLabel for="games" value="Equipos - Rol de Partido - Torneo" />
             <VueMultiselect
               id="games"
               v-model="form.games"           
-              :options="form.players?.id ? games
+              :options="form.teams?.id ? games
                   .filter(item => {
                       // Filtrar los juegos que no tienen sanciones para el jugador seleccionado
-                      return !item.player_sanctions.some(sanction => sanction.player_id === parseInt(form.players.id))
-                          && item.game_scheduling.teams.some(team => team.players.some(player => player.id === parseInt(form.players.id)));
+                      return !item.team_sanctions.some(sanction => sanction.team_id === parseInt(form.teams.id))
+                          && item.game_scheduling.teams.some(team => team.id === parseInt(form.teams.id));
                   })
                   .map(item => ({
                       id: item.id, // Utiliza el ID del juego
@@ -122,38 +117,22 @@ const storePlayerSanction = () =>{
               v-model="form.sanction"
               autofocus
               required
-              autocomplete="player_sancionsanction"
+              autocomplete="team_sancionsanction"
             />
             <InputError class="mt-2" :message="form.errors.sanction" />
           </div>                    
           <div class="mt-4">
-            <InputLabel for="yellow_cards" value="Tarjetas amarilas en el partido" />
+            <InputLabel for="observation" value="Observación" />
             <TextInput
-              id="yellow_cards"
-              type="number"
+              id="observation"
+              type="text"
               class="mt-1 block w-full"
-              v-model="form.yellow_cards"              
-              autocomplete="player_sanctionyellow_cards"
+              v-model="form.observation"              
+              autocomplete="team_sanctionobservation"
               required
-              min="0"
-              max="2"
             />
-            <InputError class="mt-2" :message="form.errors.yellow_cards" />
+            <InputError class="mt-2" :message="form.errors.observation" />
           </div>  
-          <div class="mt-4">
-            <InputLabel for="red_card" value="Tarjeta roja" />
-            <TextInput
-              id="red_card"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.red_card"
-              autocomplete="player_sanctionred_card"
-              required
-              min="0"
-              max="1"
-            />
-            <InputError class="mt-2" :message="form.errors.red_card" />
-          </div> 
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

@@ -33,4 +33,8 @@ class Game extends Model
     public function playerSanctions(){
         return $this->hasMany(PlayerSanction::class);
     }
+    //one-to-many relationship
+    public function teamSanctions(){
+        return $this->hasMany(TeamSanction::class);
+    }
 }

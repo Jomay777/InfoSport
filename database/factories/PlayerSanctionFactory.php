@@ -19,7 +19,7 @@ class PlayerSanctionFactory extends Factory
         return [
             'yellow_cards' => $this->faker->numberBetween(0, 5), // Assuming maximum 5 yellow cards
             'red_card' => $this->faker->numberBetween(0, 1), // Assuming maximum 1 red card
-            'state' => $this->faker->randomElement(['activo', 'inactivo', 'suspendido']),
+            'state' => $this->faker->randomElement(['Activo', 'Inactivo', 'Suspendido']),
             'sanction' => $this->faker->text(100),
             'game_id' => function () {
                 // Assuming you have Game model and you want to associate with a random game
