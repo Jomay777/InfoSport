@@ -30,4 +30,9 @@ class Tournament extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    //method for get tournaments published
+    public function scopePublished($query)
+    {
+        return $query->where('state', 'Publicado');
+    }
 }

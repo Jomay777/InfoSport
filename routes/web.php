@@ -13,6 +13,7 @@ use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\PlayerSanctionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublishedTournamentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
@@ -57,9 +58,13 @@ Route::get('photo_players/{photo_player}', [PhotoPlayerController::class, 'show'
 //adminstration panel
 Route::get('/administration', [AdminController::class, 'index'])->name('administration.index');
 
+//Route for dashoard
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+//Route for tournament published
+Route::get('/published_tournaments', [PublishedTournamentController::class, 'index'])
+    ->name('published_tournaments');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

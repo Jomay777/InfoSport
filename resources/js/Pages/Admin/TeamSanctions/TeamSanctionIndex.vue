@@ -101,8 +101,8 @@ const deleteTeamSanction = (id) => {
           <template #header>
             <TableRow >              
               <TableHeaderCell>ID</TableHeaderCell>
-              <TableHeaderCell>Equipo - Club</TableHeaderCell>
-              <TableHeaderCell>Partido</TableHeaderCell>
+              <TableHeaderCell>Equipo<br>Club</TableHeaderCell>
+              <TableHeaderCell>Torneo<br>Rol de Partido<br>Partido</TableHeaderCell>
               <TableHeaderCell>Estado</TableHeaderCell>                 
               <TableHeaderCell>Sanción</TableHeaderCell>
               <TableHeaderCell>Observaciones</TableHeaderCell>
@@ -120,8 +120,8 @@ const deleteTeamSanction = (id) => {
                 </TableDataCell>
                 <TableDataCell v-if="team_sanction.team">
                    <Link :href="route('team_sanctions.show', team_sanction.id)">     
-                    {{ team_sanction.team.name }}                 
-                    - {{ team_sanction.team.club.name }}
+                    {{ team_sanction.team.name }}<br>
+                    {{ team_sanction.team.club.name }}
                   </Link>  
                 </TableDataCell>
                 <TableDataCell v-if="team_sanction.game.game_scheduling.teams && team_sanction.game.game_scheduling.teams.length > 0">

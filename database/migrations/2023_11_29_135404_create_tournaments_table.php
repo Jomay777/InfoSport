@@ -16,6 +16,8 @@ return new class extends Migration
 
             $table->string('name', 70)->unique();
             $table->text('description', 300)->nullable();
+            $table->string('state', 20);
+
 
             // one-to-many relationship
             $table->unsignedBigInteger('category_id')->nullable();

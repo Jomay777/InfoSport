@@ -55,6 +55,8 @@ class DatabaseSeeder extends Seeder
         GameScheduling::factory(10)->create();
         Game::factory(9)->create();
 
+       //GameSchedulingTeamFactory::new()->count(10)->create();
+
         //GameSchedulingTeamFactory::factory(10)->create();
 
         GameStatistic::factory(9)->create();
