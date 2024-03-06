@@ -90,7 +90,7 @@ const deleteGame = (id) => {
           <template #header>
             <TableRow >              
               <TableHeaderCell>ID</TableHeaderCell>
-              <TableHeaderCell>Equipos</TableHeaderCell>
+              <TableHeaderCell>Torneo <br>Rol<br>Equipos A vs B</TableHeaderCell>
               <TableHeaderCell>Resultado</TableHeaderCell>
               <TableHeaderCell>Obsevación</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>            
@@ -106,7 +106,8 @@ const deleteGame = (id) => {
                 </TableDataCell>
                 <TableDataCell v-if="game.game_scheduling.teams && game.game_scheduling.teams.length > 0">
                   <Link :href="route('games.show', game.id)">     
-
+                    ({{ game.game_scheduling.game_role.tournament.name }})
+                  <br>
                   ({{ game.game_scheduling.game_role.name }})
                   <br>
                   <span v-for="(team, index) in game.game_scheduling.teams" :key="team.id">
@@ -140,7 +141,7 @@ const deleteGame = (id) => {
                     <button @click="() => confirmDeleteGame(game.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
                     <Modal :show="showConfirmDeleteGameModal === game.id" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el partido {{ game.id }} ?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el partido {{ game.game_scheduling.teams.map(team => team.name).join(' vs ') }} ?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteGame(game.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

@@ -26,7 +26,7 @@ class GameRequest extends FormRequest
 
         return [
             'observation' => ['nullable', 'max:300'],
-            'result' => ['required', 'string', 'max:100'],
+            'result' => ['required', 'array', 'max:100'],
             'game_scheduling' => [
                 'required',
                 Rule::unique('games', 'game_scheduling_id')->ignore($gameId),

@@ -16,6 +16,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 use function Pest\Laravel\get;
+use function PHPSTORM_META\map;
 
 class PlayerSanctionController extends Controller
 {
@@ -58,7 +59,7 @@ class PlayerSanctionController extends Controller
     {
         //$this->authorize('create', Game::class);
 
-        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','playerSanctions.player')->get();
+        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','playerSanctions.player', 'gameStatistic')->get();
         $players = Player::with('team.club')->get();
         //dd($games, $players);
         return Inertia::render('Admin/PlayerSanctions/Create', [
@@ -89,6 +90,32 @@ class PlayerSanctionController extends Controller
         } 
 //   dd($validatedData, $request->all());
         $player_sanction = PlayerSanction::create($validatedData);    
+        //dd($player_sanction->player->team, $player_sanction->game->gameScheduling->teams);
+        //dd($player_sanction->game->gameScheduling->teams);
+        $teams = $player_sanction->game->gameScheduling->teams;
+
+        if (count($teams) >= 2) {
+            $teamA = $teams[0];
+            $teamB = $teams[1];
+        } else {error_log('Equipos no asignados');}
+       
+        if($player_sanction->player->team->id === $teamA->id){
+            $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + intval($player_sanction->yellow_cards);
+            $totalRedCardsTeamA= $player_sanction->game->gameStatistic->red_cards_a + intval($player_sanction->red_card);
+
+            $player_sanction->game->gameStatistic->update([
+                'yellow_cards_a' => $totalYellowCardsTeamA,
+                'red_cards_a' => $totalRedCardsTeamA,
+            ]);
+        }else if($player_sanction->player->team->id === $teamB->id){
+            $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + intval($player_sanction->yellow_cards);
+            $totalRedCardsTeamB= $player_sanction->game->gameStatistic->red_cards_b + intval($player_sanction->red_card);
+
+            $player_sanction->game->gameStatistic->update([
+                'yellow_cards_b' => $totalYellowCardsTeamB,
+                'red_cards_b' => $totalRedCardsTeamB,
+            ]);
+        }
      
         return redirect()->route('player_sanctions.index')->with('success', 'Sanción creada correctamente');
     }
@@ -134,8 +161,8 @@ class PlayerSanctionController extends Controller
     public function update(PlayerSanctionRequest $request, string $id): RedirectResponse
     {                
         $player_sanction = PlayerSanction::find($id);
+    
         //$this->authorize('update', $game);
-        //dd($player_sanction, $request->all());
         if (!$player_sanction) {
             return redirect()->back()->withErrors(['error' => 'Sanción de jugador no encontrado.']);
         }
@@ -153,10 +180,214 @@ class PlayerSanctionController extends Controller
         if ($request->has('yellow_cards') && $request->input('yellow_cards') === '2') {      
             $validatedData['red_card']= '1';
         } 
-        //dd($request->input('game_statistic.goals_team_a'));
-        //dd($validatedData);
+        $oldGameId = $player_sanction->game_id;
+        $oldPlayerId = $player_sanction->player_id;
+        $oldYellowCards = $player_sanction->yellow_cards;
+        $oldRedCard = $player_sanction->red_card;
+
         $player_sanction->update($validatedData); 
+
+        $newYellowCards = intval($player_sanction->yellow_cards);
+        $newRedCard = intval($player_sanction->red_card);
+        //dd($oldredCard, $oldYellowCards, $newredCard, $newYellowCards);
+
+
+        $newGameId = $player_sanction->game_id;
+        $newPlayerId = $player_sanction->player_id;
+       // dd($oldPlayerId, $newPlayerId);
+        $teams = $player_sanction->game->gameScheduling->teams;
+
+         //Recuperar equipos nuevos
+         if (count($teams) >= 2) {
+            $teamA = $teams[0];
+            $teamB = $teams[1];
+        } else {error_log('Equipos no asignados');}
+
+        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teams');
+        //dd($oldGame);
+        //Recuperar equipos antiguos
+        $oldPlayer= Player::find($oldPlayerId)->load('team');
+        if (count($oldGame->gameScheduling->teams) >= 2) {
+            $oldTeamA = $oldGame->gameScheduling->teams[0];
+            $oldTeamB = $oldGame->gameScheduling->teams[1];
+        } else {error_log('Equipos no asignados');}
+
+        //Verificar si no cambia ni jugador ni partido, o solo cambia el jugador
+        if($newGameId === $oldGameId && $newPlayerId === $oldPlayerId || $newGameId === $oldGameId && $newPlayerId !== $oldPlayerId){
+
+            if($oldYellowCards != $newYellowCards){
+                if($player_sanction->player->team->id === $teamA->id){
+                    $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + $newYellowCards - $oldYellowCards;        
+                    $player_sanction->game->gameStatistic->update([
+                        'yellow_cards_a' => $totalYellowCardsTeamA,
+                    ]);
+                }else if($player_sanction->player->team->id === $teamB->id){
+                    $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + $newYellowCards - $oldYellowCards;                
+                    $player_sanction->game->gameStatistic->update([
+                        'yellow_cards_b' => $totalYellowCardsTeamB,
+                    ]);
+                }
+            }
+
+            if($oldRedCard != $newRedCard){
+                if($player_sanction->player->team->id === $teamA->id){
+                    $totalRedCardTeamA= $player_sanction->game->gameStatistic->red_cards_a + $newRedCard - $oldRedCard;        
+                    $player_sanction->game->gameStatistic->update([
+                        'red_cards_a' => $totalRedCardTeamA,
+                    ]);
+                }else if($player_sanction->player->team->id === $teamB->id){
+                    $totalRedCardTeamB= $player_sanction->game->gameStatistic->red_cards_b + $newRedCard - $oldRedCard;                
+                    $player_sanction->game->gameStatistic->update([
+                        'red_cards_b' => $totalRedCardTeamB,
+                    ]);
+                }
+            }
+        }
+
+        // Verificar si solo cambia el partido pero el jugador permanece igual, o si cambian tanto el jugador como el partido
+        if ($newGameId !== $oldGameId && $newPlayerId === $oldPlayerId || $newGameId !== $oldGameId && $newPlayerId !== $oldPlayerId) {
+           
+            //Quitar tarjetas amarillas y rojas al equipo antiguo
+            if($oldPlayer->team->id === $oldTeamA->id){
+                $updateYellowCards= $oldGame->gameStatistic->yellow_cards_a - $oldYellowCards;
+                $updateRedCards= $oldGame->gameStatistic->red_cards_a - $oldRedCard;
+                $oldGame->gameStatistic->update([
+                    'yellow_cards_a' => $updateYellowCards,
+                    'red_cards_a' => $updateRedCards,
+                ]);
+            }else if($oldPlayer->team->id === $oldTeamB->id){
+                $updateYellowCards= $oldGame->gameStatistic->yellow_cards_b - $oldYellowCards;
+                $updateRedCards= $oldGame->gameStatistic->red_cards_b - $oldRedCard;
+                $oldGame->gameStatistic->update([
+                    'yellow_cards_b' => $updateYellowCards,
+                    'red_cards_b' => $updateRedCards,
+                ]);
+            }
+            //Adicionar tarjetas amarillas y rojas al equipo nuevo
+            if($player_sanction->player->team->id === $teamA->id){
+                $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + $newYellowCards;   
+                $totalRedCardTeamA= $player_sanction->game->gameStatistic->red_cards_a + $newRedCard;        
+ 
+                $player_sanction->game->gameStatistic->update([
+                    'yellow_cards_a' => $totalYellowCardsTeamA,
+                    'red_cards_a' => $totalRedCardTeamA,
+                ]);
+            }else if($player_sanction->player->team->id === $teamB->id){
+                $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + $newYellowCards;    
+                $totalRedCardTeamB= $player_sanction->game->gameStatistic->red_cards_b + $newRedCard;        
+                                    
+                $player_sanction->game->gameStatistic->update([
+                    'yellow_cards_b' => $totalYellowCardsTeamB,
+                    'red_cards_b' => $totalRedCardTeamB,
+
+                ]);
+            }                      
+        }
         
+/*         // Verificar si cambian tanto el jugador como el partido
+        if ($newGameId !== $oldGameId && $newPlayerId !== $oldPlayerId) {
+            // Restar las tarjetas amarillas y rojas del equipo del partido anterior
+
+            //Quitar tarjetas amarillas y rojas al equipo antiguo
+            $updateYellowCards= $oldGame->gameStatistic->yellow_cards_a - $oldYellowCards;
+            $updateRedCards= $oldGame->gameStatistic->red_cards_a - $oldRedCard;
+            $oldGame->gameStatistic->update([
+                'yellow_cards_a' => $updateYellowCards,
+                'red_cards_a' => $updateRedCards,
+            ]);  
+            // Sumar las nuevas tarjetas amarillas y rojas al equipo del nuevo partido
+            if($player_sanction->player->team->id === $teamA->id){
+                $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + $newYellowCards;   
+                $totalRedCardTeamA= $player_sanction->game->gameStatistic->red_cards_a + $newRedCard;        
+ 
+                $player_sanction->game->gameStatistic->update([
+                    'yellow_cards_a' => $totalYellowCardsTeamA,
+                    'red_cards_a' => $totalRedCardTeamA,
+                ]);
+            }else if($player_sanction->player->team->id === $teamB->id){
+                $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + $newYellowCards;    
+                $totalRedCardTeamB= $player_sanction->game->gameStatistic->red_cards_b + $newRedCard;        
+                                    
+                $player_sanction->game->gameStatistic->update([
+                    'yellow_cards_b' => $totalYellowCardsTeamB,
+                    'red_cards_b' => $totalRedCardTeamB,
+
+                ]);
+            }    
+            
+        }
+
+        // Verificar si solo cambia el jugador pero el partido permanece igual
+        if ($newGameId === $oldGameId && $newPlayerId !== $oldPlayerId) {
+            // Restar las tarjetas amarillas y rojas del equipo del partido anterior
+            // Sumar las nuevas tarjetas amarillas y rojas al equipo del partido actual
+        
+
+            //dd($oldTeamA, $oldTeamB);
+            if($oldPlayerId != $newPlayerId){
+                if($oldPlayer->team->id === $oldTeamA->id){
+                    $updateYellowCards= $oldGame->gameStatistic->yellow_cards_a - $oldYellowCards;
+                    $updateRedCards= $oldGame->gameStatistic->red_cards_a - $oldRedCard;
+                    $oldGame->gameStatistic->update([
+                        'yellow_cards_a' => $updateYellowCards,
+                        'red_cards_a' => $updateRedCards,
+                    ]);
+                }else if($oldPlayer->team->id === $oldTeamB->id){
+                    $updateYellowCards= $oldGame->gameStatistic->yellow_cards_b - $oldYellowCards;
+                    $updateRedCards= $oldGame->gameStatistic->red_cards_b - $oldRedCard;
+                    $oldGame->gameStatistic->update([
+                        'yellow_cards_b' => $updateYellowCards,
+                        'red_cards_b' => $updateRedCards,
+                    ]);
+                }
+            }
+          
+            if($oldYellowCards != $newYellowCards){
+                if($player_sanction->player->team->id === $teamA->id){
+                    $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + $newYellowCards - $oldYellowCards;        
+                    $player_sanction->game->gameStatistic->update([
+                        'yellow_cards_a' => $totalYellowCardsTeamA,
+                    ]);
+                }else if($player_sanction->player->team->id === $teamB->id){
+                    $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + $newYellowCards - $oldYellowCards;                
+                    $player_sanction->game->gameStatistic->update([
+                        'yellow_cards_b' => $totalYellowCardsTeamB,
+                    ]);
+                }
+            }
+
+            if($oldRedCard != $newRedCard){
+                if($player_sanction->player->team->id === $teamA->id){
+                    $totalRedCardTeamA= $player_sanction->game->gameStatistic->red_cards_a + $newRedCard - $oldRedCard;        
+                    $player_sanction->game->gameStatistic->update([
+                        'red_cards_a' => $totalRedCardTeamA,
+                    ]);
+                }else if($player_sanction->player->team->id === $teamB->id){
+                    $totalRedCardTeamB= $player_sanction->game->gameStatistic->red_cards_b + $newRedCard - $oldRedCard;                
+                    $player_sanction->game->gameStatistic->update([
+                        'red_cards_b' => $totalRedCardTeamB,
+                    ]);
+                }
+            }
+        }
+          
+        if($player_sanction->player->team->id === $teamA->id){
+            $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + intval($player_sanction->yellow_cards);
+            $totalRedCardsTeamA= $player_sanction->game->gameStatistic->red_cards_a + intval($player_sanction->red_card);
+
+            $player_sanction->game->gameStatistic->update([
+                'yellow_cards_a' => $totalYellowCardsTeamA,
+                'red_cards_a' => $totalRedCardsTeamA,
+            ]);
+        }else if($player_sanction->player->team->id === $teamB->id){
+            $totalYellowCardsTeamB= $player_sanction->game->gameStatistic->yellow_cards_b + intval($player_sanction->yellow_cards);
+            $totalRedCardsTeamB= $player_sanction->game->gameStatistic->red_cards_b + intval($player_sanction->red_card);
+
+            $player_sanction->game->gameStatistic->update([
+                'yellow_cards_b' => $totalYellowCardsTeamB,
+                'red_cards_b' => $totalRedCardsTeamB,
+            ]);
+        } */
         return redirect()->route('player_sanctions.index')->with('success', 'Partido actualizada correctamente');        
     }
 
@@ -166,7 +397,36 @@ class PlayerSanctionController extends Controller
     public function destroy(PlayerSanction $playerSanction): RedirectResponse
     {       
         //$this->authorize('delete', $game);
+        $oldGameId = $playerSanction->game_id;
+        $oldPlayerId = $playerSanction->player_id;
+        $oldYellowCards = $playerSanction->yellow_cards;
+        $oldRedCard = $playerSanction->red_card;
+        //dd($oldGameId, $oldPlayerId, $oldYellowCards, $oldRedCard);
+        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teams');
 
+        //Recuperar equipos antiguos
+        $oldPlayer= Player::find($oldPlayerId)->load('team');
+        if (count($oldGame->gameScheduling->teams) >= 2) {
+            $oldTeamA = $oldGame->gameScheduling->teams[0];
+            $oldTeamB = $oldGame->gameScheduling->teams[1];
+        } else {error_log('Equipos no asignados');}
+
+        //Quitar tarjetas amarillas y rojas al equipo antiguo
+        if($oldPlayer->team->id === $oldTeamA->id){
+            $updateYellowCards= $oldGame->gameStatistic->yellow_cards_a - $oldYellowCards;
+            $updateRedCards= $oldGame->gameStatistic->red_cards_a - $oldRedCard;
+            $oldGame->gameStatistic->update([
+                'yellow_cards_a' => $updateYellowCards,
+                'red_cards_a' => $updateRedCards,
+            ]);
+        }else if($oldPlayer->team->id === $oldTeamB->id){
+            $updateYellowCards= $oldGame->gameStatistic->yellow_cards_b - $oldYellowCards;
+            $updateRedCards= $oldGame->gameStatistic->red_cards_b - $oldRedCard;
+            $oldGame->gameStatistic->update([
+                'yellow_cards_b' => $updateYellowCards,
+                'red_cards_b' => $updateRedCards,
+            ]);
+        }
         $playerSanction->delete();       
         return to_route('player_sanctions.index');
     }

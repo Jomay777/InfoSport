@@ -30,17 +30,13 @@ const props = defineProps({
 
 
 const form = useForm({
-  result: props.game.result,
+  result: '',
   observation: props.game.observation,
   //game_scheduling_id: props.game.game_scheduling_id,  
   game_scheduling: null,
   game_statistic: {
     goals_team_a: "",
     goals_team_b: "",
-    yellow_cards_a: "",
-    yellow_cards_b: "",
-    red_cards_a: "",
-    red_cards_b: ""
   },
   _method: "put"
 });
@@ -49,10 +45,9 @@ onMounted(() => {
   form.game_scheduling = props.game?.game_scheduling;
   form.game_statistic.goals_team_a = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_a): "";
   form.game_statistic.goals_team_b = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_b): "";
-  form.game_statistic.yellow_cards_a = props.game.game_statistic? String(props.game?.game_statistic?.yellow_cards_a): "";
-  form.game_statistic.yellow_cards_b = props.game.game_statistic? String(props.game?.game_statistic?.yellow_cards_b): "";
-  form.game_statistic.red_cards_a = props.game.game_statistic? String(props.game?.game_statistic?.red_cards_a): "";
-  form.game_statistic.red_cards_b = props.game.game_statistic? String(props.game?.game_statistic?.red_cards_b): "";
+  form.result = (props.game.result === 'Ganó A' ? { id: 1 , name:props.game?.result}: '') || (props.game.result === 'Ganó B' ? { id: 2 , name:props.game?.result}: '') || (props.game.result === 'Empate' ? { id: 3 , name:props.game?.result} : '') || (props.game.result === 'Ganó A por W.O.' ? { id: 4 , name:props.game?.result} : '')
+  || (props.game.result === 'Ganó B por W.O.' ? { id: 5 , name:props.game?.result} : '')|| (props.game.result === 'Partido Cancelado' ? { id: 6 , name:props.game?.result} : '');
+
 });
 
 const updateGame= () => {
@@ -82,19 +77,21 @@ const updateGame= () => {
               {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
             </span>          
           </div>
-          <div class="mt-4">            
+          <div class="mt-4">
             <InputLabel for="result" value="Resultado" />
-            <TextInput
+            <VueMultiselect
               id="result"
-              type="text"
-              class="mt-1 block w-full"
               v-model="form.result"
-              autofocus
-              required
-              autocomplete="gameresult"
+              :options="[{ id: 1, name: 'Ganó A' }, { id: 2, name: 'Ganó B' }, { id: 3, name: 'Empate' }
+                        , { id: 4, name: 'Ganó A por W.O.' }, { id: 5, name: 'Ganó B por W.O.'}, { id: 5, name: 'Partido Cancelado'}]"
+              :multiple="false"
+              :preselect-first="true"
+              placeholder="Resultado del partido"
+              label="name"
+              track-by="id"
             />
             <InputError class="mt-2" :message="form.errors.result" />
-          </div>
+          </div> 
           <div class="mt-4">
             <InputLabel for="observation" value="Observación" />
             <TextInput
@@ -132,54 +129,6 @@ const updateGame= () => {
               min="0"
             />
           </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.yellow_cards_a" value="Tarjetas amarillas del equipo A" />
-            <TextInput
-              id="game_statistic.yellow_cards_a"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.yellow_cards_a"              
-              autocomplete="gamegame_statistic.yellow_cards_a"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.yellow_cards_b" value="Tarjetas amarillas del equipo B" />
-            <TextInput
-              id="game_statistic.yellow_cards_b"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.yellow_cards_b"              
-              autocomplete="gamegame_statistic.yellow_cards_b"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.red_cards_a" value="Tarjetas rojas del equipo A" />
-            <TextInput
-              id="game_statistic.red_cards_a"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.red_cards_a"              
-              autocomplete="gamegame_statistic.red_cards_a"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.red_cards_b" value="Tarjetas rojas del equipo B" />
-            <TextInput
-              id="game_statistic.red_cards_b"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.red_cards_b"              
-              autocomplete="gamegame_statistic.red_cards_b"
-              required
-              min="0"
-            />
-          </div>   
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

@@ -25,10 +25,6 @@ const form = useForm({
   game_statistic: {
     goals_team_a: "",
     goals_team_b: "",
-    yellow_cards_a: "",
-    yellow_cards_b: "",
-    red_cards_a: "",
-    red_cards_b: ""
   }
 });
 const storeGame = () =>{
@@ -54,7 +50,7 @@ const storeGame = () =>{
         <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo partido</h1>
         <form @submit.prevent="storeGame">
           <div class="mt-4">
-            <InputLabel for="game_scheduling" value="Equipo" />
+            <InputLabel for="game_scheduling" value="Equipo A vs B" />
             <VueMultiselect
               id="game_scheduling"
               v-model="form.game_scheduling"
@@ -73,19 +69,21 @@ const storeGame = () =>{
             />
             <InputError class="mt-2" :message="form.errors.game_scheduling" />
           </div>
-          <div class="mt-4">            
+          <div class="mt-4">
             <InputLabel for="result" value="Resultado" />
-            <TextInput
+            <VueMultiselect
               id="result"
-              type="text"
-              class="mt-1 block w-full"
               v-model="form.result"
-              autofocus
-              required
-              autocomplete="gameresult"
+              :options="[{ id: 1, name: 'Ganó A' }, { id: 2, name: 'Ganó B' }, { id: 3, name: 'Empate' }
+                        , { id: 4, name: 'Ganó A por W.O.' }, { id: 5, name: 'Ganó B por W.O.'}, { id: 6, name: 'Partido Cancelado'}]"
+              :multiple="false"
+              :preselect-first="true"
+              placeholder="Resultado del partido"
+              label="name"
+              track-by="id"
             />
             <InputError class="mt-2" :message="form.errors.result" />
-          </div>
+          </div>            
           <div class="mt-4">
             <InputLabel for="observation" value="Observación" />
             <TextInput
@@ -96,9 +94,7 @@ const storeGame = () =>{
               autocomplete="gameobservation"
             />
             <InputError class="mt-2" :message="form.errors.observation" />
-          </div>
-                         
-          
+          </div>                                  
           <div class="mt-4">
             <InputLabel for="game_statistic.goals_team_a" value="Goles del equipo A" />
             <TextInput
@@ -124,54 +120,6 @@ const storeGame = () =>{
               min="0"
             />
           </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.yellow_cards_a" value="Tarjetas amarillas del equipo A" />
-            <TextInput
-              id="game_statistic.yellow_cards_a"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.yellow_cards_a"              
-              autocomplete="gamegame_statistic.yellow_cards_a"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.yellow_cards_b" value="Tarjetas amarillas del equipo B" />
-            <TextInput
-              id="game_statistic.yellow_cards_b"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.yellow_cards_b"              
-              autocomplete="gamegame_statistic.yellow_cards_b"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.red_cards_a" value="Tarjetas rojas del equipo A" />
-            <TextInput
-              id="game_statistic.red_cards_a"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.red_cards_a"              
-              autocomplete="gamegame_statistic.red_cards_a"
-              required
-              min="0"
-            />
-          </div>
-          <div class="mt-4">
-            <InputLabel for="game_statistic.red_cards_b" value="Tarjetas rojas del equipo B" />
-            <TextInput
-              id="game_statistic.red_cards_b"
-              type="number"
-              class="mt-1 block w-full"
-              v-model="form.game_statistic.red_cards_b"              
-              autocomplete="gamegame_statistic.red_cards_b"
-              required
-              min="0"
-            />
-          </div>   
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

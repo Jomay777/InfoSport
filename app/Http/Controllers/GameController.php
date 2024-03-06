@@ -24,7 +24,7 @@ class GameController extends Controller
      */
     public function index(Request $request): Response
     {
-        $games = Game::with('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole')
+        $games = Game::with('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole.tournament')
         ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
         ->take(20);  
 
@@ -70,22 +70,26 @@ class GameController extends Controller
     public function store(GameRequest $request)
     {
         $this->authorize('create', Game::class);
-
+       // dd($request->all());
         $validatedData = $request->validated();
         if ($request->has('game_scheduling')) {
             $game_schedulingId = $request->input('game_scheduling.id');
             $validatedData['game_scheduling_id']= $game_schedulingId;
         } 
+        if ($request->has('result')) {
+            $validatedData['result']= $request->input('result.name');
+        } 
         //dd($request->input('game_statistic.goals_team_a'));
+        //dd($request->all(), $validatedData);
 
         $game = Game::create($validatedData);    
         $game->gameStatistic()->create([
             'goals_team_a' => $request->input('game_statistic.goals_team_a'),
             'goals_team_b' => $request->input('game_statistic.goals_team_b'),
-            'yellow_cards_a' => $request->input('game_statistic.yellow_cards_a'),
-            'yellow_cards_b' => $request->input('game_statistic.yellow_cards_b'),
-            'red_cards_a' => $request->input('game_statistic.red_cards_a'),
-            'red_cards_b' => $request->input('game_statistic.red_cards_b'),
+            'yellow_cards_a' => 0,
+            'yellow_cards_b' => 0,
+            'red_cards_a' => 0,
+            'red_cards_b' => 0,
         ]);
         return redirect()->route('games.index')->with('success', 'Partido creado correctamente');
     }
@@ -141,6 +145,9 @@ class GameController extends Controller
         if ($request->has('game_scheduling')) {
             $validatedData['game_scheduling_id']= $request->input('game_scheduling.id');
         } 
+        if ($request->has('result')) {
+            $validatedData['result']= $request->input('result.name');
+        } 
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($validatedData);
         $game->update($validatedData); 
@@ -148,19 +155,15 @@ class GameController extends Controller
             $game->gameStatistic()->update([
                 'goals_team_a' => $request->input('game_statistic.goals_team_a'),
                 'goals_team_b' => $request->input('game_statistic.goals_team_b'),
-                'yellow_cards_a' => $request->input('game_statistic.yellow_cards_a'),
-                'yellow_cards_b' => $request->input('game_statistic.yellow_cards_b'),
-                'red_cards_a' => $request->input('game_statistic.red_cards_a'),
-                'red_cards_b' => $request->input('game_statistic.red_cards_b'),
             ]);
         } else {
             $game->gameStatistic()->create([
                 'goals_team_a' => $request->input('game_statistic.goals_team_a'),
                 'goals_team_b' => $request->input('game_statistic.goals_team_b'),
-                'yellow_cards_a' => $request->input('game_statistic.yellow_cards_a'),
-                'yellow_cards_b' => $request->input('game_statistic.yellow_cards_b'),
-                'red_cards_a' => $request->input('game_statistic.red_cards_a'),
-                'red_cards_b' => $request->input('game_statistic.red_cards_b'),
+                'yellow_cards_a' => 0,
+                'yellow_cards_b' => 0,
+                'red_cards_a' => 0,
+                'red_cards_b' => 0,
             ]);
         }   
         
