@@ -92,6 +92,7 @@ const deleteTournament = (id) => {
               <TableHeaderCell>ID</TableHeaderCell>
               <TableHeaderCell>Nombre</TableHeaderCell>
               <TableHeaderCell>Categoría</TableHeaderCell>
+              <TableHeaderCell>Estado</TableHeaderCell>
               <TableHeaderCell>Descripción</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>            
             </TableRow>
@@ -106,7 +107,7 @@ const deleteTournament = (id) => {
                 </TableDataCell>
                 <TableDataCell >
                    <Link :href="route('tournaments.show', tournament.id)">     
-                    {{ tournament.name }} 
+                    {{ tournament.name }}
                    </Link>  
                 </TableDataCell>
                 <TableDataCell v-if="tournament.category" >   
@@ -114,13 +115,17 @@ const deleteTournament = (id) => {
                     {{ tournament.category.name }}
                   </Link>  
                     <br> 
-                </TableDataCell>
+                </TableDataCell>                
                 <TableDataCell v-else>
                   <Link :href="route('tournaments.show', tournament.id)">     
                     Categoría no asignada 
                    </Link>   
                 </TableDataCell>               
-                
+                <TableDataCell >
+                   <Link :href="route('tournaments.show', tournament.id)">     
+                    {{ tournament.state }} 
+                   </Link>  
+                </TableDataCell>
                 <TableDataCell >
                   <Link :href="route('tournaments.show', tournament.id)">     
                     {{ tournament.description }}

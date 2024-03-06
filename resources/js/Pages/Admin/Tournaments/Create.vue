@@ -14,6 +14,7 @@ defineProps({
 const form = useForm({
   name: "",
   description: "",
+  state:"",
   category: null
 });
 const storeTournament = () =>{
@@ -71,10 +72,29 @@ const storeTournament = () =>{
               :options="category"
               :multiple="false"
               :close-on-select="true"
+              :preselect-first="true"
               placeholder="Elige la categoría"
               label="name"
               track-by="id"
+              required
             />
+            <InputError class="mt-2" :message="form.errors.category" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="state" value="Estado" />
+            <VueMultiselect
+              id="state"
+              v-model="form.state"
+              :options="[{ id: 1, name: 'No publicado' }, { id: 2, name: 'Publicado' }]"
+              :multiple="false"
+              :close-on-select="true"
+              :preselect-first="true"
+              placeholder="Elige el estado del torneo"
+              label="name"
+              track-by="id"
+              required
+            />
+            <InputError class="mt-2" :message="form.errors.state" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

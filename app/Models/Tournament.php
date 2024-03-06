@@ -12,7 +12,7 @@ use App\Models\GameRole;
 class Tournament extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'category_id'];
+    protected $fillable = ['name', 'description', 'state', 'category_id'];
 
 
     //polymorphic many-to-many relationship

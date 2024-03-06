@@ -17,6 +17,7 @@ class TournamentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'state' => $this->state,
             'description' => $this->description,
             'category' => new CategoryResource($this->whenLoaded('category')),
         ];

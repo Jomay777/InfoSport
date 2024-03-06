@@ -25,7 +25,8 @@ class CreateTournamentRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:70', Rule::unique('tournaments', 'name')->ignore($this->tournament)],
             'description' => [ 'nullable', 'max:300'],
-            'category' => ['nullable', 'array']
+            'state' => ['required', 'array'],
+            'category' => ['required', 'array']
         ];
     }
 }

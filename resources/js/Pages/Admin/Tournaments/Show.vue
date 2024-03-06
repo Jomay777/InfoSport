@@ -76,6 +76,17 @@ const deleteTournament = (id) => {
 
                                        
                 </div>
+                <div class="mt-3 px-2 w-full">
+                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
+                    <p class="text-sm text-gray-600">Estado</p>
+                    <p class="text-base font-medium text-navy-700 dark:text-navy">                  
+                      <span>
+                      {{ tournament.state }}
+                      <br> 
+                      </span>                                                                    
+                    </p>                    
+                    </div> 
+                </div>
                 <div class="mt-3 mb-8 px-2 w-full">
                   <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
                     <p class="text-sm text-gray-600">Descripción</p>
@@ -84,8 +95,7 @@ const deleteTournament = (id) => {
                       {{ tournament.description }}
                       <br> 
                       </span>                                                                    
-                    </p>
-                    
+                    </p>                    
                     </div> 
                 </div>
                 <div class="flex justify-center mt-6">

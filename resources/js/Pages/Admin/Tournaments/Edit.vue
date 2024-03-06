@@ -26,12 +26,14 @@ const props = defineProps({
 const form = useForm({
   name: props.tournament?.name,
   description: props.tournament?.description,
+  state:null,
   category: null,
   _method: "put"
 });
 
 onMounted(() => {
   form.category = props.tournament?.category;
+  form.state = (props.tournament?.state === 'No publicado' ? { id: 1 , name:props.tournament?.state}: '') || (props.tournament?.state === 'Publicado' ? { id: 2 , name:props.tournament?.state}: '');
 });
 
 const updateTournament= () => {
@@ -76,10 +78,29 @@ const updateTournament= () => {
               :options="category"
               :multiple="false"
               :close-on-select="true"
-              placeholder="Escoge la categoría"
+              :preselect-first="true"
+              placeholder="Elige la categoría"
               label="name"
               track-by="id"
+              required
             />
+            <InputError class="mt-2" :message="form.errors.category" />
+          </div>
+          <div class="mt-4">
+            <InputLabel for="state" value="Estado" />
+            <VueMultiselect
+              id="state"
+              v-model="form.state"
+              :options="[{ id: 1, name: 'No publicado' }, { id: 2, name: 'Publicado' }]"
+              :multiple="false"
+              :close-on-select="true"
+              :preselect-first="true"
+              placeholder="Elige el estado del torneo"
+              label="name"
+              track-by="id"
+              required
+            />
+            <InputError class="mt-2" :message="form.errors.state" />
           </div>
           <div class="mt-4">
             <InputLabel for="description" value="Descripción" />

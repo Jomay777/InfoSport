@@ -25,14 +25,15 @@ class TournamentController extends Controller
 
         if ($request->search) {
             $tournaments->where('tournaments.name', 'like', '%' . $request->search . '%')
-                ->orWhere('tournaments.id', 'like', '%' . $request->search . '%')
+                ->orWhere('tournaments.id', 'like', $request->search . '%')
+                ->orWhere('tournaments.state', 'like', $request->search . '%')
                 ->orWhereHas('category', function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%');
                 });
         }
 
         $tournaments = $tournaments->get();
-
+        //dd($tournaments);
         return Inertia::render('Admin/Tournaments/TournamentIndex', [
             'tournaments' => TournamentResource::collection($tournaments),
             'search' => $request->search, // Pasa el valor de búsqueda a la vista
@@ -58,6 +59,9 @@ class TournamentController extends Controller
         $this->authorize('create', Tournament::class);
 
         $validatedData = $request->validated();
+        if ($request->has('state')) {
+            $validatedData['state']= $request->input('state.name');
+        } 
         $tournament =  Tournament::create($validatedData);
 
         if ($request->has('category')) {
@@ -104,6 +108,9 @@ class TournamentController extends Controller
         $this->authorize('update', $tournament);
 
         $validatedData = $request->validated();
+        if ($request->has('state')) {
+            $validatedData['state']= $request->input('state.name');
+        } 
         $tournament->update($validatedData);
         if ($request->has('category')) {
             $categoryId = $request->input('category.id');
