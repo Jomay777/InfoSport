@@ -22,10 +22,10 @@ const form = useForm({
   observation: "",
   //game_scheduling_id: null,
   game_scheduling: null,
-  game_statistic: {
-    goals_team_a: "",
-    goals_team_b: "",
-  }
+ 
+  goals_team_a: "",
+  goals_team_b: "",
+
 });
 const storeGame = () =>{
 //  form.game_scheduling_id = form.game_scheduling ? form.game_scheduling.id : null;
@@ -50,7 +50,7 @@ const storeGame = () =>{
         <h1 class="text-2xl font-semibold text-indigo-700">Crear nuevo partido</h1>
         <form @submit.prevent="storeGame">
           <div class="mt-4">
-            <InputLabel for="game_scheduling" value="Equipo A vs B" />
+            <InputLabel for="game_scheduling" value="Equipo A vs B - Rol de Partido" />
             <VueMultiselect
               id="game_scheduling"
               v-model="form.game_scheduling"
@@ -58,7 +58,7 @@ const storeGame = () =>{
               .filter(item => !item.game) // Filtra las game_schedulings sin juego asociado
               .map(item => ({
                 id: item.id,
-                name: `${item.teams.map(team => team.name).join(' vs ')} - ${item.gameRole ? item.gameRole.name : ''}`
+                name: `${item.teamA.name} vs ${item.teamB.name} - ${item.gameRole ? item.gameRole.name : ''}`
               }))"
               :multiple="false"
               :close-on-select="true"
@@ -96,29 +96,29 @@ const storeGame = () =>{
             <InputError class="mt-2" :message="form.errors.observation" />
           </div>                                  
           <div class="mt-4">
-            <InputLabel for="game_statistic.goals_team_a" value="Goles del equipo A" />
+            <InputLabel for="goals_team_a" value="Goles del equipo A" />
             <TextInput
-              id="game_statistic.goals_team_a"
+              id="goals_team_a"
               type="number"
               class="mt-1 block w-full"
-              v-model="form.game_statistic.goals_team_a"              
-              autocomplete="gamegame_statistic.goals_team_a"
-              required
+              v-model="form.goals_team_a"              
+              autocomplete="goals_team_a"              
               min="0"
             />
             <InputError class="mt-2" :message="form.errors.goals_team_a" />
           </div>
           <div class="mt-4">
-            <InputLabel for="game_statistic.goals_team_b" value="Goles del equipo B" />
+            <InputLabel for="goals_team_b" value="Goles del equipo B" />
             <TextInput
-              id="game_statistic.goals_team_b"
+              id="goals_team_b"
               type="number"
               class="mt-1 block w-full"
-              v-model="form.game_statistic.goals_team_b"              
-              autocomplete="gamegame_statistic.goals_team_b"
-              required
+              v-model="form.goals_team_b"              
+              autocomplete="goals_team_b"
+              
               min="0"
             />
+            <InputError class="mt-2" :message="form.errors.goals_team_b" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

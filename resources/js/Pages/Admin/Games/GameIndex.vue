@@ -104,27 +104,22 @@ const deleteGame = (id) => {
                     {{ game.id }} 
                   </Link>             
                 </TableDataCell>
-                <TableDataCell v-if="game.game_scheduling.teams && game.game_scheduling.teams.length > 0">
+                <TableDataCell>
                   <Link :href="route('games.show', game.id)">     
-                    ({{ game.game_scheduling.game_role.tournament.name }})
-                  <br>
-                  ({{ game.game_scheduling.game_role.name }})
-                  <br>
-                  {{ game.game_scheduling.teams[0].name }} vs {{ game.game_scheduling.teams[1].name }}
-                 <!--  <span v-for="(team, index) in game.game_scheduling.teams" :key="team.id">
-                    {{ team.name }}
-                    <span v-if="index < game.game_scheduling.teams.length - 1">
-                      <br>vs
-                    </span>
-                    <br>
-                  </span>    -->
+                    <div class=" text-blue-800">
+                      {{ game.game_scheduling?.game_role?.tournament?.name }}
+                    </div>
+
+                    <div class=" text-blue-500">
+                    {{ game.game_scheduling?.game_role?.name }}
+                    </div>                  
+                    {{ game.game_scheduling?.team_a.name }}
+                     <div class="text-red-400">
+                      vs
+                     </div> 
+                      {{ game.game_scheduling?.team_b?.name }}              
                 </Link>                                                                 
-                </TableDataCell>
-                <TableDataCell v-else>
-                  <Link :href="route('games.show', game.id)">     
-                  Equipos no asignados
-                  </Link>
-                </TableDataCell>                                 
+                </TableDataCell>                              
 
                 <TableDataCell >
                    <Link :href="route('games.show', game.id)">     
@@ -142,7 +137,7 @@ const deleteGame = (id) => {
                     <button @click="() => confirmDeleteGame(game.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
                     <Modal :show="showConfirmDeleteGameModal === game.id" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el partido {{ game.game_scheduling.teams.map(team => team.name).join(' vs ') }} ?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el partido {{ game.game_scheduling.team_a.name }} vs {{ game.game_scheduling.team_b.name }} ?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteGame(game.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

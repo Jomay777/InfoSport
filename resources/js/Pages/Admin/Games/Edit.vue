@@ -34,17 +34,17 @@ const form = useForm({
   observation: props.game.observation,
   //game_scheduling_id: props.game.game_scheduling_id,  
   game_scheduling: null,
-  game_statistic: {
+
     goals_team_a: "",
     goals_team_b: "",
-  },
+
   _method: "put"
 });
 
 onMounted(() => {
   form.game_scheduling = props.game?.game_scheduling;
-  form.game_statistic.goals_team_a = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_a): "";
-  form.game_statistic.goals_team_b = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_b): "";
+  form.goals_team_a = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_a): "";
+  form.goals_team_b = props.game.game_statistic? String(props.game?.game_statistic?.goals_team_b): "";
   form.result = (props.game.result === 'Ganó A' ? { id: 1 , name:props.game?.result}: '') || (props.game.result === 'Ganó B' ? { id: 2 , name:props.game?.result}: '') || (props.game.result === 'Empate' ? { id: 3 , name:props.game?.result} : '') || (props.game.result === 'Ganó A por W.O.' ? { id: 4 , name:props.game?.result} : '')
   || (props.game.result === 'Ganó B por W.O.' ? { id: 5 , name:props.game?.result} : '')|| (props.game.result === 'Partido Cancelado' ? { id: 6 , name:props.game?.result} : '');
 
@@ -72,11 +72,9 @@ const updateGame= () => {
         <form @submit.prevent="updateGame">
          
           <div class="mt-4">            
-            <InputLabel  value="Partido" />
-            <span class=" flex justify-center text-lg font-bold">
-<!--               {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
- -->
-                {{ game.game_scheduling.teams[0]?.name }} vs {{ game.game_scheduling.teams[1]?.name }}
+            <InputLabel  value="Partido A vs B" />
+            <span class=" flex justify-center text-lg text-gray-800 font-bold">
+                {{ game.game_scheduling.team_a?.name }} vs {{ game.game_scheduling.team_b?.name }}
             </span>          
           </div>
           <div class="mt-4">
@@ -107,29 +105,28 @@ const updateGame= () => {
           </div>                         
           
           <div class="mt-4">
-            <InputLabel for="game_statistic.goals_team_a" value="Goles del equipo A" />
+            <InputLabel for="goals_team_a" value="Goles del equipo A" />
             <TextInput
-              id="game_statistic.goals_team_a"
+              id="goals_team_a"
               type="number"
               class="mt-1 block w-full"
-              v-model="form.game_statistic.goals_team_a"              
-              autocomplete="gamegame_statistic.goals_team_a"
-              required
+              v-model="form.goals_team_a"              
+              autocomplete="goals_team_a"              
               min="0"
             />
             <InputError class="mt-2" :message="form.errors.goals_team_a" />
           </div>
           <div class="mt-4">
-            <InputLabel for="game_statistic.goals_team_b" value="Goles del equipo B" />
+            <InputLabel for="goals_team_b" value="Goles del equipo B" />
             <TextInput
-              id="game_statistic.goals_team_b"
+              id="goals_team_b"
               type="number"
               class="mt-1 block w-full"
-              v-model="form.game_statistic.goals_team_b"              
-              autocomplete="gamegame_statistic.goals_team_b"
-              required
+              v-model="form.goals_team_b"              
+              autocomplete="goals_team_b"              
               min="0"
             />
+            <InputError class="mt-2" :message="form.errors.goals_team_b" />
           </div>
           <div class="flex items-center mt-4">
             <PrimaryButton

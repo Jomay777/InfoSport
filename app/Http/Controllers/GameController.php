@@ -24,15 +24,18 @@ class GameController extends Controller
      */
     public function index(Request $request): Response
     {
-        $games = Game::with('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole.tournament')
+        $games = Game::with('gameScheduling.teamA','gameScheduling.teamB' , 'gameStatistic','gameScheduling.gameRole.tournament')
         ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
         ->take(20);  
 
         if ($request->search) {
             $games->where(function ($query) use ($request) {
-                $query->where('games.id', 'like', '%' . $request->search . '%')
+                $query->where('games.id', 'like', $request->search)
                     ->orWhere('games.result', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('gameScheduling.teams', function ($subQuery) use ($request) {
+                    ->orWhereHas('gameScheduling.teamA', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('gameScheduling.teamB', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('gameScheduling.gameRole', function ($subQuery) use ($request) {
@@ -55,7 +58,7 @@ class GameController extends Controller
     {
         $this->authorize('create', Game::class);
 
-        $gameSchedulings = GameScheduling::with('teams','gameRole','game')->get();
+        $gameSchedulings = GameScheduling::with('teamA', 'teamB','gameRole','game')->get();
         $gameStatistics = GameStatistic::all();
         //dd($gameSchedulings);
         return Inertia::render('Admin/Games/Create', [
@@ -79,33 +82,44 @@ class GameController extends Controller
         if ($request->has('result')) {
             $validatedData['result']= $request->input('result.name');
         } 
-        if ($request->has('game_statistic')) {
-            $validatedData['goals_team_a']= $request->input('game_statistic.goals_team_a');
+        if ($request->has('goals_team_a')) {
+            $validatedData['goals_team_a']= $request->input('goals_team_a');
         } 
-        if ($request->has('game_statistic.goals_team_b')) {
-            $validatedData['goals_team_b']= $request->input('game_statistic.goals_team_b');
+        if ($request->has('goals_team_b')) {
+            $validatedData['goals_team_b']= $request->input('goals_team_b');
         } 
         //recatando datos
-        $gameScheduling = GameScheduling::with('teams')->find($validatedData['game_scheduling_id']);
+        /* $gameScheduling = GameScheduling::with('teams')->find($validatedData['game_scheduling_id']);
         $teams = $gameScheduling->teams;
         if (count($teams) >= 2) {
             $teamA = $teams[0];
             $teamB = $teams[1];
-        } else {error_log('Equipos no asignados');}
+        } else {error_log('Equipos no asignados');} */
 
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($request->all(), $validatedData);
-        dd($validatedData, $request->all(), $gameScheduling,$teams, $teamA, $teamB);
+        //dd($validatedData, $request->all());
+        if ($request->result['id'] === 4) {
+            $validatedData['goals_team_a'] = 3;
+            $validatedData['goals_team_b'] = 0;
+        } elseif ($request->result['id'] === 5) {
+            $validatedData['goals_team_a'] = 0;
+            $validatedData['goals_team_b'] = 3;
+        } elseif ($request->result['id'] === 6) {
+            $validatedData['goals_team_a'] = 0;
+            $validatedData['goals_team_b'] = 0;
+        }
         $game = Game::create($validatedData);    
+       
         $game->gameStatistic()->create([
-            'goals_team_a' => $request->input('game_statistic.goals_team_a'),
-            'goals_team_b' => $request->input('game_statistic.goals_team_b'),
+            'goals_team_a' => $validatedData['goals_team_a'],
+            'goals_team_b' => $validatedData['goals_team_b'],
             'yellow_cards_a' => 0,
             'yellow_cards_b' => 0,
             'red_cards_a' => 0,
             'red_cards_b' => 0,
         ]);
-        //*Programare la creacion de registros en la tabla tablePasitions
+        //*Programare la creacion de registros en la tabla tablePositions
         return redirect()->route('games.index')->with('success', 'Partido creado correctamente');
     }
 
@@ -134,9 +148,9 @@ class GameController extends Controller
     {    
         $this->authorize('update', $game);
 
-        $game->load('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
-        $gameSchedulings = GameScheduling::with('teams','gameRole','game')->get();
-
+        $game->load('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
+        $gameSchedulings = GameScheduling::with('teamA', 'teamB','gameRole','game')->get();
+        //dd($game, $gameSchedulings);
         return Inertia::render('Admin/Games/Edit', [
             'game' => new GameResource($game),
             'gameScheduling' => GameSchedulingResource::collection($gameSchedulings),
@@ -164,17 +178,28 @@ class GameController extends Controller
             $validatedData['result']= $request->input('result.name');
         } 
         //dd($request->input('game_statistic.goals_team_a'));
-        //dd($validatedData);
+        //dd($validatedData,$request->all());
+        if ($request->result['id'] === 4) {
+            $validatedData['goals_team_a'] = 3;
+            $validatedData['goals_team_b'] = 0;
+        } elseif ($request->result['id'] === 5) {
+            $validatedData['goals_team_a'] = 0;
+            $validatedData['goals_team_b'] = 3;
+        } elseif ($request->result['id'] === 6) {
+            $validatedData['goals_team_a'] = 0;
+            $validatedData['goals_team_b'] = 0;
+        }
         $game->update($validatedData); 
+        
         if ($game->gameStatistic) {
             $game->gameStatistic()->update([
-                'goals_team_a' => $request->input('game_statistic.goals_team_a'),
-                'goals_team_b' => $request->input('game_statistic.goals_team_b'),
+                'goals_team_a' => $validatedData['goals_team_a'],
+                'goals_team_b' => $validatedData['goals_team_b'],
             ]);
         } else {
             $game->gameStatistic()->create([
-                'goals_team_a' => $request->input('game_statistic.goals_team_a'),
-                'goals_team_b' => $request->input('game_statistic.goals_team_b'),
+                'goals_team_a' => $validatedData['goals_team_a'],
+                'goals_team_b' => $validatedData['goals_team_b'],
                 'yellow_cards_a' => 0,
                 'yellow_cards_b' => 0,
                 'red_cards_a' => 0,
