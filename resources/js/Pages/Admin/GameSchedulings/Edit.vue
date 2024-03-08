@@ -22,8 +22,12 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  gameRole: Array,
-  teams:{
+  game_role: Array,
+  teamA:{
+    type: Array,
+    required: true
+  },
+  teamB:{
     type: Array,
     required: true
   }
@@ -31,21 +35,33 @@ const props = defineProps({
 
 const form = useForm({
   time: props.game_scheduling?.time,
-  gameRole: null, 
-  teams: [],
+  game_role: null, 
+  teamA: [],
+  teamB:[],
   _method: "put"
 });
 
 onMounted(() => {
-  form.teams = props.game_scheduling?.teams;
-  form.gameRole = props.game_scheduling?.gameRole;
+  form.teamA = props.game_scheduling?.teamA;
+  form.teamB = props.game_scheduling?.teamB;
+
+  form.game_role = props.game_scheduling?.gameRole;
 
 });
 
 const updateGameScheduling = () => {
   form.post(route('game_schedulings.update', props.game_scheduling?.id));
 };
+const dispatchAction = () => {
+  if(form.teamA?.id === form.teamB?.id){
+    form.teamB = {id:'', name:''}
+  }
 
+};
+const dispatchActionTeamATeamB = () => {
+  form.teamA = '';
+  form.teamB = '';
+}
 </script>
 
 <template>
@@ -77,37 +93,69 @@ const updateGameScheduling = () => {
             />
             <InputError class="mt-2" :message="form.errors.time" />
           </div> 
-          
           <div class="mt-4">
-            <InputLabel for="teams" value="Equipos" />
+            <InputLabel for="game_role" value="Rol de partido" />
             <VueMultiselect
-              id="teams"
-              v-model="form.teams"
-              :options="teams"
-              :multiple="true"            
-              :close-on-select="true"
-              :max="2"
-              placeholder="Escoge equipos"
-              label="name"
-              track-by="id"
-            />
-            <InputError class="mt-2" :message="form.errors.teams" />
-          </div>
-          
-          <div class="mt-4">
-            <InputLabel for="gameRole" value="Rol de partido" />
-            <VueMultiselect
-              id="gameRole"
-              v-model="form.gameRole"
-              :options="gameRole"
+              id="game_role"
+              v-model="form.game_role"
+              :options="game_role"
               :multiple="false"
               :close-on-select="true"
-              placeholder="Escoge rol de partido"
+              :preselect-first="true"
+              @select="dispatchActionTeamATeamB"
+              placeholder="Escoge el rol de partido"
               label="name"
               track-by="id"
             />
-            <InputError class="mt-2" :message="form.errors.gameRole" />
+            <InputError class="mt-2" :message="form.errors.game_role" />
           </div>
+          <div class="mt-4 text-gray-700" v-if="form.game_role">
+            <InputLabel for="tournament" value="Torneo - Categoría" />
+            <span  id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.name }} - </span>
+            <span id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.name }}</span>
+          </div>  
+          <div class="mt-4">
+              <InputLabel for="teamA" value="Equipo A" />
+              <VueMultiselect
+                  id="teamA"
+                  v-model="form.teamA"
+                  :options="form.game_role ? teamA.filter(item => item.category?.id === game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.id)
+                    .map(item =>({
+                      id: item?.id,
+                      name: `${item?.name} - ${item.category?.name}`
+                    }))
+                  : []"
+                  :multiple="false"            
+                  :close-on-select="true"
+                  @select="dispatchAction"
+
+                  placeholder="Escoge equipo A"
+                  label="name"
+                  track-by="id"
+              />
+              <InputError class="mt-2" :message="form.errors.teamA" />
+          </div>
+          <div class="mt-4">
+              <InputLabel for="teamB" value="Equipo B" />
+              <VueMultiselect
+                  id="teamB"
+                  v-model="form.teamB"
+                  :options="form.game_role ? teamB.filter(item => item.category?.id === (game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.id) &&  item.id !== form.teamA?.id)
+                    .map(item =>({
+                      id: item.id,
+                      name: `${item.name} - ${item.category?.name}`
+                    }))
+                  : []"
+                  :multiple="false"            
+                  :close-on-select="true"
+                 
+                  placeholder="Escoge equipo B"
+                  label="name"
+                  track-by="id"
+              />
+              <InputError class="mt-2" :message="form.errors.teamB" />
+          </div>
+          
           <div class="flex items-center mt-4">
             <PrimaryButton
               class="ml-4"

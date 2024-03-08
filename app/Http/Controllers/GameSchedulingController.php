@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GameSchedulingRequest;
+use App\Http\Requests\UpdateGameSchedulingRequest;
 use App\Http\Resources\GameRoleResource;
 use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\TeamResource;
@@ -21,24 +22,32 @@ class GameSchedulingController extends Controller
      */
     public function index(Request $request): Response
     {
-        $game_schedulings = GameScheduling::with('teams', 'gameRole')
+        $game_schedulings = GameScheduling::with('teamA','teamB', 'gameRole.tournament.category')
             ->latest()
             ->take(20);
         if ($request->search) {
             $game_schedulings->where(function ($query) use ($request) {
-                $query->where('game_schedulings.id', 'like', '%' . $request->search . '%')
-                    ->orWhere('game_schedulings.time', 'like', '%' . $request->search . '%')
+                $query->where('game_schedulings.id', 'like', $request->search)
+                    ->orWhere('game_schedulings.time', 'like', $request->search)
                     ->orWhereHas('gameRole', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
-                    ->orWhereHas('teams', function ($subQuery) use ($request) {
+                    ->orWhereHas('teamA', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('teamB', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('gameRole.tournament', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('gameRole.tournament.category', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     });
             });
         }
     
         $game_schedulings = $game_schedulings->get();
-
       /*   $teams = collect(); // Crear una nueva colección para almacenar los equipos
 
         foreach ($game_schedulings as $game_scheduling) {
@@ -57,10 +66,12 @@ class GameSchedulingController extends Controller
     public function create(): Response
     {
         $this->authorize('create', GameScheduling::class);
-
+        $gameRole = GameRole::with('tournament.category')->get();
+        $teams = Team::with('category')->get();
+        //dd($gameRole, $teams);
         return Inertia::render('Admin/GameSchedulings/Create', [
-            'teams' => TeamResource::collection(Team::all()),
-            'gameRole' => GameRoleResource::collection(GameRole::all())
+            'teams' => TeamResource::collection($teams),
+            'game_role' => GameRoleResource::collection($gameRole)
         ]);
     }
     /**
@@ -72,15 +83,22 @@ class GameSchedulingController extends Controller
 
         $validatedData = $request->validated();
 
-        if ($request->has('gameRole')) {
-            $validatedData['game_role_id'] = $request->input('gameRole.id');
+        if ($request->has('game_role')) {
+            $validatedData['game_role_id'] = $request->input('game_role.id');
         } 
-       //depurando
-      /*  $teams = $request->input('teams.*.id');
-
-       dd($teams,$request->input('teams.*.id'), $request->all()); */
+        //depurando
+        $teams = $request->input('teams.*.id');
+        $teamAId= $teams[0];
+        $teamBId= $teams[1];
+        if ($request->has('teams')) {
+            $validatedData['team_a_id'] = $teamAId;
+        } 
+        if ($request->has('teams')) {
+            $validatedData['team_b_id'] = $teamBId;
+        } 
+       //dd($teams, $teamA,$teamB, $request->all());
        //
-
+        
         $game_scheduling = GameScheduling::create($validatedData);
 
         if (!$game_scheduling) {
@@ -90,9 +108,8 @@ class GameSchedulingController extends Controller
         /* $teams = Team::whereIn('name', $request->input('teams.*.name'))->get();
         // Obtener solo los IDs de los equipos
         $teamIds = $teams->pluck('id')->toArray(); */
-        $teams = $request->input('teams.*.id');
-
-        $game_scheduling->teams()->sync($teams);
+/*         $teams = $request->input('teams.*.id');
+        $game_scheduling->teams()->sync($teams); */
 
         return redirect()->route('game_schedulings.index')->with('success', 'programación de partido creado correctamente');
     }
@@ -106,18 +123,21 @@ class GameSchedulingController extends Controller
     {    
         $this->authorize('update', $game_scheduling);
 
-        $game_scheduling->load('teams','gameRole');
- 
+        $game_scheduling->load('teamA', 'teamB', 'gameRole');
+        $gameRole = GameRole::with('tournament.category')->get();
+        $teams = Team::with('category')->get();
         return Inertia::render('Admin/GameSchedulings/Edit', [
             'game_scheduling' => new GameSchedulingResource($game_scheduling),
-            'teams' => TeamResource::collection(Team::all()),
-            'gameRole' => GameRoleResource::collection(GameRole::all())
+            'teamA' => TeamResource::collection($teams),
+            'teamB' => TeamResource::collection($teams),
+
+            'game_role' => GameRoleResource::collection($gameRole)
         ]);
     }
       /**
      * Update the specified resource in storage.
      */
-    public function update(GameSchedulingRequest $request, string $id): RedirectResponse
+    public function update(UpdateGameSchedulingRequest $request, string $id): RedirectResponse
     {                
         $gameScheduling = GameScheduling::find($id);
         $this->authorize('update', $gameScheduling);
@@ -132,11 +152,17 @@ class GameSchedulingController extends Controller
         if ($request->has('gameRole.id')) {
             $validatedData['game_role_id'] = $request->input('gameRole.id');
         } 
-
+        if ($request->has('teamA.id')) {
+            $validatedData['team_a_id'] = $request->input('teamA.id');
+        } 
+        if ($request->has('teamB.id')) {
+            $validatedData['team_b_id'] = $request->input('teamB.id');
+        } 
+        //dd($validatedData, $request->all());
         $gameScheduling->update($validatedData);
 
         // Obtener solo los IDs de los equipos
-        $newTeamIds = Team::whereIn('name', $request->input('teams.*.name'))->pluck('id')->toArray();
+   /*      $newTeamIds = Team::whereIn('name', $request->input('teams.*.name'))->pluck('id')->toArray();
 
         // Obtener los IDs actuales de los equipos
         $currentTeamIds = $gameScheduling->teams()->pluck('teams.id')->toArray();
@@ -147,7 +173,7 @@ class GameSchedulingController extends Controller
             $gameScheduling->teams()->detach();
             // Usar sync para garantizar la relación exacta
             $gameScheduling->teams()->sync($newTeamIds);
-        }
+        } */
             //dd($validatedData);
         return redirect()->route('game_schedulings.index')->with('success', 'Programación de partido actualizada correctamente');        
     }
@@ -158,7 +184,7 @@ class GameSchedulingController extends Controller
     {
         $this->authorize('delete', $game_scheduling);
         
-        $game_scheduling->teams()->detach();
+        //$game_scheduling->teams()->detach();
         $game_scheduling->delete();
         return to_route('game_schedulings.index');
     }

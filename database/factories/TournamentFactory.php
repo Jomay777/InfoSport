@@ -21,7 +21,7 @@ class TournamentFactory extends Factory
             'name' => $this->faker->unique()->sentence(3),
             'state' => $this->faker->randomElement(['Publicado', 'No publicado']),
             'description' => $this->faker->realText(490),
-            'category_id' => $this->faker->boolean ? Category::all()->random()->id : null,
+            'category_id' =>  Category::all()->random()->id,
         ];
     }
 }

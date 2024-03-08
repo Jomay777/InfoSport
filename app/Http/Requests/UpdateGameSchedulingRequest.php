@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GameSchedulingRequest extends FormRequest
+class UpdateGameSchedulingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +23,25 @@ class GameSchedulingRequest extends FormRequest
     {
         return [
             'time' => ['required', 'string'],
-            'teams' => [
+            'teamA' => [
                 'required',
                 'array',
-                function ($attribute, $value, $fail) {
+/*                 function ($attribute, $value, $fail) {
                     if (count($value) !== 2) {
                         $fail("El campo $attribute debe contener exactamente 2 equipos.");
                     }
-                },
+                }, */
+            ],
+            'teamB' => [
+                'required',
+                'array',
+/*                 function ($attribute, $value, $fail) {
+                    if (count($value) !== 2) {
+                        $fail("El campo $attribute debe contener exactamente 2 equipos.");
+                    }
+                }, */
             ],
             'game_role' => ['required', 'array'],
         ];
-        
     }
 }

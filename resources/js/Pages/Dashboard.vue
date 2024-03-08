@@ -51,7 +51,7 @@ const props = defineProps({
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Bienvenido <span class=" font-extrabold ">{{$page.props.auth.user.name}}</span>!</h2>
         </template>
 
-        <div class="py-12" v-if=" gameRoleDate.setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0)">
+        <!-- <div class="py-12" v-if=" gameRoleDate.setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0)">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class=" mt-5 flex flex-col justify-center items-center ">
@@ -101,8 +101,8 @@ const props = defineProps({
 
                                 <p class="text-xl dark:text-navy ">
                                 <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
-                                <!-- <img class="bg-cover bg-center max-w-10 flex" :src=" game_scheduling.teams.map(team => team.club.logo_path)" alt="">
-                                <br> -->
+                                 <img class="bg-cover bg-center max-w-10 flex" :src=" game_scheduling.teams.map(team => team.club.logo_path)" alt="">
+                                <br> 
                                 <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>
                                 </p>
 
@@ -118,7 +118,7 @@ const props = defineProps({
         </div>
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg m-10 px-2 " v-else>
           <p class="text-2xl font-bold text-navy-700 dark:text-white m-10 sm:text-xs">No Hay Rol de Partidos Publicado</p>
-        </div>
+        </div> -->
        <!--   <p>{{ game_role.date }}</p>
         <p>{{  new Date() }}</p>   
         {{ gameRoleDate }}

@@ -20,9 +20,21 @@ class Team extends Model
     }
 
     //many-to-many realationship
-    public function gameSchedulings(){
+    /* public function gameSchedulings(){
         return $this->belongsToMany(GameScheduling::class);
+    } */
+
+    //one to many relationship 
+    public function gameSchedulingsAsTeamA()
+    {
+        return $this->hasMany(GameScheduling::class, 'team_a_id');
     }
+
+    public function gameSchedulingsAsTeamB()
+    {
+        return $this->hasMany(GameScheduling::class, 'team_b_id');
+    }
+
     //one-to-many relationship
     public function players(){
         return $this->hasMany(Player::class);

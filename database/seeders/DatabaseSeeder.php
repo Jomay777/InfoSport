@@ -32,14 +32,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-       /*  $this->call([
+        $this->call([
           RoleSeeder::class,
           AdminSeeder::class,
           PitchSeeder::class
-        ]); */
+        ]);
         
 
-/*         User::factory(10)->create();
+        User::factory(10)->create();
 
         Category::factory(10)->create();
         Club::factory(10)->create();
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         PassRequest::factory(10)->create();
         PhotoPlayer::factory(10)->create();
         PlayerSanction::factory(10)->create();
-        TeamSanction::factory(10)->create(); */
+        TeamSanction::factory(10)->create();
         PositionTable::factory(10)->create();
       //  UserableFactory::factory(10)->create();
         

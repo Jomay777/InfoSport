@@ -8,7 +8,7 @@ use App\Models\GameRole;
 class GameScheduling extends Model
 {
     use HasFactory;
-    protected $fillable = ['time','game_role_id'];
+    protected $fillable = ['time','game_role_id','team_a_id', 'team_b_id'];
 
 
     //polymorphic many-to-many relationship
@@ -16,9 +16,9 @@ class GameScheduling extends Model
         return $this->morphToMany(User::class, 'userable');
     }
     //many-to-many realationship
-    public function teams(){
+    /* public function teams(){
         return $this->belongsToMany(Team::class);
-    }
+    } */
 
     //one-to-many inverse relationship
     public function gameRole()
@@ -30,4 +30,15 @@ class GameScheduling extends Model
     public function game(){
         return $this->hasOne(Game::class);
     }
+
+    public function teamA()
+    {
+        return $this->belongsTo(Team::class, 'team_a_id');
+    }
+
+    public function teamB()
+    {
+        return $this->belongsTo(Team::class, 'team_b_id');
+    }
+
 }

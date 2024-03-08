@@ -93,6 +93,8 @@ const deleteGameScheduling = (id) => {
               <TableHeaderCell>Hora</TableHeaderCell>
               <TableHeaderCell>Rol de Partido</TableHeaderCell>
               <TableHeaderCell>Equipo A vs B</TableHeaderCell>
+              <TableHeaderCell>Torneo</TableHeaderCell>
+              <TableHeaderCell>Categoría</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>            
             </TableRow>
           </template>
@@ -107,16 +109,31 @@ const deleteGameScheduling = (id) => {
                 </TableDataCell>
                 <TableDataCell>                      
                     {{ game_scheduling.gameRole.name }}                       
-                </TableDataCell>               
-                <TableDataCell v-if="game_scheduling.teams.length > 0" >                      
-                  {{ game_scheduling.teams[0]?.name }} vs {{ game_scheduling.teams[1]?.name }}
-                                                                              
+                </TableDataCell>                            
+                <TableDataCell>                      
+                  <div >
+                    <span>
+                      {{ game_scheduling.teamA.name }}
+                    </span>
+                    <span><br> vs <br></span>
+                    <span>
+                      {{ game_scheduling.teamB?.name }} 
+                    </span>
+                  </div>                                                                                  
                 </TableDataCell>
+                <TableDataCell>                      
+                    {{ game_scheduling.gameRole?.tournament?.name }}                       
+                </TableDataCell>   
+                <TableDataCell>                      
+                    {{ game_scheduling.gameRole?.tournament?.category?.name }}                       
+                </TableDataCell>   
 
-                <TableDataCell v-else>Equipos no asignados</TableDataCell>  
                 <TableDataCell class="space-x-4">
+                  <div class="text-left">
                     <Link :href="route('game_schedulings.edit', game_scheduling.id)" class="text-green-400 hover:text-green-600">Editar</Link>
-                    <button @click="() => confirmDeleteGameScheduling(game_scheduling.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
+                    <button @click="() => confirmDeleteGameScheduling(game_scheduling.id)" class="text-red-400 hover:text-red-600 ml-1">Eliminar</button>
+                  </div>
+                 
                     <Modal :show="showConfirmDeleteGameSchedulingModal === game_scheduling.id" @close="closeModal">
                         <div class="p-6">
                             <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
