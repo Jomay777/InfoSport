@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TeamResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
@@ -15,13 +16,49 @@ class PublishedTournamentController extends Controller
      */
     public function index(): Response
     {
-        $publishedTournaments = Tournament::published()->with('gameRoles.gameSchedulings.teams.club', 'gameRoles.pitch')->get();
+        $publishedTournaments = Tournament::published()->with('gameRoles.gameSchedulings.teamA.club','gameRoles.gameSchedulings.teamA.gameSchedulingsAsTeamA', 'gameRoles.gameSchedulings.teamB.club','gameRoles.gameSchedulings.teamB.gameSchedulingsAsTeamB', 'gameRoles.pitch')->get();
         $gameRoles = $publishedTournaments->pluck('gameRoles')->flatten()->unique();
         $gameSchedulings = $gameRoles->pluck('gameSchedulings')->flatten()->unique();
-        $teams = $gameSchedulings->pluck('teams')->flatten()->unique();
-        //$teams->with('gameSchedulings.gameRole')->get();
+
+        $teamsA = $gameSchedulings->pluck('teamA')->flatten()->unique();
+        $teamsB = $gameSchedulings->pluck('teamB')->flatten()->unique();
+ /*        $teamsA = $teamsA->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->name,
+                'description' => $team->description,
+                'club_id' => $team->club_id,
+                'category_id' => $team->category_id,
+                'gameSchedulingsAsTeamA' => $team->gameSchedulingsAsTeamA->map(function ($gameScheduling) {
+                    return [
+                        'id' => $gameScheduling->id,
+                        'team_id' => $gameScheduling->team_id,
+                    ];
+                }),
+                'club' => [
+                    'logo_path' => $team->club->logo_path,
+                ],
+            ];
+        }); */
+/*         $teamsA = $teamsA->map(function ($team) {
+            return [
+                'id' => $team['id'],
+                'name' => $team['name'],
+                'description' => $team['description'],
+                'club_id' => $team['club_id'],
+                'category_id' => $team['category_id'],
+                'gameSchedulingsAsTeamA' => [
+                    'id' => $team['gameSchedulingsAsTeamA']['id'],
+                    'team_id' => $team['gameSchedulingsAsTeamA']['team_id'],
+                ],
+                'club' => [
+                'logo_path' => $team['club']['logo_path'],
+                ],
+            ];
+        }); */
+        //$teamsA = $teamsA->load('gameSchedulingsAsTeamA.gameRole')->get();
         //getting teams_a filtered
-        $teamsA = $teams->filter(function ($team, $index) {
+/*         $teamsA = $teams->filter(function ($team, $index) {
             return $index % 2 === 0;
         })->map(function ($team) {
             return [
@@ -57,12 +94,12 @@ class PublishedTournamentController extends Controller
                     'logo_path' => $team['club']['logo_path'],
                 ],
             ];
-        });
-       //dd($publishedTournaments, $gameRoles, $gameSchedulings, $teams, $teamsA, $teamsB);
+        }); */
+       //dd($publishedTournaments, $gameRoles, $gameSchedulings, $teamsA, $teamsB);
         return Inertia::render('PublishedTournaments/PublishedTournamentIndex', [
             'published_tournaments' => TournamentResource::collection($publishedTournaments),
-            'teams_a' => $teamsA,
-            'teams_b' => $teamsB,
+            'teams_a' => TeamResource::collection($teamsA),
+            'teams_b' => TeamResource::collection($teamsB),
             'game_roles' => $gameRoles,
             'game_schedulings' => $gameSchedulings,
         ]);

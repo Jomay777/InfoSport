@@ -91,7 +91,7 @@ class GameRoleController extends Controller
      */
     public function show(GameRole $game_role): Response
     {
-        $game_role->load('gameSchedulings.teams', 'tournament', 'pitch');
+        $game_role->load('gameSchedulings.teamA', 'gameSchedulings.teamB', 'tournament', 'pitch');
 
         //dd($game_role);
         return Inertia::render('Admin/GameRoles/Show', [

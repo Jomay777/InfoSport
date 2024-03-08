@@ -119,7 +119,7 @@ const deleteGameRole = (id) => {
                     <p class="text-m text-gray-600">Partido</p>
 
                     <p class="text-xl dark:text-navy">
-                      <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
+                      <span class="inline-block w-1/2">{{ game_scheduling.team_a.name }} vs {{ game_scheduling.team_b.name  }}</span>
                       <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>
                     </p>
 
