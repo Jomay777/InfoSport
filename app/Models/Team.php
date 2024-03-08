@@ -39,4 +39,9 @@ class Team extends Model
     public function teamSanctions(){
         return $this->hasMany(TeamSanction::class);
     }
+
+    public function positionTables()
+    {
+        return $this->hasMany(PositionTable::class);
+    }
 }

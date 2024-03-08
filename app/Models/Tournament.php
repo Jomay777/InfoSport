@@ -25,6 +25,12 @@ class Tournament extends Model
     {
         return $this->hasMany(GameRole::class);
     }
+    
+    public function positionTables()
+    {
+        return $this->hasMany(PositionTable::class);
+    }
+    
     //one-to-many inverse relationship
     public function category()
     {

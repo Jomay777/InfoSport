@@ -109,13 +109,8 @@ const deleteGameScheduling = (id) => {
                     {{ game_scheduling.gameRole.name }}                       
                 </TableDataCell>               
                 <TableDataCell v-if="game_scheduling.teams.length > 0" >                      
-                  <span v-for="(team, index) in game_scheduling.teams" :key="team.id">
-                    {{ team.name }}
-                    <span v-if="index < game_scheduling.teams.length - 1">
-                      <br>vs
-                    </span>
-                    <br>
-                  </span>                                                                                    
+                  {{ game_scheduling.teams[0]?.name }} vs {{ game_scheduling.teams[1]?.name }}
+                                                                              
                 </TableDataCell>
 
                 <TableDataCell v-else>Equipos no asignados</TableDataCell>  

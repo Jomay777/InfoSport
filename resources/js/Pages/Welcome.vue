@@ -28,7 +28,12 @@ defineProps({
             <Link
                     :href="route('published_tournaments')"
                     class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Torneos</Link
+                    >Rol de Partidos</Link
+                >
+            <Link
+                    :href="route('position_tables')"
+                    class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >Tabla de Posiciones</Link
                 >
             <Link
                 v-if="$page.props.auth.user"
@@ -39,16 +44,10 @@ defineProps({
 
             <template v-else>
                 <Link
-                    :href="route('published_tournaments')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Torneos</Link
-                >
-                <Link
                     :href="route('login')"
                     class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                     >Iniciar sesión</Link
                 >
-
                 <Link
                     v-if="canRegister"
                     :href="route('register')"

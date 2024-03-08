@@ -24,7 +24,6 @@ class GameSchedulingController extends Controller
         $game_schedulings = GameScheduling::with('teams', 'gameRole')
             ->latest()
             ->take(20);
-    
         if ($request->search) {
             $game_schedulings->where(function ($query) use ($request) {
                 $query->where('game_schedulings.id', 'like', '%' . $request->search . '%')
@@ -39,7 +38,14 @@ class GameSchedulingController extends Controller
         }
     
         $game_schedulings = $game_schedulings->get();
-    
+
+      /*   $teams = collect(); // Crear una nueva colección para almacenar los equipos
+
+        foreach ($game_schedulings as $game_scheduling) {
+            $teams = $teams->merge($game_scheduling->teams); // Agregar los equipos de esta programación de juego a la colección
+        }
+        $teams = $teams->sortBy('id'); */
+       // dd($game_schedulings->all());
         return Inertia::render('Admin/GameSchedulings/GameSchedulingIndex', [
             'game_schedulings' => GameSchedulingResource::collection($game_schedulings),
             'search' => $request->search,
@@ -69,17 +75,24 @@ class GameSchedulingController extends Controller
         if ($request->has('gameRole')) {
             $validatedData['game_role_id'] = $request->input('gameRole.id');
         } 
-       
+       //depurando
+      /*  $teams = $request->input('teams.*.id');
+
+       dd($teams,$request->input('teams.*.id'), $request->all()); */
+       //
+
         $game_scheduling = GameScheduling::create($validatedData);
 
         if (!$game_scheduling) {
             // Handle game_scheduling creation errors
             return back()->withErrors(['game_scheduling' => 'Falló la creación de programación de partido.']);
         }
-        $teams = Team::whereIn('name', $request->input('teams.*.name'))->get();
+        /* $teams = Team::whereIn('name', $request->input('teams.*.name'))->get();
         // Obtener solo los IDs de los equipos
-        $teamIds = $teams->pluck('id')->toArray();
-        $game_scheduling->teams()->sync($teamIds);
+        $teamIds = $teams->pluck('id')->toArray(); */
+        $teams = $request->input('teams.*.id');
+
+        $game_scheduling->teams()->sync($teams);
 
         return redirect()->route('game_schedulings.index')->with('success', 'programación de partido creado correctamente');
     }

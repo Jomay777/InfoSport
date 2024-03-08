@@ -79,9 +79,23 @@ class GameController extends Controller
         if ($request->has('result')) {
             $validatedData['result']= $request->input('result.name');
         } 
+        if ($request->has('game_statistic')) {
+            $validatedData['goals_team_a']= $request->input('game_statistic.goals_team_a');
+        } 
+        if ($request->has('game_statistic.goals_team_b')) {
+            $validatedData['goals_team_b']= $request->input('game_statistic.goals_team_b');
+        } 
+        //recatando datos
+        $gameScheduling = GameScheduling::with('teams')->find($validatedData['game_scheduling_id']);
+        $teams = $gameScheduling->teams;
+        if (count($teams) >= 2) {
+            $teamA = $teams[0];
+            $teamB = $teams[1];
+        } else {error_log('Equipos no asignados');}
+
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($request->all(), $validatedData);
-
+        dd($validatedData, $request->all(), $gameScheduling,$teams, $teamA, $teamB);
         $game = Game::create($validatedData);    
         $game->gameStatistic()->create([
             'goals_team_a' => $request->input('game_statistic.goals_team_a'),
@@ -91,6 +105,7 @@ class GameController extends Controller
             'red_cards_a' => 0,
             'red_cards_b' => 0,
         ]);
+        //*Programare la creacion de registros en la tabla tablePasitions
         return redirect()->route('games.index')->with('success', 'Partido creado correctamente');
     }
 

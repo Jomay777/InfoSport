@@ -12,6 +12,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\PlayerSanctionController;
+use App\Http\Controllers\PositionTableController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublishedTournamentController;
 use App\Http\Controllers\RoleController;
@@ -65,6 +66,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 //Route for tournament published
 Route::get('/published_tournaments', [PublishedTournamentController::class, 'index'])
     ->name('published_tournaments');
+
+//Route for tournament published
+Route::get('/position_tables', [PositionTableController::class, 'index'])
+->name('position_tables');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

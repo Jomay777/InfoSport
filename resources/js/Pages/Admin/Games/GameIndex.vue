@@ -110,13 +110,14 @@ const deleteGame = (id) => {
                   <br>
                   ({{ game.game_scheduling.game_role.name }})
                   <br>
-                  <span v-for="(team, index) in game.game_scheduling.teams" :key="team.id">
+                  {{ game.game_scheduling.teams[0].name }} vs {{ game.game_scheduling.teams[1].name }}
+                 <!--  <span v-for="(team, index) in game.game_scheduling.teams" :key="team.id">
                     {{ team.name }}
                     <span v-if="index < game.game_scheduling.teams.length - 1">
                       <br>vs
                     </span>
                     <br>
-                  </span>   
+                  </span>    -->
                 </Link>                                                                 
                 </TableDataCell>
                 <TableDataCell v-else>

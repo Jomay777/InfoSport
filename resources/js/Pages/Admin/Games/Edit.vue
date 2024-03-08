@@ -74,7 +74,9 @@ const updateGame= () => {
           <div class="mt-4">            
             <InputLabel  value="Partido" />
             <span class=" flex justify-center text-lg font-bold">
-              {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
+<!--               {{ `${game.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${game.game_scheduling.game_role.name}` }}
+ -->
+                {{ game.game_scheduling.teams[0]?.name }} vs {{ game.game_scheduling.teams[1]?.name }}
             </span>          
           </div>
           <div class="mt-4">
