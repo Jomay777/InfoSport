@@ -39,14 +39,14 @@ const form = useForm({
 onMounted(() => {
   form.teams = {id:props.team_sanction.team.id ,name:props.team_sanction?.team.name};
   form.state = (props.team_sanction.state === 'Activo' ? { id: 1 , name:props.team_sanction?.state}: '') || (props.team_sanction.state === 'Inactivo' ? { id: 2 , name:props.team_sanction?.state}: '') || (props.team_sanction.state === 'Suspendido' ? { id: 3 , name:props.team_sanction?.state} : '');
-  form.games = {id: props.team_sanction?.game?.id, name: props.team_sanction?.game.game_scheduling?.teams?.map(team => team.name).join(' vs ') + ' - ' + props.team_sanction.game.game_scheduling?.game_role?.name + ' - ' + props.team_sanction?.game?.game_scheduling?.game_role?.tournament?.name};
+  form.games = {id: props.team_sanction?.game?.id, name: props.team_sanction?.game.game_scheduling?.team_a?.name + ' vs '+ props.team_sanction?.game.game_scheduling?.team_b?.name +' - ' + props.team_sanction.game.game_scheduling?.game_role?.name + ' - ' + props.team_sanction?.game?.game_scheduling?.game_role?.tournament?.name};
 });
 
 const updateTeamSanction= () => {
   form.post(route('team_sanctions.update', props.team_sanction?.id));
 };
 const dispatchAction = () => {
-  form.games = {id:'', name:''}
+  form.games = ''
 }
 
 </script>
@@ -93,11 +93,11 @@ const dispatchAction = () => {
                   .filter(item => {
                       // Filtrar los juegos que no tienen sanciones para el jugador seleccionado
                       return !item.team_sanctions.some(sanction => sanction.team_id === parseInt(form.teams.id))
-                          && item.game_scheduling.teams.some(team => team.id === parseInt(form.teams.id));
+                      && (item.game_scheduling.team_a.id === parseInt(form.teams.id) || item.game_scheduling.team_b.id === parseInt(form.teams.id));
                   })
                   .map(item => ({
                       id: item.id, // Utiliza el ID del juego
-                      name: `${item.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
+                      name: `${item.game_scheduling.team_a.name} vs ${item.game_scheduling.team_b.name} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
                   }))
                   : []"
               :multiple="false"

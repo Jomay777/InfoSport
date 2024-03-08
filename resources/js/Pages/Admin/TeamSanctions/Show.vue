@@ -87,7 +87,7 @@ const deleteTeamSanction = (id) => {
                   <p class="text-xl text-gray-700 dark:text-white">Partido</p>
                   <div class="mt-3 flex justify-center">
                     <p class="text-base font-medium text-navy-700 dark:text-navy text-center">                                      
-                      {{ `${team_sanction.game.game_scheduling.teams.map(team => team.name).join(' vs ')}` }}
+                      {{ team_sanction.game.game_scheduling.team_a.name }} vs {{ team_sanction.game.game_scheduling.team_a.name }}
                     </p> 
                   </div> 
                 </div>

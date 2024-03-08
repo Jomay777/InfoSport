@@ -31,7 +31,7 @@ const storeTeamSanction = () =>{
 }
 
 const dispatchAction = () => {
-  form.games = {id:'' , name:''}
+  form.games = ''
 }
 
 </script>
@@ -75,13 +75,13 @@ const dispatchAction = () => {
               v-model="form.games"           
               :options="form.teams?.id ? games
                   .filter(item => {
-                      // Filtrar los juegos que no tienen sanciones para el jugador seleccionado
+                      // Filtrar los juegos que no tienen sanciones para el equipo seleccionado
                       return !item.team_sanctions.some(sanction => sanction.team_id === parseInt(form.teams.id))
-                          && item.game_scheduling.teams.some(team => team.id === parseInt(form.teams.id));
+                      && (item.game_scheduling.team_a.id === parseInt(form.teams.id) || item.game_scheduling.team_b.id === parseInt(form.teams.id));
                   })
                   .map(item => ({
                       id: item.id, // Utiliza el ID del juego
-                      name: `${item.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
+                      name: `${item.game_scheduling.team_a.name} vs ${item.game_scheduling.team_b.name} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
                   }))
                   : []"
               :multiple="false"

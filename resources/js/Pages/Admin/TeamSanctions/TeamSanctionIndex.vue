@@ -124,26 +124,22 @@ const deleteTeamSanction = (id) => {
                     {{ team_sanction.team.club.name }}
                   </Link>  
                 </TableDataCell>
-                <TableDataCell v-if="team_sanction.game.game_scheduling.teams && team_sanction.game.game_scheduling.teams.length > 0">
+                <TableDataCell>
                   <Link :href="route('team_sanctions.show', team_sanction.id)">     
-                    ({{ team_sanction.game.game_scheduling.game_role.tournament.name }})
-                    <br>
-                  ({{ team_sanction.game.game_scheduling.game_role.name }})
-                  <br>
-                  <span v-for="(team, index) in team_sanction.game.game_scheduling.teams" :key="team.id">
-                    {{ team.name }}
-                    <span v-if="index < team_sanction.game.game_scheduling.teams.length - 1">
-                      <br>vs
-                    </span>
-                    <br>
-                  </span>   
-                </Link>                                                                 
+                    <div class=" text-blue-800">
+                      {{ team_sanction.game.game_scheduling?.game_role?.tournament?.name }}
+                    </div>
+                    <div class=" text-blue-500">
+                    {{ team_sanction.game.game_scheduling?.game_role?.name }}
+                    </div>                  
+                    {{ team_sanction.game.game_scheduling?.team_a.name }}
+                     <div class="text-red-400">
+                      vs
+                     </div> 
+                      {{ team_sanction.game.game_scheduling?.team_b?.name }}      
+                  </Link>                                                                 
                 </TableDataCell>
-                <TableDataCell v-else>
-                  <Link :href="route('team_sanctions.show', team_sanction.id)">     
-                  Equipos no asignados
-                  </Link>
-                </TableDataCell>                                   
+                                
                 <TableDataCell >
                    <Link :href="route('team_sanctions.show', team_sanction.id)">     
                     {{ team_sanction.state }}
@@ -164,7 +160,7 @@ const deleteTeamSanction = (id) => {
                     <button @click="() => confirmDeleteTeamSanction(team_sanction.id)" class="text-red-400 hover:text-red-600">Eliminar</button>
                     <Modal :show="showConfirmDeleteTeamSanctionModal === team_sanction.id" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar la sanción del equipo {{ team_sanction.id }} ?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar la sanción del equipo {{ team_sanction.team.name }} ?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteTeamSanction(team_sanction.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

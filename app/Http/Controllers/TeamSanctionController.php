@@ -22,7 +22,7 @@ class TeamSanctionController extends Controller
      */
     public function index(Request $request)
     {
-        $team_sanctions = TeamSanction::with('game.gameScheduling.teams', 'team.club','game.gameScheduling.gameRole.tournament')
+        $team_sanctions = TeamSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'team.club','game.gameScheduling.gameRole.tournament')
         ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
         ->take(20);  
 
@@ -31,7 +31,10 @@ class TeamSanctionController extends Controller
                 $query->where('team_sanctions.id', 'like', $request->search)
                     ->orWhere('team_sanctions.state', 'like', $request->search . '%')
                     ->orWhere('team_sanctions.sanction', 'like', $request->search . '%')
-                    ->orWhereHas('game.gameScheduling.teams', function ($subQuery) use ($request) {
+                    ->orWhereHas('game.gameScheduling.teamA', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('game.gameScheduling.teamB', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.gameRole', function ($subQuery) use ($request) {
@@ -62,8 +65,8 @@ class TeamSanctionController extends Controller
     {
         //$this->authorize('create', Game::class);
 
-        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','teamSanctions.team')->get();
-        $teams = Team::with('club', 'gameSchedulings')->get();
+        $games = Game::with('gameScheduling.teamA.players', 'gameScheduling.teamB.players','gameScheduling.gameRole.tournament','teamSanctions.team')->get();
+        $teams = Team::with('club', 'gameSchedulingsAsTeamA', 'gameSchedulingsAsTeamB')->get();
         //dd($games, $teams);
         return Inertia::render('Admin/TeamSanctions/Create', [
             'games' => GameResource::collection($games),
@@ -104,7 +107,7 @@ class TeamSanctionController extends Controller
         //$player_sanctions = PlayerSanction::with('game.gameScheduling.teams', 'player.team.club','game.gameScheduling.gameRole.tournament');
         //$player_sanctions = $player_sanctions->get();
 
-        $teamSanction->load('game.gameScheduling.teams','game.gameScheduling.gameRole.tournament', 'team.club');
+        $teamSanction->load('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'game.gameScheduling.gameRole.tournament', 'team.club');
 
         return Inertia::render('Admin/TeamSanctions/Show', [
             'team_sanction' => new TeamSanctionResource($teamSanction)
@@ -119,9 +122,9 @@ class TeamSanctionController extends Controller
     {    
 //        $this->authorize('update', $game);
         
-        $teamSanction->load('game.gameScheduling.teams','game.gameScheduling.gameRole.tournament', 'team.club');
+        $teamSanction->load('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'game.gameScheduling.gameRole.tournament', 'team.club');
 
-        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','teamSanctions.team')->get();
+        $games = Game::with('gameScheduling.teamA.players', 'gameScheduling.teamB.players', 'gameScheduling.gameRole.tournament','teamSanctions.team')->get();
         $teams = Team::with('club')->get();
        // dd($teamSanction);
         return Inertia::render('Admin/TeamSanctions/Edit', [
