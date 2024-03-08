@@ -25,7 +25,7 @@ class PlayerSanctionController extends Controller
      */
     public function index(Request $request)
     {
-        $player_sanctions = PlayerSanction::with('game.gameScheduling.teams', 'player.team.club','game.gameScheduling.gameRole.tournament')
+        $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament')
         ->latest()  // Ordena por la columna 'created_at' de forma descendente (más reciente primero)
         ->take(20);  
 
@@ -33,10 +33,16 @@ class PlayerSanctionController extends Controller
             $player_sanctions->where(function ($query) use ($request) {
                 $query->where('player_sanctions.id', 'like', '%' . $request->search . '%')
                     ->orWhere('player_sanctions.state', 'like', $request->search . '%')
-                    ->orWhereHas('game.gameScheduling.teams', function ($subQuery) use ($request) {
+                    ->orWhereHas('game.gameScheduling.teamA', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('game.gameScheduling.teamB', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.gameRole', function ($subQuery) use ($request) {
+                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                    })
+                    ->orWhereHas('game.gameScheduling.gameRole.tournament', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('player', function ($subQuery) use ($request) {
@@ -59,7 +65,7 @@ class PlayerSanctionController extends Controller
     {
         //$this->authorize('create', Game::class);
 
-        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','playerSanctions.player', 'gameStatistic')->get();
+        $games = Game::with('gameScheduling.teamA.players', 'gameScheduling.teamB.players', 'gameScheduling.gameRole.tournament','playerSanctions.player', 'gameStatistic')->get();
         $players = Player::with('team.club')->get();
         //dd($games, $players);
         return Inertia::render('Admin/PlayerSanctions/Create', [
@@ -88,16 +94,16 @@ class PlayerSanctionController extends Controller
         if ($request->has('yellow_cards') && $request->input('yellow_cards') === '2') {      
             $validatedData['red_card']= '1';
         } 
-//   dd($validatedData, $request->all());
+//  dd($validatedData, $request->all());
         $player_sanction = PlayerSanction::create($validatedData);    
         //dd($player_sanction->player->team, $player_sanction->game->gameScheduling->teams);
         //dd($player_sanction->game->gameScheduling->teams);
-        $teams = $player_sanction->game->gameScheduling->teams;
+        //$teams = $player_sanction->game->gameScheduling->teamA;
 
-        if (count($teams) >= 2) {
-            $teamA = $teams[0];
-            $teamB = $teams[1];
-        } else {error_log('Equipos no asignados');}
+        
+        $teamA = $player_sanction->game->gameScheduling->teamA;
+        $teamB = $player_sanction->game->gameScheduling->teamB;
+       
        
         if($player_sanction->player->team->id === $teamA->id){
             $totalYellowCardsTeamA= $player_sanction->game->gameStatistic->yellow_cards_a + intval($player_sanction->yellow_cards);
@@ -125,10 +131,10 @@ class PlayerSanctionController extends Controller
      */
     public function show(PlayerSanction $playerSanction): Response
     {
-        $player_sanctions = PlayerSanction::with('game.gameScheduling.teams', 'player.team.club','game.gameScheduling.gameRole.tournament');
+        $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament');
         $player_sanctions = $player_sanctions->get();
 
-        $playerSanction->load('game.gameScheduling.teams','game.gameScheduling.gameRole.tournament', 'player.team');
+        $playerSanction->load('game.gameScheduling.teamA', 'game.gameScheduling.teamB','game.gameScheduling.gameRole.tournament', 'player.team');
 
         return Inertia::render('Admin/PlayerSanctions/Show', [
             'player_sanction' => new PlayerSanctionResource($playerSanction),
@@ -143,11 +149,11 @@ class PlayerSanctionController extends Controller
     {    
 //        $this->authorize('update', $game);
         
-        $playerSanction->load('game.gameScheduling.teams','game.gameScheduling.gameRole.tournament', 'player.team');
+        $playerSanction->load('game.gameScheduling.teamA',  'game.gameScheduling.teamB','game.gameScheduling.gameRole.tournament', 'player.team');
 
-        $games = Game::with('gameScheduling.teams.players','gameScheduling.gameRole.tournament','playerSanctions.player')->get();
+        $games = Game::with('gameScheduling.teamA.players', 'gameScheduling.teamB.players', 'gameScheduling.gameRole.tournament','playerSanctions.player')->get();
         $players = Player::with('team.club')->get();
-       // dd($playerSanction);
+        //dd($playerSanction, $games);
         return Inertia::render('Admin/PlayerSanctions/Edit', [
             'player_sanction' => new PlayerSanctionResource($playerSanction),
             'games' => GameResource::collection($games),
@@ -195,22 +201,16 @@ class PlayerSanctionController extends Controller
         $newGameId = $player_sanction->game_id;
         $newPlayerId = $player_sanction->player_id;
        // dd($oldPlayerId, $newPlayerId);
-        $teams = $player_sanction->game->gameScheduling->teams;
+       $teamA = $player_sanction->game->gameScheduling->teamA;
+       $teamB = $player_sanction->game->gameScheduling->teamB;
 
-         //Recuperar equipos nuevos
-         if (count($teams) >= 2) {
-            $teamA = $teams[0];
-            $teamB = $teams[1];
-        } else {error_log('Equipos no asignados');}
-
-        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teams');
+        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teamA','gameScheduling.teamB');
         //dd($oldGame);
         //Recuperar equipos antiguos
         $oldPlayer= Player::find($oldPlayerId)->load('team');
-        if (count($oldGame->gameScheduling->teams) >= 2) {
-            $oldTeamA = $oldGame->gameScheduling->teams[0];
-            $oldTeamB = $oldGame->gameScheduling->teams[1];
-        } else {error_log('Equipos no asignados');}
+        
+        $oldTeamA = $oldGame->gameScheduling?->teamA;
+        $oldTeamB = $oldGame->gameScheduling?->teamB;
 
         //Verificar si no cambia ni jugador ni partido, o solo cambia el jugador
         if($newGameId === $oldGameId && $newPlayerId === $oldPlayerId || $newGameId === $oldGameId && $newPlayerId !== $oldPlayerId){
@@ -396,38 +396,39 @@ class PlayerSanctionController extends Controller
      */
     public function destroy(PlayerSanction $playerSanction): RedirectResponse
     {       
+
         //$this->authorize('delete', $game);
         $oldGameId = $playerSanction->game_id;
         $oldPlayerId = $playerSanction->player_id;
         $oldYellowCards = $playerSanction->yellow_cards;
         $oldRedCard = $playerSanction->red_card;
         //dd($oldGameId, $oldPlayerId, $oldYellowCards, $oldRedCard);
-        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teams');
-
+        $oldGame= Game::find($oldGameId)->load('gameStatistic','gameScheduling.teamA', 'gameScheduling.teamB');
+        $oldTeamA = $oldGame->gameScheduling->teamA;
+        $oldTeamB = $oldGame->gameScheduling->teamB;
+        
         //Recuperar equipos antiguos
         $oldPlayer= Player::find($oldPlayerId)->load('team');
-        if (count($oldGame->gameScheduling->teams) >= 2) {
-            $oldTeamA = $oldGame->gameScheduling->teams[0];
-            $oldTeamB = $oldGame->gameScheduling->teams[1];
-        } else {error_log('Equipos no asignados');}
+           
 
         //Quitar tarjetas amarillas y rojas al equipo antiguo
         if($oldPlayer->team->id === $oldTeamA->id){
             $updateYellowCards= $oldGame->gameStatistic->yellow_cards_a - $oldYellowCards;
             $updateRedCards= $oldGame->gameStatistic->red_cards_a - $oldRedCard;
-            $oldGame->gameStatistic->update([
+            $oldGame->gameStatistic?->update([
                 'yellow_cards_a' => $updateYellowCards,
                 'red_cards_a' => $updateRedCards,
             ]);
         }else if($oldPlayer->team->id === $oldTeamB->id){
             $updateYellowCards= $oldGame->gameStatistic->yellow_cards_b - $oldYellowCards;
             $updateRedCards= $oldGame->gameStatistic->red_cards_b - $oldRedCard;
-            $oldGame->gameStatistic->update([
+            $oldGame->gameStatistic?->update([
                 'yellow_cards_b' => $updateYellowCards,
                 'red_cards_b' => $updateRedCards,
             ]);
         }
         $playerSanction->delete();       
+
         return to_route('player_sanctions.index');
     }
 }

@@ -85,7 +85,7 @@ const totalYellowCards = (playerId, tournamentId, player_sanctions) => {
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
                     <p class="text-sm text-gray-600">Equipo</p>
                     <p class="text-base font-medium text-navy-700 dark:text-navy">
-                        {{ player_sanction.player.team.name }}
+                        {{ player_sanction.player?.team?.name }}
                     </p>
                     </div>
                     <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
@@ -132,7 +132,7 @@ const totalYellowCards = (playerId, tournamentId, player_sanctions) => {
                   <p class="text-xl text-gray-700 dark:text-white">Partido</p>
                   <div class="mt-3 flex justify-center">
                     <p class="text-base font-medium text-navy-700 dark:text-navy text-center">                                      
-                      {{ `${player_sanction.game.game_scheduling.teams.map(team => team.name).join(' vs ')}` }}
+                      {{ player_sanction.game.game_scheduling.team_a.name }} vs {{ player_sanction.game.game_scheduling.team_b?.name }}
                     </p> 
                   </div> 
                 </div>

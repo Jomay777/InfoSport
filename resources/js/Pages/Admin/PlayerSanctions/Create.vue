@@ -32,7 +32,9 @@ const storePlayerSanction = () =>{
   form.post(route('player_sanctions.store'));
 }
 
-
+const dispatchAction = () => {
+  form.games = ''
+}
 
 </script>
 
@@ -66,6 +68,8 @@ const storePlayerSanction = () =>{
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"
+              @select="dispatchAction"
+
               placeholder="Elige el jugador"
               label="name"
               track-by="id"
@@ -82,11 +86,12 @@ const storePlayerSanction = () =>{
                   .filter(item => {
                       // Filtrar los juegos que no tienen sanciones para el jugador seleccionado
                       return !item.player_sanctions.some(sanction => sanction.player_id === parseInt(form.players.id))
-                          && item.game_scheduling.teams.some(team => team.players.some(player => player.id === parseInt(form.players.id)));
+                            && (item.game_scheduling.team_a.players.some(player => player.id === parseInt(form.players.id))
+                            || item.game_scheduling.team_b.players.some(player => player.id === parseInt(form.players.id)));
                   })
                   .map(item => ({
                       id: item.id, // Utiliza el ID del juego
-                      name: `${item.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
+                      name: `${item.game_scheduling.team_a.name} vs ${item.game_scheduling.team_b.name} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
                   }))
                   : []"
               :multiple="false"

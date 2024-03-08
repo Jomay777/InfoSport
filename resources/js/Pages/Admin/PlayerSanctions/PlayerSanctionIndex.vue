@@ -126,26 +126,22 @@ const totalYellowCards = (playerId, tournamentId, player_sanctions) => {
                     - {{ player_sanction.player.team.name }}
                   </Link>  
                 </TableDataCell>
-                <TableDataCell v-if="player_sanction.game.game_scheduling.teams && player_sanction.game.game_scheduling.teams.length > 0">
+                <TableDataCell>
                   <Link :href="route('player_sanctions.show', player_sanction.id)">     
-                    ({{ player_sanction.game.game_scheduling.game_role.tournament.name }})
-                    <br>
-                  ({{ player_sanction.game.game_scheduling.game_role.name }})
-                  <br>
-                  <span v-for="(team, index) in player_sanction.game.game_scheduling.teams" :key="team.id">
-                    {{ team.name }}
-                    <span v-if="index < player_sanction.game.game_scheduling.teams.length - 1">
-                      <br>vs
-                    </span>
-                    <br>
-                  </span>   
+                    <div class=" text-blue-800">
+                      {{ player_sanction.game.game_scheduling?.game_role?.tournament?.name }}
+                    </div>
+
+                    <div class=" text-blue-500">
+                    {{ player_sanction.game.game_scheduling?.game_role?.name }}
+                    </div>                  
+                    {{ player_sanction.game.game_scheduling?.team_a.name }}
+                     <div class="text-red-400">
+                      vs
+                     </div> 
+                      {{ player_sanction.game.game_scheduling?.team_b?.name }}      
                 </Link>                                                                 
                 </TableDataCell>
-                <TableDataCell v-else>
-                  <Link :href="route('player_sanctions.show', player_sanction.id)">     
-                  Equipos no asignados
-                  </Link>
-                </TableDataCell>                                   
 
                 <TableDataCell >
                    <Link :href="route('player_sanctions.show', player_sanction.id)">     
@@ -163,8 +159,8 @@ const totalYellowCards = (playerId, tournamentId, player_sanctions) => {
                   </Link>  
                 </TableDataCell>
                 <TableDataCell >
-                   <Link :href="route('player_sanctions.show', player_sanction.id)">     
-                    {{ player_sanction.yellow_cards }}
+                  <Link :href="route('player_sanctions.show', player_sanction.id)">  
+                    {{ player_sanction.yellow_cards }}                    
                   </Link>  
                 </TableDataCell> <TableDataCell >
                    <Link :href="route('player_sanctions.show', player_sanction.id)">     

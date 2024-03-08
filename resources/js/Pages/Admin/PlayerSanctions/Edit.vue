@@ -41,14 +41,14 @@ const form = useForm({
 onMounted(() => {
   form.players = {id:props.player_sanction.player.id ,name:props.player_sanction?.player.first_name + ' ' + (props.player_sanction?.player.second_name ? props.player_sanction?.player.second_name + ' ' : '' ) + props.player_sanction?.player.last_name + ' ' + (props.player_sanction?.player.mother_last_name ? props.player_sanction?.player.mother_last_name + '- ' : '- ') + props.player_sanction?.player.team.name};
   form.state = (props.player_sanction.state === 'Activo' ? { id: 1 , name:props.player_sanction?.state}: '') || (props.player_sanction.state === 'Inactivo' ? { id: 2 , name:props.player_sanction?.state}: '') || (props.player_sanction.state === 'Suspendido' ? { id: 3 , name:props.player_sanction?.state} : '');
-  form.games = {id: props.player_sanction?.game?.id, name: props.player_sanction?.game.game_scheduling?.teams?.map(team => team.name).join(' vs ') + ' - ' + props.player_sanction.game.game_scheduling?.game_role?.name + ' - ' + props.player_sanction?.game?.game_scheduling?.game_role?.tournament?.name};
+  form.games = {id: props.player_sanction?.game?.id, name: props.player_sanction?.game.game_scheduling?.team_a?.name+ ' vs ' + props.player_sanction?.game.game_scheduling?.team_b?.name + ' - ' + props.player_sanction.game.game_scheduling?.game_role?.name + ' - ' + props.player_sanction?.game?.game_scheduling?.game_role?.tournament?.name};
 });
 
 const updatePlayerSanction= () => {
   form.post(route('player_sanctions.update', props.player_sanction?.id));
 };
 const dispatchAction = () => {
-  form.games = {id:'', name:''}
+  form.games = ''
 }
 
 </script>
@@ -100,11 +100,12 @@ const dispatchAction = () => {
                   .filter(item => {
                       // Filtrar los juegos que no tienen sanciones para el jugador seleccionado
                       return !item.player_sanctions.some(sanction => sanction.player_id === parseInt(form.players.id))
-                          && item.game_scheduling.teams.some(team => team.players.some(player => player.id === parseInt(form.players.id)));
+                          && (item.game_scheduling.team_a.players.some(player => player.id === parseInt(form.players.id))
+                            || item.game_scheduling.team_b.players.some(player => player.id === parseInt(form.players.id)));
                   })
                   .map(item => ({
                       id: item.id, // Utiliza el ID del juego
-                      name: `${item.game_scheduling.teams.map(team => team.name).join(' vs ')} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
+                      name: `${item.game_scheduling.team_a.name} vs ${item.game_scheduling.team_b.name} - ${item.game_scheduling?.game_role ? item.game_scheduling.game_role.name : ''} - ${item.game_scheduling.game_role.tournament?.name}`
                   }))
                   : []"
               :multiple="false"

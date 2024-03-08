@@ -128,7 +128,7 @@ class GameController extends Controller
      */
     public function show(Game $game): Response
     {
-        $game->load('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
+        $game->load('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
 
       /*   $gameScheduling = $game->gameScheduling;
         $gameStatistic = $game->gameStatistic; */
