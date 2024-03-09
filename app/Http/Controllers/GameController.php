@@ -10,6 +10,7 @@ use App\Http\Resources\TeamResource;
 use App\Models\Game;
 use App\Models\GameScheduling;
 use App\Models\GameStatistic;
+use App\Models\PositionTable;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -98,19 +99,40 @@ class GameController extends Controller
 
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($request->all(), $validatedData);
-        //dd($validatedData, $request->all());
-        if ($request->result['id'] === 4) {
+        dd($validatedData, $request->all());
+        
+        $game = Game::create($validatedData);    
+        //teamA WIN
+        //$positionTable = PositionTable::find
+        if ($request->result['id'] === 1) {
+            
+           //aqui hacer los procesos cuando teamA gana
+        }
+        //teamB Win
+        elseif ($request->result['id'] === 2) {
+           //aqui hacer los procesos cuando teamB gana
+
+        }
+        // DRAWN
+        elseif ($request->result['id'] === 3) {
+               //aqui hacer los procesos cuando empatan
+        }
+        //teamA Win to W.O.
+        elseif ($request->result['id'] === 4) {
+            
             $validatedData['goals_team_a'] = 3;
             $validatedData['goals_team_b'] = 0;
-        } elseif ($request->result['id'] === 5) {
+        }
+        //teamB Win to W.O.
+        elseif ($request->result['id'] === 5) {
             $validatedData['goals_team_a'] = 0;
             $validatedData['goals_team_b'] = 3;
-        } elseif ($request->result['id'] === 6) {
+        }
+        //Canceled
+        elseif ($request->result['id'] === 6) {
             $validatedData['goals_team_a'] = 0;
             $validatedData['goals_team_b'] = 0;
         }
-        $game = Game::create($validatedData);    
-       
         $game->gameStatistic()->create([
             'goals_team_a' => $validatedData['goals_team_a'],
             'goals_team_b' => $validatedData['goals_team_b'],

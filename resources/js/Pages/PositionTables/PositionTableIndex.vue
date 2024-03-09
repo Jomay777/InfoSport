@@ -102,7 +102,9 @@ const closeModal = () => {
         </template>
         <template #default>
           <!-- form.game_roles.game_schedulings -->
-          <TableRow v-for="(position_table_by_tournament, index) in position_tables_by_tournament[form.tournaments.id]"
+          <TableRow v-for="(position_table_by_tournament, index) in position_tables_by_tournament[form.tournaments.id].sort((a, b) => {
+            return b.points - a.points; // Ordenar en orden descendente por puntos
+        })"
              :key="position_table_by_tournament.id" class="border-b">
             <TableDataCell>         
               <div class="flex items-center">

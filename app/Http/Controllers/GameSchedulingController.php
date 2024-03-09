@@ -9,6 +9,7 @@ use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\TeamResource;
 use App\Models\GameRole;
 use App\Models\GameScheduling;
+use App\Models\PositionTable;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,6 +86,7 @@ class GameSchedulingController extends Controller
 
         if ($request->has('game_role')) {
             $validatedData['game_role_id'] = $request->input('game_role.id');
+            $tournamentId = $request->input('game_role.tournament.id');
         } 
         //depurando
         $teams = $request->input('teams.*.id');
@@ -96,7 +98,7 @@ class GameSchedulingController extends Controller
         if ($request->has('teams')) {
             $validatedData['team_b_id'] = $teamBId;
         } 
-       //dd($teams, $teamA,$teamB, $request->all());
+       //dd($teams, $teamAId,$teamBId, $request->all(), $validatedData, $tournamentId);
        //
         
         $game_scheduling = GameScheduling::create($validatedData);
@@ -105,6 +107,49 @@ class GameSchedulingController extends Controller
             // Handle game_scheduling creation errors
             return back()->withErrors(['game_scheduling' => 'Falló la creación de programación de partido.']);
         }
+
+        //Created register to PostionTables
+        // Verificar si ya existe un registro de PositionTable para el equipo A en este torneo
+        $existingPositionTableA = PositionTable::where('tournament_id', $tournamentId)
+        ->where('team_id', $teamAId)
+        ->first();
+
+        // Si no existe un registro, crear uno nuevo
+        if (!$existingPositionTableA) {
+            $positionTableTeamA = new PositionTable([
+                'team_id' => $teamAId,
+                'points' => 0,
+                'games_played' => 0,
+                'games_won' => 0,
+                'games_drawn' => 0,
+                'games_lost' => 0,
+                'goals_scored' => 0,
+                'goals_against' => 0,
+                'tournament_id' => $tournamentId,
+            ]);
+            $positionTableTeamA->save();
+        }
+
+        // Realizar la misma verificación y creación para el equipo B
+        $existingPositionTableB = PositionTable::where('tournament_id', $tournamentId)
+            ->where('team_id', $teamBId)
+            ->first();
+
+        if (!$existingPositionTableB) {
+            $positionTableTeamB = new PositionTable([
+                'team_id' => $teamBId,
+                'points' => 0,
+                'games_played' => 0,
+                'games_won' => 0,
+                'games_drawn' => 0,
+                'games_lost' => 0,
+                'goals_scored' => 0,
+                'goals_against' => 0,
+                'tournament_id' => $tournamentId,
+            ]);
+            $positionTableTeamB->save();
+        }
+
         /* $teams = Team::whereIn('name', $request->input('teams.*.name'))->get();
         // Obtener solo los IDs de los equipos
         $teamIds = $teams->pluck('id')->toArray(); */
@@ -130,7 +175,6 @@ class GameSchedulingController extends Controller
             'game_scheduling' => new GameSchedulingResource($game_scheduling),
             'teamA' => TeamResource::collection($teams),
             'teamB' => TeamResource::collection($teams),
-
             'game_role' => GameRoleResource::collection($gameRole)
         ]);
     }
@@ -139,9 +183,8 @@ class GameSchedulingController extends Controller
      */
     public function update(UpdateGameSchedulingRequest $request, string $id): RedirectResponse
     {                
-        $gameScheduling = GameScheduling::find($id);
-        $this->authorize('update', $gameScheduling);
-
+        $gameScheduling = GameScheduling::find($id)->load('gameRole.tournament');
+        $this->authorize('update', $gameScheduling);       
 
         if (!$gameScheduling) {
             return redirect()->back()->withErrors(['error' => 'Programación de partido no encontrada.']);
@@ -149,32 +192,102 @@ class GameSchedulingController extends Controller
 
         $validatedData = $request->validated();
 
-        if ($request->has('gameRole.id')) {
-            $validatedData['game_role_id'] = $request->input('gameRole.id');
+        if ($request->has('game_role.id')) {
+            $validatedData['game_role_id'] = $request->input('game_role.id');
+            $tournamentId = $request->input('game_role.tournament_id');
         } 
         if ($request->has('teamA.id')) {
             $validatedData['team_a_id'] = $request->input('teamA.id');
+            $teamAId =  $request->input('teamA.id');
         } 
         if ($request->has('teamB.id')) {
             $validatedData['team_b_id'] = $request->input('teamB.id');
+            $teamBId =  $request->input('teamB.id');
         } 
-        //dd($validatedData, $request->all());
+        //Obtener los datos antiguos de programacion del partido
+        $oldTeamAId = $gameScheduling->team_a_id;
+        $oldTeamBId = $gameScheduling->team_b_id;
+        $oldGameRoleId = $gameScheduling->game_role_id;
+         // Obtener el ID del torneo antiguo
+        $oldTournamentId = $gameScheduling->gameRole->tournament_id;
+        //dd($validatedData, $request->all(), $tournamentId, $oldGameRoleId, $oldTeamAId, $oldTeamBId, $oldTournamentId, $gameScheduling);
         $gameScheduling->update($validatedData);
+        
 
-        // Obtener solo los IDs de los equipos
-   /*      $newTeamIds = Team::whereIn('name', $request->input('teams.*.name'))->pluck('id')->toArray();
+        // Obtener los nuevos datos de la programación del partido
+        $newTeamAId = $request->input('teamA.id');
+        $newTeamBId = $request->input('teamB.id');
+        $newGameRoleId = $request->input('game_role.id');
+        
+        //Created register to PostionTables
 
-        // Obtener los IDs actuales de los equipos
-        $currentTeamIds = $gameScheduling->teams()->pluck('teams.id')->toArray();
+        // Manejar los cambios en los equipos y el rol del partido
+        if ($oldTeamAId !== $newTeamAId || $oldTeamBId !== $newTeamBId || $oldGameRoleId !== $newGameRoleId) {
+            // Verificar si el equipo antiguo tiene otras programaciones de partido en el mismo torneo
+            // Verificar si el equipo antiguo A tiene otras programaciones de partido en el mismo torneo
+            $hasOtherGameSchedulingsA = GameScheduling::whereHas('gameRole', function ($query) use ($oldTournamentId, $oldTeamAId, $id) {
+                $query->where('tournament_id', $oldTournamentId) // Filtra por el antiguo ID del torneo
+                    ->where(function ($query) use ($oldTeamAId, $id) {
+                        $query->where('team_a_id', $oldTeamAId)
+                                ->orWhere('team_b_id', $oldTeamAId)
+                                ->where('id', '!=', $id); // Excluye la programación de partido actual
+                    });
+            })->exists();
 
-            // Verificar si los IDs son los mismos
-        if ($newTeamIds != $currentTeamIds) {
-            // Los IDs son diferentes, eliminar registros existentes antes de sincronizar los nuevos
-            $gameScheduling->teams()->detach();
-            // Usar sync para garantizar la relación exacta
-            $gameScheduling->teams()->sync($newTeamIds);
-        } */
-            //dd($validatedData);
+            // Verificar si el equipo antiguo B tiene otras programaciones de partido en el mismo torneo
+            $hasOtherGameSchedulingsB = GameScheduling::whereHas('gameRole', function ($query) use ($oldTournamentId, $oldTeamBId, $id) {
+                $query->where('tournament_id', $oldTournamentId) // Filtra por el antiguo ID del torneo
+                    ->where(function ($query) use ($oldTeamBId, $id) {
+                        $query->where('team_a_id', $oldTeamBId)
+                                ->orWhere('team_b_id', $oldTeamBId)
+                                ->where('id', '!=', $id); // Excluye la programación de partido actual
+                    });
+            })->exists();
+
+            // Eliminar los registros antiguos de las tablas de posiciones si el equipo antiguo A no tiene otras programaciones de partido en el mismo torneo
+            if (!$hasOtherGameSchedulingsA) {
+                PositionTable::where('tournament_id', $oldTournamentId)
+                    ->where('team_id', $oldTeamAId)
+                    ->delete();
+            }
+
+            // Eliminar los registros antiguos de las tablas de posiciones si el equipo antiguo B no tiene otras programaciones de partido en el mismo torneo
+            if (!$hasOtherGameSchedulingsB) {
+                PositionTable::where('tournament_id', $oldTournamentId)
+                    ->where('team_id', $oldTeamBId)
+                    ->delete();
+            }
+
+            // Verificar si ya existe un registro de PositionTable para el equipo A en este torneo
+            $existingPositionTableA = PositionTable::where('tournament_id', $tournamentId)
+            ->where('team_id', $newTeamAId)
+            ->first();
+
+            // Crear un nuevo registro solo si no existe un registro previo para el equipo A en este torneo
+            if (!$existingPositionTableA) {
+            $positionTableTeamA = new PositionTable([
+                'team_id' => $newTeamAId,
+                'tournament_id' => $tournamentId,
+                // Otros campos de la tabla de posiciones
+            ]);
+            $positionTableTeamA->save();
+            }
+
+            // Realizar la misma verificación y creación para el equipo B
+            $existingPositionTableB = PositionTable::where('tournament_id', $tournamentId)
+            ->where('team_id', $newTeamBId)
+            ->first();
+
+            if (!$existingPositionTableB) {
+            $positionTableTeamB = new PositionTable([
+                'team_id' => $newTeamBId,
+                'tournament_id' => $tournamentId,
+                // Otros campos de la tabla de posiciones
+            ]);
+            $positionTableTeamB->save();
+            }
+        }
+
         return redirect()->route('game_schedulings.index')->with('success', 'Programación de partido actualizada correctamente');        
     }
      /**
@@ -184,6 +297,44 @@ class GameSchedulingController extends Controller
     {
         $this->authorize('delete', $game_scheduling);
         
+          // Obtener los datos necesarios para eliminar los registros de PositionTable
+        $tournamentId = $game_scheduling->gameRole->tournament_id;
+        $teamAId = $game_scheduling->team_a_id;
+        $teamBId = $game_scheduling->team_b_id;
+        $gameSchedulingId = $game_scheduling->id;
+        //dd($teamAId,$teamBId,$tournamentId,$gameSchedulingId);
+        // Verificar si hay otras programaciones de partido para los equipos en el mismo torneo
+        $hasOtherGameSchedulingsA = GameScheduling::whereHas('gameRole', function ($query) use ($tournamentId, $teamAId, $gameSchedulingId) {
+            $query->where('tournament_id', $tournamentId) // Filtra por el antiguo ID del torneo
+                ->where(function ($query) use ($teamAId, $gameSchedulingId) {
+                    $query->where('team_a_id', $teamAId)
+                            ->orWhere('team_b_id', $teamAId)
+                            ; // Excluye la programación de partido actual
+                });
+        })->where('id', '!=', $gameSchedulingId)->exists();
+
+        // Verificar si el equipo antiguo B tiene otras programaciones de partido en el mismo torneo
+        $hasOtherGameSchedulingsB = GameScheduling::whereHas('gameRole', function ($query) use ($tournamentId, $teamBId, $gameSchedulingId) {
+            $query->where('tournament_id', $tournamentId) // Filtra por el antiguo ID del torneo
+                ->where(function ($query) use ($teamBId, $gameSchedulingId) {
+                    $query->where('team_a_id', $teamBId)
+                            ->orWhere('team_b_id', $teamBId)
+                            ; // Excluye la programación de partido actual
+                });
+        })->where('id', '!=', $gameSchedulingId)->exists();
+        //dd($hasOtherGameSchedulingsA, $hasOtherGameSchedulingsB);
+        // Eliminar los registros de PositionTable si no hay otras programaciones de partido para los equipos en el mismo torneo
+        if (!$hasOtherGameSchedulingsA) {
+            PositionTable::where('tournament_id', $tournamentId)
+                ->where('team_id', $teamAId)
+                ->delete();
+        }
+
+        if (!$hasOtherGameSchedulingsB) {
+            PositionTable::where('tournament_id', $tournamentId)
+                ->where('team_id', $teamBId)
+                ->delete();
+        }
         //$game_scheduling->teams()->detach();
         $game_scheduling->delete();
         return to_route('game_schedulings.index');

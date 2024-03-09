@@ -17,7 +17,7 @@ class PositionTableController extends Controller
      */
     public function index(): Response
     {
-        $positionTables = PositionTable::with('team.club', 'tournament', 'team.gameSchedulings.game.gameStatistic')->get();
+        $positionTables = PositionTable::with('team.club', 'tournament', 'team.gameSchedulingsAsTeamA.game.gameStatistic', 'team.gameSchedulingsAsTeamB.game.gameStatistic')->get();
         $teams = $positionTables->pluck('team')->flatten()->unique();
         $tournaments = $positionTables->pluck('tournament')->flatten()->unique();
         $gameSchedulings = $teams->pluck('gameSchedulings')->flatten()->unique();
