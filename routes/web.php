@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameRoleController;
 use App\Http\Controllers\GameSchedulingController;
+use App\Http\Controllers\LogLoginAttemptController;
 use App\Http\Controllers\PassRequestController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
@@ -70,6 +71,10 @@ Route::get('/published_tournaments', [PublishedTournamentController::class, 'ind
 //Route for tournament published
 Route::get('/position_tables', [PositionTableController::class, 'index'])
 ->name('position_tables');
+
+//Route for logLogginAttempts
+Route::get('/log_login_attemps', [LogLoginAttemptController::class, 'index'])
+->name('log_login_attemps.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

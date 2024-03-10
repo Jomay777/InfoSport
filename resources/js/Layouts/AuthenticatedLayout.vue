@@ -6,7 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-import { usePermission } from "@/composables/permissions"
+import { usePermission } from "@/composables/permissions";
 
 const showingNavigationDropdown = ref(false);
 const { hasPermission, hasRole } = usePermission();
@@ -84,6 +84,18 @@ const { hasPermission, hasRole } = usePermission();
                                     :href="route('clubs.index')" 
                                     :active="route().current('clubs.index')">
                                     Directiva
+                                </NavLink>
+                                <NavLink        
+                                    v-if="hasRole('Administrador')"                         
+                                    :href="route('reports.index')" 
+                                    :active="route().current('reports.index')">
+                                    Reportes
+                                </NavLink>
+                                <NavLink        
+                                    v-if="hasRole('Administrador')"                         
+                                    :href="route('log_login_attemps.index')" 
+                                    :active="route().current('log_login_attemps.index')">
+                                    Logs
                                 </NavLink>
                             </div>
                         </div>
@@ -208,7 +220,16 @@ const { hasPermission, hasRole } = usePermission();
                                     :active="route().current('clubs.index')">
                                     Directiva
                         </ResponsiveNavLink>
-                       
+                        <ResponsiveNavLink  v-if="hasRole('Administrador')"                         
+                                    :href="route('reports.index')" 
+                                    :active="route().current('reports.index')">
+                                    Reportes
+                        </ResponsiveNavLink>   
+                        <ResponsiveNavLink  v-if="hasRole('Administrador')"                         
+                                    :href="route('log_login_attemps.index')" 
+                                    :active="route().current('log_login_attemps.index')">
+                                    Logs
+                        </ResponsiveNavLink>                       
                     </div>
 
                     <!-- Responsive Settings Options -->

@@ -95,4 +95,12 @@ class User extends Authenticatable
     public function cardGenerations(){
         return $this->hasMany(CardGeneration::class);
     }
+
+     /**
+     * Define the relationship with the LogLoginAttempt model.
+     */
+    public function logLoginAttempts()
+    {
+        return $this->hasMany(LogLoginAttempt::class);
+    }
 }
