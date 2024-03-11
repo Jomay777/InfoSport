@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Models\LogTransaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,7 +52,18 @@ class CategoryController extends Controller
     {
         $this->authorize('create', Category::class);
 
-        Category::create($request->validated());
+        $category = Category::create($request->validated());
+
+        //Creating log transactions
+        $details = 'Nombre: ' . $category->name . ', Descripción: ' . $category->description;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Categoría', // Name of the resource being accessed
+            'resource_id' => $category?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
+
         return to_route('categories.index');
     }
 
@@ -81,8 +93,21 @@ class CategoryController extends Controller
     public function update(CreateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->authorize('update', $category);
-
+        //Old Data
+        $oldName = $category->name;
+        $oldDescription = $category->description;
+        //update
         $category->update($request->validated());
+
+        //Creating log transactions
+        $details = '[Nombre: ' . $oldName . '. a: ' . $category->name . '], [Descripción: ' . $oldDescription . '. a: ' . $category->description . ']';
+        LogTransaction::create([
+             'user_id' => auth()->id(), // Assuming you have user authentication
+             'action' => 'Actualizar', // HTTP method used for the request
+             'resource' => 'Categoría', // Name of the resource being accessed
+             'resource_id' => $category?->id, // ID of the resource, if applicable
+             'details' => $details, // Any additional details you want to log
+         ]);
         return to_route('categories.index');
     }
 
@@ -93,6 +118,16 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
+
+        //Creating log transactions
+        $details = 'Nombre: ' . $category->name . ', Descripción: ' . $category->description;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Categoría', // Name of the resource being accessed
+            'resource_id' => $category?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
 
         $category->delete();
         return back();

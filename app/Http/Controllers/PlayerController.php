@@ -8,6 +8,7 @@ use App\Http\Resources\PhotoPlayerResource;
 use App\Http\Resources\PlayerResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Category;
+use App\Models\LogTransaction;
 use App\Models\PhotoPlayer;
 use App\Models\Player;
 use App\Models\Team;
@@ -175,6 +176,17 @@ class PlayerController extends Controller
                 'photo_parental_authorization' => $photoPaths['photo_parental_authorization'],
             ]);
         }
+        //Creating log transactions
+        $playerName = $player->first_name . ($player->second_name ? ' ' .$player->second_name : '' ). ' ' .$player->last_name . ' ' . ($player->mother_last_name ? $player->mother_last_name : '' );
+        $playerState = $player->state == 1 ? 'Inhabilitado' : 'Habilitado';
+        $details = 'Nombre: ' . $playerName . ', CI: ' . $player->c_i . ', Id de Equipo: ' . $player->team_id. ', Región de nacimiento: ' . $player->region_birth. ', Estado: '. $playerState. ', Nacionalidad: '. $player->nacionality;
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Jugador', // Name of the resource being accessed
+            'resource_id' => $player?->id, // ID of the resource
+            'details' => $details, // Any additional details 
+        ]);
         
         return redirect()->route('players.show', $player->id)->with('success', 'Jugador creado correctamente');
     }
@@ -257,6 +269,14 @@ class PlayerController extends Controller
         foreach ($columns as $column) {
             $updateFile($request, $column, $column);
         }
+        //
+        $oldPlayerName = $player->first_name . ($player->second_name ? ' ' . $player->second_name : '') . ' ' . $player->last_name . ' ' . ($player->mother_last_name ? $player->mother_last_name : '');
+        $oldPlayerState = $player->state == 1 ? 'Inhabilitado' : 'Habilitado';
+        $oldPlayerCi = $player->c_i;
+        $oldTeamId = $player->team_id;
+        $oldRegionBirth = $player->region_birth;
+        $oldNacionality = $player->nacionality;
+
 
         $player->update($validatedData);   
 
@@ -266,7 +286,20 @@ class PlayerController extends Controller
             $player->photoPlayer()->create($photoPaths);
         }
 
-        
+        //Creating log transactions
+        $playerName = $player->first_name . ($player->second_name ? ' ' .$player->second_name : '' ). ' ' .$player->last_name . ' ' . ($player->mother_last_name ? $player->mother_last_name : '' );
+        $playerState = $player->state == 1 ? 'Inhabilitado' : 'Habilitado';
+
+        $details = '[Nombre: ' . $oldPlayerName . '. a: ' . $playerName . '], [CI: ' . $oldPlayerCi . '. a: ' . $player->c_i . '], [Id de Equipo: ' . $oldTeamId . '. a: ' . $player->team_id . '], [Región de nacimiento: ' . $oldRegionBirth . '. a: ' . $player->region_birth . '], [Estado: ' . $oldPlayerState . '. a: ' . $playerState . '], [Nacionalidad: ' . $oldNacionality . '. a: ' . $player->nacionality . ']';
+
+
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Jugador', // Name of the resource being accessed
+            'resource_id' => $player?->id, // ID of the resource
+            'details' => $details, // Any additional details 
+        ]);
         return to_route('players.show', $player->id);
     }
 
@@ -288,6 +321,17 @@ class PlayerController extends Controller
             $filename = basename($player->photoPlayer->photo_parental_authorization);
             Storage::delete('public/photo_player/photo_parental_authorization/' . $filename);
         }
+        //Creating log transactions
+        $playerName = $player->first_name . ($player->second_name ? ' ' .$player->second_name : '' ). ' ' .$player->last_name . ' ' . ($player->mother_last_name ? $player->mother_last_name : '' );
+        $playerState = $player->state == 1 ? 'Inhabilitado' : 'Habilitado';
+        $details = 'Nombre: ' . $playerName . ', CI: ' . $player->c_i . ', Id de Equipo: ' . $player->team_id. ', Región de nacimiento: ' . $player->region_birth. ', Estado: '. $playerState;
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Jugador', // Name of the resource being accessed
+            'resource_id' => $player?->id, // ID of the resource
+            'details' => $details, // Any additional details 
+        ]);
         $player->delete();
         
         return to_route('players.index');

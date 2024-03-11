@@ -6,6 +6,7 @@ use App\Http\Requests\PassRequestRequest;
 use App\Http\Requests\UpdatePassRequestRequest;
 use App\Http\Resources\PassRequestResource;
 use App\Http\Resources\PlayerResource;
+use App\Models\LogTransaction;
 use App\Models\PassRequest;
 use App\Models\Player;
 use Illuminate\Http\RedirectResponse;
@@ -101,7 +102,19 @@ class PassRequestController extends Controller
             $validatedData['request_photo_path'] = str_replace('public/', '/storage/', $passRequestPath);
         } 
         
-        PassRequest::create($validatedData);
+        $pass_request = PassRequest::create($validatedData);
+        $pass_request->load('player');
+        //dd($pass_request);
+        //Creating log transactions
+        $playerName = $pass_request->player->first_name . ($pass_request->player->second_name ? ' ' .$pass_request->player->second_name : '' ). ' ' .$pass_request->player->last_name . ' ' . ($pass_request->player->mother_last_name ? $pass_request->player->mother_last_name : '' );
+        $details = 'Id del jugador: '.$pass_request->player?->id. ', Nombre del jugador: ' . $playerName. ', Id del equipo del jugador: '. $pass_request->player->team_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Solicitud de pase', // Name of the resource being accessed
+            'resource_id' => $pass_request?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
         return redirect()->route('pass_requests.index')->with('success', 'Solicitud de pase de jugador creado con exito.');
     }
 
@@ -161,7 +174,23 @@ class PassRequestController extends Controller
             $filePath = $pass_request->request_photo_path;
             $validatedData['request_photo_path'] = $filePath;
         }
+        //oldData
+        $oldPlayerId = $pass_request->player?->id;
+        $oldPlayerName = $pass_request->player->first_name . ($pass_request->player->second_name ? ' ' .$pass_request->player->second_name : '' ). ' ' .$pass_request->player->last_name . ' ' . ($pass_request->player->mother_last_name ? $pass_request->player->mother_last_name : '' );
+        $oldPlayerTeamId = $pass_request->player->team_id;
+        //Update
         $pass_request->update($validatedData);
+        $pass_request = $pass_request->load('player');
+        //Creating log transactions
+        $playerName = $pass_request->player->first_name . ($pass_request->player->second_name ? ' ' .$pass_request->player->second_name : '' ). ' ' .$pass_request->player->last_name . ' ' . ($pass_request->player->mother_last_name ? $pass_request->player->mother_last_name : '' );
+        $details = '[Id del jugador: ' . $oldPlayerId . '. a: ' . $pass_request->player?->id . '], [Nombre del jugador: ' . $oldPlayerName . '. a: ' . $playerName . '], [Id del equipo del jugador: ' . $oldPlayerTeamId . '. a: ' . $pass_request->player->team_id .']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Solicitud de pase', // Name of the resource being accessed
+            'resource_id' => $pass_request?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
          return redirect()->route('pass_requests.index')->with('success', 'Solicitud de pase de jugador actualizado con exito.');
     }
 
@@ -177,6 +206,18 @@ class PassRequestController extends Controller
             $filename = basename($pass_request->request_photo_path);
             Storage::delete('public/pass_request/' . $filename);       
         }
+        $pass_request->load('player');
+        //dd($pass_request);
+        //Creating log transactions
+        $playerName = $pass_request->player->first_name . ($pass_request->player->second_name ? ' ' .$pass_request->player->second_name : '' ). ' ' .$pass_request->player->last_name . ' ' . ($pass_request->player->mother_last_name ? $pass_request->player->mother_last_name : '' );
+        $details = 'Id del jugador: '.$pass_request->player?->id. ', Nombre del jugador: ' . $playerName. ', Id del equipo del jugador: '. $pass_request->player->team_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Solicitud de pase', // Name of the resource being accessed
+            'resource_id' => $pass_request?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
         $pass_request->delete();        
         return to_route('pass_requests.index');
     }

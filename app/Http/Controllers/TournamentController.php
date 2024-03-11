@@ -6,6 +6,7 @@ use App\Http\Requests\CreateTournamentRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\Category;
+use App\Models\LogTransaction;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,7 +69,16 @@ class TournamentController extends Controller
             $categoryId = $request->input('category.id');
 
             $tournament->update(['category_id' => $categoryId]);
-        }        
+        }  
+        //Creating log transactions
+        $details = 'Nombre: ' . $tournament->name . ', Estado: ' . $tournament->state. ', Id de Categoría: ' . $tournament->category_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Torneo', // Name of the resource being accessed
+            'resource_id' => $tournament?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);      
         return redirect()->route('tournaments.show', $tournament->id)->with('success', 'Torneo creado correctamente');
     }
 
@@ -111,12 +121,29 @@ class TournamentController extends Controller
         if ($request->has('state')) {
             $validatedData['state']= $request->input('state.name');
         } 
+
+        //Old Data
+        $oldName=$tournament->name;
+        $oldState=$tournament->state;
+        $oldCategoryId = $tournament->category_id;
+
         $tournament->update($validatedData);
         if ($request->has('category')) {
             $categoryId = $request->input('category.id');
 
             $tournament->update(['category_id' => $categoryId]);
-        }  
+        } 
+        
+        //Creating log transactions
+
+        $details = '[Nombre: ' . $oldName . '. a: ' . $tournament->name . '], [Estado: ' . $oldState . '. a: ' . $tournament->state . '], [Id de Categoría: ' . $oldCategoryId . '. a: ' . $tournament->category_id . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Torneo', // Name of the resource being accessed
+            'resource_id' => $tournament?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);     
         
         return to_route('tournaments.index');
     }
@@ -128,6 +155,15 @@ class TournamentController extends Controller
     {
         $this->authorize('delete', $tournament);
 
+        //Creating log transactions
+        $details = 'Nombre: ' . $tournament->name . ', Estado: ' . $tournament->state. ', Id de Categoría: ' . $tournament->category_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Torneo', // Name of the resource being accessed
+            'resource_id' => $tournament?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);      
         $tournament->delete();
         return to_route('tournaments.index');
     }

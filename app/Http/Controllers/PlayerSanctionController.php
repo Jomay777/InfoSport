@@ -7,6 +7,7 @@ use App\Http\Resources\GameResource;
 use App\Http\Resources\PlayerResource;
 use App\Http\Resources\PlayerSanctionResource;
 use App\Models\Game;
+use App\Models\LogTransaction;
 use App\Models\Player;
 use App\Models\PlayerSanction;
 use App\Models\Tournament;
@@ -99,7 +100,17 @@ class PlayerSanctionController extends Controller
         //dd($player_sanction->player->team, $player_sanction->game->gameScheduling->teams);
         //dd($player_sanction->game->gameScheduling->teams);
         //$teams = $player_sanction->game->gameScheduling->teamA;
+        
+        //Created LogTransaction
 
+        $details = 'Sanción: ' . $player_sanction->sanction .', Tarjetas Amarillas: ' . $player_sanction->yellow_cards . ', Tarjeta Roja: ' . $player_sanction->red_card. ', Id de Partido: ' . $player_sanction->game_id. ', Id de Jugador: ' . $player_sanction->player_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Sanción de Jugador', // Name of the resource being accessed
+            'resource_id' => $player_sanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         
         $teamA = $player_sanction->game->gameScheduling->teamA;
         $teamB = $player_sanction->game->gameScheduling->teamB;
@@ -186,13 +197,28 @@ class PlayerSanctionController extends Controller
         if ($request->has('yellow_cards') && $request->input('yellow_cards') === '2') {      
             $validatedData['red_card']= '1';
         } 
+        //old Data
         $oldGameId = $player_sanction->game_id;
         $oldPlayerId = $player_sanction->player_id;
         $oldYellowCards = $player_sanction->yellow_cards;
         $oldRedCard = $player_sanction->red_card;
-
+        $oldSanction = $player_sanction->sanction;
+        /**
+         * Update PlayerSanction
+         */
         $player_sanction->update($validatedData); 
 
+        //Create LogTransacntion
+        $details = '[Sanción: ' . $oldSanction . '. a: ' . $player_sanction->sanction . '], [Tarjetas Amarillas: ' . $oldYellowCards . '. a: ' . $player_sanction->yellow_cards . '], [Tarjeta Roja: ' . $oldRedCard . '. a: ' . $player_sanction->red_card . '], [Id de Partido: ' . $oldGameId . '. a: ' . $player_sanction->game_id . '], [Id de Jugador: ' . $oldPlayerId . '. a: ' . $player_sanction->player_id . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Sanción de Jugador', // Name of the resource being accessed
+            'resource_id' => $player_sanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
+
+        //
         $newYellowCards = intval($player_sanction->yellow_cards);
         $newRedCard = intval($player_sanction->red_card);
         //dd($oldredCard, $oldYellowCards, $newredCard, $newYellowCards);
@@ -427,6 +453,15 @@ class PlayerSanctionController extends Controller
                 'red_cards_b' => $updateRedCards,
             ]);
         }
+
+        $details = 'Sanción: ' . $playerSanction->sanction .', Tarjetas Amarillas: ' . $playerSanction->yellow_cards . ', Tarjeta Roja: ' . $playerSanction->red_card. ', Id de Partido: ' . $playerSanction->game_id. ', Id de Jugador: ' . $playerSanction->player_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Sanción de Jugador', // Name of the resource being accessed
+            'resource_id' => $playerSanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         $playerSanction->delete();       
 
         return to_route('player_sanctions.index');

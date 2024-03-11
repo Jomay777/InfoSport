@@ -9,6 +9,7 @@ use App\Http\Resources\PitchResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\GameRole;
 use App\Models\GameScheduling;
+use App\Models\LogTransaction;
 use App\Models\Pitch;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
@@ -80,8 +81,18 @@ class GameRoleController extends Controller
             $validatedData['date'] = Carbon::parse($validatedData['date'])->toDateString();
         }
        
-        GameRole::create($validatedData);
+        $game_role = GameRole::create($validatedData);
+        $game_role = $game_role->load('pitch');
+        //Creating log transactions
 
+        $details = 'Nombre: ' . $game_role->name . ', Estado: ' . $game_role->date. ', Id de Categoría: ' . $game_role->tournament_id. ', Cancha: ' . $game_role->pitch->name;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Rol de partido', // Name of the resource being accessed
+            'resource_id' => $game_role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);      
                
         return redirect()->route('game_roles.index')->with('success', 'Torneo creado correctamente');
     }
@@ -120,9 +131,9 @@ class GameRoleController extends Controller
      */
     public function update(GameRoleRequest $request, string $id):RedirectResponse
     {        
-        $game_role = GameRole::find($id);   
+        $game_role = GameRole::find($id)->load('pitch');   
         $this->authorize('update', $game_role);
-            
+        //dd($game_role);
         $validatedData = $request->validated();
         if ($request->has('tournament')) {
             $validatedData['tournament_id'] = $request->input('tournament.id');
@@ -134,7 +145,27 @@ class GameRoleController extends Controller
             $validatedData['date'] = Carbon::parse($validatedData['date'])->toDateString();
         }
        //dd($validatedData);
-        $game_role->update($validatedData);     
+
+        //old data
+        $oldName= $game_role->name;
+        $oldDate= $game_role->date;
+        $oldPitchName = $game_role->pitch->name;
+        $oldTournamentId = $game_role->tournament_id;
+
+        $game_role->update($validatedData);    
+    
+        $game_role = $game_role->load('pitch');
+        //Creating log transactions
+
+        $details = '[Nombre: ' . $oldName . '. a: ' . $game_role->name . '], [Estado: ' . $oldDate . '. a: ' . $game_role->date . '], [Id de Torneo: ' . $oldTournamentId . '. a: ' . $game_role->tournament_id . '], [Cancha: ' . $oldPitchName . '. a: ' . $game_role->pitch->name . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Rol de partido', // Name of the resource being accessed
+            'resource_id' => $game_role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
+
         return to_route('game_roles.index');
     }
 
@@ -145,6 +176,17 @@ class GameRoleController extends Controller
     {
         $this->authorize('delete', $game_role);
 
+        $game_role = $game_role->load('pitch');
+        //Creating log transactions
+
+        $details = 'Nombre: ' . $game_role->name . ', Estado: ' . $game_role->date. ', Id de Categoría: ' . $game_role->tournament_id. ', Cancha: ' . $game_role->pitch->name;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Rol de partido', // Name of the resource being accessed
+            'resource_id' => $game_role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);     
         $game_role->delete();
         return to_route('game_roles.index');
     }

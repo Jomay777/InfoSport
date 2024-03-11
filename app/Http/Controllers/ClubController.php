@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateClubRequest;
 use App\Http\Resources\ClubResource;
 use App\Http\Resources\UserResource;
 use App\Models\Club;
+use App\Models\LogTransaction;
 use App\Models\User;
 use COM;
 use Illuminate\Support\Facades\Auth;
@@ -100,6 +101,16 @@ class ClubController extends Controller
                 $club->users()->attach($userId);
             }
         }        
+        //Creating log transactions
+        $UsIds = json_encode($userIds);
+        $details = 'Nombre: ' . $club->name . ', Profesor: ' . $club->coach . ', Ids de delegados: ' . $UsIds;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Club', // Name of the resource being accessed
+            'resource_id' => $club?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
         return redirect()->route('clubs.show', $club->id)->with('success', 'Club creado con exito.');
     }
 
@@ -132,7 +143,6 @@ class ClubController extends Controller
         $club = Club::find($id);   
         $this->authorize('update', $club);
     
-        
         $validatedData = $request->validated();
 
         // Check if a file was uploaded for 'logo_path'
@@ -152,8 +162,12 @@ class ClubController extends Controller
             $filePath = $club->logo_path;
             $validatedData['logo_path'] = $filePath;
         }
+        //oldData
+        $oldName= $club->name;
+        $oldCoach= $club->coach;
+
        $club->update($validatedData);
-        
+     
         $newUserIds = collect($request->input('users.*.name'))->map(function ($name) {
             return User::where('name', $name)->first()->id;
         })->toArray();
@@ -173,6 +187,17 @@ class ClubController extends Controller
                 $club->users()->attach($userId);
             }
         }
+        //Creating logTransactions
+        $oldUsIds = json_encode($existingUserIds);
+        $newUsIds = json_encode($newUserIds);
+        $details = '[Nombre: ' . $oldName .'. a: '.$club->name .'], [Profesor: '. $oldCoach .'. a:'. $club->coach . '], {Ids de delegados: ' . $oldUsIds . '. a:' . $newUsIds.'}';
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Actualizar',
+            'resource' => 'Club',
+            'resource_id' => $club->id,
+            'details' => $details,
+        ]);
 
         return to_route('clubs.show', $club->id);
     }
@@ -188,6 +213,18 @@ class ClubController extends Controller
         }
         $existingUserIds = $club->users->pluck('id')->toArray();
         $club->users()->detach($existingUserIds);
+
+        
+        // Creating log transactions
+        $UsIds = json_encode($existingUserIds);
+        $details = 'Nombre: ' . $club->name . ', Profesor: ' . $club->coach .', Ids de delegados'. $UsIds ;
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Eliminar',
+            'resource' => 'Club',
+            'resource_id' => $club->id,
+            'details' => $details,
+        ]);
 
         $club->delete();
         return to_route('clubs.index');

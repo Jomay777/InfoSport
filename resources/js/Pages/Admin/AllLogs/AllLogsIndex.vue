@@ -26,7 +26,7 @@ DataTable.use(DataTablesLib);
 
 defineProps({
   log_login_attempt: Array,
- 
+  log_transactions: Array,
 });
 
 const columns1 = ref([]);
@@ -66,18 +66,18 @@ columns2.value = [
       return meta.row + 1;
     }
   },
-  { data: 'name' },
-  { data: 'coach' },
   { data: null, render: function(data, type, row) {
-      if (row.users.length > 0) {
-        return row.users.map(function(user) {
-          return user.name;
-        }).join('<br>');
+      if (row.user) {
+          return row.user.name;
       } else {
-        return 'Delegado no asignado';
+        return 'usuario no autenticado';
       }
     }
   },
+  { data: 'action' },
+  { data: 'resource' },
+  {data: 'resource_id'},
+  { data: 'details' },
 ]; 
 
 
@@ -112,16 +112,7 @@ buttons2.value= [
     {
         title:'Transacciones',extend:'pdfHtml5', 
         text:'<i class="fa-solid fa-file-pdf"></i> PDF',
-        className:'inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150',
-       /*  customize: function (doc) {
-                        doc.content.splice(1, 0, {
-                            margin: [0, 0, 0, 12],
-                            alignment: 'center',
-                            image:
-                                //'data:image/png;base64,aHR0cDovLzEyNy4wLjAuMTo4MDAwL3N0b3JhZ2UvbG9nb3MvU1VHSXViZm1ZNHMzNVA0ZHpKWDBpRDRreTJFT0N4QjdJc2dQZ0V4bC5wbmc='
-                                
-                        });
-                    }  */        
+        className:'inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150',     
     },
     {
         title:'Transacciones',extend:'csv', 
@@ -177,21 +168,22 @@ buttons2.value= [
                     </thead>
                     </DataTable>
                 </div>
-            <!--     <div v-if="report.id == 2" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
-                    <DataTable :data="clubs" :columns="columns2"
+                <div v-if="report.id == 2" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
+                    <DataTable :data="log_transactions" :columns="columns2"
                     class="w-full display border border-gray-400" 
                     :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons2,select:true}">
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="px-2 py-2">#</th>
-                            <th class="px-2 py-2">Nombre</th>
-                            <th class="px-2 py-2">Profesor</th>
-                            <th class="px-2 py-2">Delegado</th>
-                            <th class="px-2 py-2">Logo</th>
+                            <th class="px-2 py-2">Usuario Autor</th>
+                            <th class="px-2 py-2">Acción</th>
+                            <th class="px-2 py-2">Recurso</th>
+                            <th class="px-2 py-2">Id de Recurso</th>
+                            <th class="px-2 py-2">Detalles</th>
                         </tr>
                     </thead>
                     </DataTable>
-                </div> -->
+                </div>
 
             </div>
         </div>

@@ -91,6 +91,7 @@ const storeTeam = () =>{
               placeholder="Elige la categoría"
               label="name"
               track-by="id"
+              required
             />
             <InputError class="mt-2" :message="form.errors.category" />
           </div>

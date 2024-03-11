@@ -103,4 +103,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(LogLoginAttempt::class);
     }
+    public function logTransactions()
+    {
+        return $this->hasMany(LogTransaction::class);
+    }
 }

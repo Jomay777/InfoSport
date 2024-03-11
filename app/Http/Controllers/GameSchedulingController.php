@@ -9,6 +9,7 @@ use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\TeamResource;
 use App\Models\GameRole;
 use App\Models\GameScheduling;
+use App\Models\LogTransaction;
 use App\Models\PositionTable;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
@@ -102,6 +103,15 @@ class GameSchedulingController extends Controller
        //
         
         $game_scheduling = GameScheduling::create($validatedData);
+        //Creating log Transaction
+        $details = 'Hora: ' . $game_scheduling->time . ', Id de Rol de Partido: ' . $game_scheduling->game_role_id. ', Id de Equipo A: ' . $game_scheduling->team_a_id. ', Id de Equipo B: ' . $game_scheduling->team_b_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Programación de partido', // Name of the resource being accessed
+            'resource_id' => $game_scheduling?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
 
         if (!$game_scheduling) {
             // Handle game_scheduling creation errors
@@ -149,12 +159,6 @@ class GameSchedulingController extends Controller
             ]);
             $positionTableTeamB->save();
         }
-
-        /* $teams = Team::whereIn('name', $request->input('teams.*.name'))->get();
-        // Obtener solo los IDs de los equipos
-        $teamIds = $teams->pluck('id')->toArray(); */
-/*         $teams = $request->input('teams.*.id');
-        $game_scheduling->teams()->sync($teams); */
 
         return redirect()->route('game_schedulings.index')->with('success', 'programación de partido creado correctamente');
     }
@@ -210,9 +214,20 @@ class GameSchedulingController extends Controller
         $oldGameRoleId = $gameScheduling->game_role_id;
          // Obtener el ID del torneo antiguo
         $oldTournamentId = $gameScheduling->gameRole->tournament_id;
+
+        $oldTime = $gameScheduling->time;
         //dd($validatedData, $request->all(), $tournamentId, $oldGameRoleId, $oldTeamAId, $oldTeamBId, $oldTournamentId, $gameScheduling);
         $gameScheduling->update($validatedData);
-        
+
+        //Creating log Transaction
+        $details = '[Hora: ' . $oldTime . '. a: ' . $gameScheduling->time . '], [Id de Rol de Rartido: ' . $oldGameRoleId . '. a: ' . $gameScheduling->game_role_id . '], [Id de Equipo A: ' . $oldTeamAId . '. a: ' . $gameScheduling->team_a_id . '], [Id de Equipo B: ' . $oldTeamBId . '. a: ' . $gameScheduling->team_b_id . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Programación de partido', // Name of the resource being accessed
+            'resource_id' => $gameScheduling?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
 
         // Obtener los nuevos datos de la programación del partido
         $newTeamAId = $request->input('teamA.id');
@@ -336,6 +351,17 @@ class GameSchedulingController extends Controller
                 ->delete();
         }
         //$game_scheduling->teams()->detach();
+
+        //Creating log Transaction
+        $details = 'Hora: ' . $game_scheduling->time . ', Id de Rol de Partido: ' . $game_scheduling->game_role_id. ', Id de Equipo A: ' . $game_scheduling->team_a_id. ', Id de Equipo B: ' . $game_scheduling->team_b_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Programación de partido', // Name of the resource being accessed
+            'resource_id' => $game_scheduling?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
+
         $game_scheduling->delete();
         return to_route('game_schedulings.index');
     }

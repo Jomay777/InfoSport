@@ -8,6 +8,7 @@ use App\Http\Resources\GameResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\TeamSanctionResource;
 use App\Models\Game;
+use App\Models\LogTransaction;
 use App\Models\Team;
 use App\Models\TeamSanction;
 use Illuminate\Http\RedirectResponse;
@@ -79,7 +80,7 @@ class TeamSanctionController extends Controller
      */
     public function store(TeamSanctionRequest $request)
     {
-        {
+        
             //$this->authorize('create', Game::class);
             //dd(request()->all());
             $validatedData = $request->validated();
@@ -94,9 +95,18 @@ class TeamSanctionController extends Controller
             }             
     //   dd($validatedData, $request->all());
             $team_sanction = TeamSanction::create($validatedData);    
-         
+            //Created LogTransaction
+
+        $details = 'Sanción: ' . $team_sanction->sanction .', Estado: ' . $team_sanction->state . ', Id del Equipo: ' . $team_sanction->team_id. ', Id de Partido: ' . $team_sanction->game_id. ', Observación: ' . $team_sanction->observation;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Sanción de Equipo', // Name of the resource being accessed
+            'resource_id' => $team_sanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
             return redirect()->route('team_sanctions.index')->with('success', 'Sanción creada correctamente');
-        }
+        
     }
 
     /**
@@ -158,8 +168,24 @@ class TeamSanctionController extends Controller
         }
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($validatedData);
+        //Old Data
+        $oldSanction = $team_sanction->sanction;
+        $oldState = $team_sanction->state ;
+        $oldTeamId = $team_sanction->team_id;
+        $oldGameId = $team_sanction->game_id;
+        $oldObservation = $team_sanction->observation;
         $team_sanction->update($validatedData); 
-        
+
+        //Created LogTransaction
+
+        $details = '[Sanción: ' . $oldSanction . '. a: ' . $team_sanction->sanction . '], [Estado: ' . $oldState . '. a: ' . $team_sanction->state . '], [Id del Equipo: ' . $oldTeamId . '. a: ' . $team_sanction->team_id . '], [Id de Partido: ' . $oldGameId . '. a: ' . $team_sanction->game_id . '], [Observación: ' . $oldObservation . '. a: ' . $team_sanction->observation . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Sanción de Equipo', // Name of the resource being accessed
+            'resource_id' => $team_sanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         return redirect()->route('team_sanctions.index')->with('success', 'Sación de equipo actualizada correctamente');        
     }
 
@@ -169,7 +195,14 @@ class TeamSanctionController extends Controller
     public function destroy(TeamSanction $teamSanction): RedirectResponse
     {       
         //$this->authorize('delete', $game);
-
+        $details = 'Sanción: ' . $teamSanction->sanction .', Estado: ' . $teamSanction->state . ', Id del Equipo: ' . $teamSanction->team_id. ', Id de Partido: ' . $teamSanction->game_id. ', Observación: ' . $teamSanction->observation;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Sanción de Equipo', // Name of the resource being accessed
+            'resource_id' => $teamSanction?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         $teamSanction->delete();       
         return to_route('team_sanctions.index');
     }

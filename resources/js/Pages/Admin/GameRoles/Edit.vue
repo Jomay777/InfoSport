@@ -85,6 +85,7 @@ const updateGameRole= () => {
               format="dd-MM-yyyy" 
               locale="es" 
               id="date"
+              :enable-time-picker="false"
               required>
             </VueDatePicker>
             <InputError class="mt-2" :message="form.errors.date" />

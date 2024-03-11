@@ -8,6 +8,7 @@ use App\Http\Resources\ClubResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Category;
 use App\Models\Club;
+use App\Models\LogTransaction;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -87,7 +88,17 @@ class TeamController extends Controller
             $validatedData['category_id']= $categoryId;
         }  
 
-        $team = Team::create($validatedData);                     
+        $team = Team::create($validatedData);   
+        
+        //Creating log transactions
+        $details = 'Nombre: ' . $team->name . ', Id de club: ' . $team->club_id . ', Id de categoría: ' . $team->category_id;
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Equipo', // Name of the resource being accessed
+            'resource_id' => $team?->id, // ID of the resource
+            'details' => $details, // Any additional details 
+        ]);
         return redirect()->route('teams.show', $team->id)->with('success', 'Torneo creado correctamente');
     }
 
@@ -131,6 +142,11 @@ class TeamController extends Controller
         $this->authorize('update', $team);
 
         $validatedData = $request->validated();
+        //OldData
+        $oldName = $team->name;
+        $oldClubId = $team->club_id;
+        $oldCategoryId = $team->category_id;
+
         $team->update($validatedData);
         if ($request->has('club')) {
             $clubId = $request->input('club.id');
@@ -142,7 +158,15 @@ class TeamController extends Controller
 
             $team->update(['category_id' => $categoryId]);
         }  
-        
+        //Creating log transactions
+        $details = '[Nombre: ' . $oldName . '. a: ' . $team->name . '], [Id de club: ' . $oldClubId . '. a: ' . $team->club_id . '], [Id de categoría: ' . $oldCategoryId . '. a: ' . $team->category_id . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(),
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Equipo', // Name of the resource being accessed
+            'resource_id' => $team?->id, // ID of the resource
+            'details' => $details, // Any additional details 
+        ]);
         return to_route('teams.show', $team->id);
     }
 
@@ -152,6 +176,16 @@ class TeamController extends Controller
     public function destroy(Team $team): RedirectResponse
     {
         $this->authorize('delete', $team);
+
+         //Creating log transactions
+         $details = 'Nombre: ' . $team->name . ', Id de club: ' . $team->club_id . ', Id de categoría: ' . $team->category_id;
+         LogTransaction::create([
+             'user_id' => auth()->id(),
+             'action' => 'Eliminar', // HTTP method used for the request
+             'resource' => 'team', // Name of the resource being accessed
+             'resource_id' => $team?->id, // ID of the resource
+             'details' => $details, // Any additional details 
+         ]);
 
         $team->delete();
         return to_route('teams.index');

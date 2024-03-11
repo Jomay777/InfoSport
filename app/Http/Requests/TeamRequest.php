@@ -26,7 +26,7 @@ class TeamRequest extends FormRequest
             'name' => ['required', 'string', 'max:50', Rule::unique('teams', 'name')->ignore($this->team)],
             'description' => [ 'nullable', 'max:300'],
             'club' => ['required', 'array'],
-            'category' => ['nullable', 'array'],
+            'category' => ['required', 'array'],
         ];
     }
 }

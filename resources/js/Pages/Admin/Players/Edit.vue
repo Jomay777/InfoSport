@@ -176,6 +176,7 @@ const handleFileChangePA = (event) => {
               format="dd-MM-yyyy" 
               locale="es" 
               id="birth_date"
+              :enable-time-picker="false"
               required
               >
             </VueDatePicker>

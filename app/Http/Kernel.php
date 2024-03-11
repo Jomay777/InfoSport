@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             //\App\Http\Middleware\LogLoginAttempts::class,
+            //\App\Http\Middleware\LogTransactions::class,
         ],
 
         'api' => [
@@ -69,5 +70,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'log.login.attempts' => \App\Http\Middleware\LogLoginAttempts::class,
+        'log.transactions' => \App\Http\Middleware\LogTransactions::class,
     ];
 }

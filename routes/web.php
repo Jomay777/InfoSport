@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameRoleController;
 use App\Http\Controllers\GameSchedulingController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogLoginAttemptController;
 use App\Http\Controllers\PassRequestController;
 use App\Http\Controllers\PermissionController;
@@ -73,8 +74,8 @@ Route::get('/position_tables', [PositionTableController::class, 'index'])
 ->name('position_tables');
 
 //Route for logLogginAttempts
-Route::get('/log_login_attemps', [LogLoginAttemptController::class, 'index'])
-->name('log_login_attemps.index');
+Route::get('/logs', [LogController::class, 'index'])
+->name('logs.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -94,13 +95,13 @@ Route::middleware(['auth', 'role:Administrador'])->prefix('/admin')->group(funct
     Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
         ->name('users.roles.destroy');       
 });
-Route::middleware(['auth', 'can:Ver club'])->group(function () {
+Route::middleware(['auth', 'can:Ver club', 'log.transactions:clubs'])->group(function () {
 
     //Routes for clubs
     Route::resource('/clubs', ClubController::class);
     Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
 });   
-Route::middleware(['auth', 'can:Ver equipo'])->group(function () {
+Route::middleware(['auth', 'can:Ver equipo', 'log.transactions:teams'])->group(function () {
 
     //Routes for teams
     Route::resource('/teams', TeamController::class);

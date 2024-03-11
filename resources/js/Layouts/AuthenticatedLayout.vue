@@ -93,8 +93,8 @@ const { hasPermission, hasRole } = usePermission();
                                 </NavLink>
                                 <NavLink        
                                     v-if="hasRole('Administrador')"                         
-                                    :href="route('log_login_attemps.index')" 
-                                    :active="route().current('log_login_attemps.index')">
+                                    :href="route('logs.index')" 
+                                    :active="route().current('logs.index')">
                                     Logs
                                 </NavLink>
                             </div>
@@ -226,8 +226,8 @@ const { hasPermission, hasRole } = usePermission();
                                     Reportes
                         </ResponsiveNavLink>   
                         <ResponsiveNavLink  v-if="hasRole('Administrador')"                         
-                                    :href="route('log_login_attemps.index')" 
-                                    :active="route().current('log_login_attemps.index')">
+                                    :href="route('logs.index')" 
+                                    :active="route().current('logs.index')">
                                     Logs
                         </ResponsiveNavLink>                       
                     </div>

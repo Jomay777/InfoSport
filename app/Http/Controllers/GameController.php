@@ -10,6 +10,7 @@ use App\Http\Resources\TeamResource;
 use App\Models\Game;
 use App\Models\GameScheduling;
 use App\Models\GameStatistic;
+use App\Models\LogTransaction;
 use App\Models\PositionTable;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
@@ -99,9 +100,19 @@ class GameController extends Controller
 
         //dd($request->input('game_statistic.goals_team_a'));
         //dd($request->all(), $validatedData);
-        dd($validatedData, $request->all());
+       //dd($validatedData, $request->all());
         
-        $game = Game::create($validatedData);    
+        $game = Game::create($validatedData);  
+        //Creating log Transaction
+        $details = 'Id de Programación de partido: ' . $game->game_scheduling_id . ', Resultado: ' . $game->result. ', Observación: ' . $game->observation;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Partido', // Name of the resource being accessed
+            'resource_id' => $game?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
+        
         //teamA WIN
         //$positionTable = PositionTable::find
         if ($request->result['id'] === 1) {
@@ -141,6 +152,14 @@ class GameController extends Controller
             'red_cards_a' => 0,
             'red_cards_b' => 0,
         ]);
+        $details = 'Goles del Equipo A: ' . $game->gameStatistic->goals_team_a . ', Goles del Equipo B: ' . $game->gameStatistic->goals_team_b.', Id del Partido: '.$game->id;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Estadisticas del partido', // Name of the resource being accessed
+            'resource_id' => $game?->gameStatistic?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         //*Programare la creacion de registros en la tabla tablePositions
         return redirect()->route('games.index')->with('success', 'Partido creado correctamente');
     }
@@ -211,8 +230,24 @@ class GameController extends Controller
             $validatedData['goals_team_a'] = 0;
             $validatedData['goals_team_b'] = 0;
         }
+        //Old Data
+        
+        $oldGameSchedulingId = $game->game_scheduling_id;
+        $oldResult = $game->result;
+        $oldObservation = $game->observation;
         $game->update($validatedData); 
         
+        //log Transaction to GAme
+
+        $details = '[Id de Programación de partido: ' . $oldGameSchedulingId . '. a:'.  $game->game_scheduling_id. '], [Resultado: '. $oldResult. '. a:' . $game->result. '], [Observación: '. $oldObservation. '. a:' . $game->observation . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Partido', // Name of the resource being accessed
+            'resource_id' => $game?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]); 
+       //Created GameSatatistic
         if ($game->gameStatistic) {
             $game->gameStatistic()->update([
                 'goals_team_a' => $validatedData['goals_team_a'],
@@ -228,6 +263,16 @@ class GameController extends Controller
                 'red_cards_b' => 0,
             ]);
         }   
+
+        //Log Transaction to gameStatistic
+        $details = '[Id del Partido: '.$game->id.'], Goles del Equipo [A, B]: [' . $game->gameStatistic->goals_team_a . ', ' . $game->gameStatistic->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic->yellow_cards_a.', '.$game->gameStatistic->yellow_cards_b.'], '. ' Rojas del Equipo [A, B]: [' . $game->gameStatistic->red_cards_a.', '.$game->gameStatistic->red_cards_b.']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Estadisticas del partido', // Name of the resource being accessed
+            'resource_id' => $game?->gameStatistic?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         
         return redirect()->route('games.index')->with('success', 'Partido actualizada correctamente');        
     }
@@ -238,6 +283,26 @@ class GameController extends Controller
     public function destroy(Game $game): RedirectResponse
     {       
         $this->authorize('delete', $game);
+        //Creating log Transaction
+        $game = $game->load('gameStatistic');
+        //dd($game);
+
+        $details = 'Id de Programación de partido: ' . $game->game_scheduling_id . ', Resultado: ' . $game->result. ', Observación: ' . $game->observation;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Partido', // Name of the resource being accessed
+            'resource_id' => $game?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]); 
+        $details = 'Id del Partido: '.$game->id.', Goles del Equipo [A, B]: [' . $game->gameStatistic->goals_team_a . ', ' . $game->gameStatistic->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic->yellow_cards_a.', '.$game->gameStatistic->yellow_cards_b.'], '. '], Rojas del Equipo [A, B]: [' . $game->gameStatistic->red_cards_a.', '.$game->gameStatistic->red_cards_b.']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Estadisticas del partido', // Name of the resource being accessed
+            'resource_id' => $game?->gameStatistic?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
 
         $game->delete();       
         return to_route('games.index');

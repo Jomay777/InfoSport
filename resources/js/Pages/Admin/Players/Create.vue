@@ -160,6 +160,7 @@ const handleFileChangePA = (event) => {
               format="dd-MM-yyyy" 
               locale="es" 
               id="birth_date"
+              :enable-time-picker="false"
               required>
             </VueDatePicker>
             <InputError class="mt-2" :message="form.errors.birth_date" />
