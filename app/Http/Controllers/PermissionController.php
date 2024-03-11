@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePermissionRequest;
 use App\Http\Resources\PermissionResource;
+use App\Models\LogTransaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -43,7 +44,16 @@ class PermissionController extends Controller
      */
     public function store(CreatePermissionRequest $request): RedirectResponse
     {
-        Permission::create($request->validated());
+        $permission = Permission::create($request->validated());
+        //Created LogTransactions
+        $details = 'Nombre: ' . $permission->name;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Permiso', // Name of the resource being accessed
+            'resource_id' => $permission?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         return to_route('permissions.index');
     }
 
@@ -70,7 +80,19 @@ class PermissionController extends Controller
      */
     public function update(CreatePermissionRequest $request, Permission $permission): RedirectResponse
     {
+        $oldName = $permission->name;
+        
+        //update permission
         $permission->update($request->validated());
+        //created log transaction
+        $details = '[Nombre: ' . $permission->name. ', a:'. $oldName.']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Permiso', // Name of the resource being accessed
+            'resource_id' => $permission?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         return to_route('permissions.index');
     }
 
@@ -79,6 +101,15 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
+        //Created LogTransactions
+        $details = 'Nombre: ' . $permission->name;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Permiso', // Name of the resource being accessed
+            'resource_id' => $permission?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         $permission->delete();
         return back();
     }

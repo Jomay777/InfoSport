@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+use App\Models\LogTransaction;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -61,6 +62,7 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -68,6 +70,20 @@ class UserController extends Controller
         ]);
         $user->syncRoles($request->input('roles.*.name'));
         $user->syncPermissions($request->input('permissions.*.name'));
+        
+        //Created LogTransactions
+        $rolesIds = implode(',', $request->input('roles.*.id'));
+        $permissionsIds = implode(',', $request->input('permissions.*.id'));
+//        dd($rolesIds, $permissionsIds);
+
+        $details = 'Nombre: ' . $user->name .', Correo Electrónico: ' . $user->email . ', Ids de Roles: ' . $rolesIds. ', Ids de Permisos: ' . $permissionsIds;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Usuario', // Name of the resource being accessed
+            'resource_id' => $user?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         return to_route('users.index');
     }
 
@@ -98,6 +114,16 @@ class UserController extends Controller
             'roles' => ['sometimes', 'array'],
             'permissions' => ['sometimes', 'array']
         ]);
+        //All Data
+        $oldName = $user->name;
+        $oldEmail = $user->email;
+        $oldRolesIds = $user->roles->pluck('id')->toArray();
+        $oldRolesIds = json_encode($oldRolesIds);
+        $oldPermissionsIds = $user->permissions->pluck('id')->toArray();
+        $oldPermissionsIds = json_encode($oldPermissionsIds);
+        //dd($oldName, $oldEmail, $oldRolesIds, $oldPermissionsIds);
+  
+
         if(!$request->password){
             $user->update([
                 'name' => $request->name,
@@ -109,11 +135,24 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-        }
-       
+        }       
 
         $user->syncRoles($request->input('roles.*.name'));
         $user->syncPermissions($request->input('permissions.*.name'));
+
+        //Created LogTransactions
+        $rolesIds = implode(',', $request->input('roles.*.id'));
+        $permissionsIds = implode(',', $request->input('permissions.*.id'));
+//      dd($rolesIds, $permissionsIds);
+
+        $details = '[Nombre: ' . $oldName . '. a: ' . $user->name . '], [Correo Electrónico: ' . $oldEmail . '. a: ' . $user->email . '], [Ids de Roles: ' . $oldRolesIds . '. a: ' . $rolesIds . '], [Ids de Permisos: ' . $oldPermissionsIds . '. a: ' . $permissionsIds . ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Usuario', // Name of the resource being accessed
+            'resource_id' => $user?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
 
         return back();
     }
@@ -122,7 +161,23 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(User $user): RedirectResponse
-    {
+    {   
+        //Created LogTransactions
+        $rolesIds = $user->roles->pluck('id')->toArray();
+        $permissionsIds = $user->permissions->pluck('id')->toArray();
+
+        $rolesIds = json_encode($rolesIds);
+        $permissionsIds = json_encode($permissionsIds);
+//        dd($rolesIds, $permissionsIds);
+
+        $details = 'Nombre: ' . $user->name .', Correo Electrónico: ' . $user->email . ', Ids de Roles: ' . $rolesIds. ', Ids de Permisos: ' . $permissionsIds;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Usuario', // Name of the resource being accessed
+            'resource_id' => $user?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
         $user->delete();
         return to_route('users.index');
     }

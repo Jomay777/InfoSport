@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
+use App\Models\LogTransaction;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -50,6 +51,18 @@ class RoleController extends Controller
         if ($request->has('permissions')) {
             $role->syncPermissions($request->input('permissions.*.name'));
         }
+        //Created LogTransactions
+        $permissionsIds = implode(',', $request->input('permissions.*.id'));
+//        dd($rolesIds, $permissionsIds);
+
+        $details = 'Nombre: ' . $role->name . ', Ids de Permisos: ' . $permissionsIds;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Crear', // HTTP method used for the request
+            'resource' => 'Rol', // Name of the resource being accessed
+            'resource_id' => $role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
         return to_route('roles.index');
     }
 
@@ -73,10 +86,31 @@ class RoleController extends Controller
     public function update(CreateRoleRequest $request, string $id)
     {
         $role = Role::findById($id);
+        //Old Data
+        $oldName= $role->name;
+        $oldPerimissionsIds = $role->permissions->pluck('id')->toArray() ;
+        $oldPerimissionsIds = json_encode($oldPerimissionsIds);
+        //dd($oldName, $oldPerimissionsIds);
+        //update Role
         $role->update([
             'name' => $request->name
         ]);
         $role->syncPermissions($request->input('permissions.*.name'));
+
+        //Created LogTransactions
+        $permissionsIds = implode(',', $request->input('permissions.*.id'));
+//        dd($rolesIds, $permissionsIds);
+
+        $details = '[Nombre: ' . $oldName . '. a:'. $role->name . '], [Ids de Permisos: ' . $oldPerimissionsIds . '. a:'. $permissionsIds. ']';
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Actualizar', // HTTP method used for the request
+            'resource' => 'Rol', // Name of the resource being accessed
+            'resource_id' => $role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);  
+                 
+
         return back();
     }
 
@@ -86,6 +120,20 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $role = Role::findById($id);
+        //Created LogTransactions
+        $permissionsIds = $role->permissions->pluck('id')->toArray();
+
+        $permissionsIds = json_encode($permissionsIds);
+        //dd( $permissionsIds);
+
+        $details = 'Nombre: ' . $role->name .', Ids de Permisos: ' . $permissionsIds;
+        LogTransaction::create([
+            'user_id' => auth()->id(), // Assuming you have user authentication
+            'action' => 'Eliminar', // HTTP method used for the request
+            'resource' => 'Rol', // Name of the resource being accessed
+            'resource_id' => $role?->id, // ID of the resource, if applicable
+            'details' => $details, // Any additional details you want to log
+        ]);
         $role->delete();
         return back();
     }
