@@ -60,6 +60,26 @@ columns1.value = [
       }
     }
   },
+  {   data: 'created_at',
+    render: function(data, type, row) {
+      // Obtener la fecha y hora en formato Date
+      var date = new Date(data);
+
+      // Obtener los componentes de la fecha y hora
+      var year = date.getFullYear();
+      var month = ('0' + (date.getMonth() + 1)).slice(-2);
+      var day = ('0' + date.getDate()).slice(-2);
+      var hours = ('0' + date.getHours()).slice(-2);
+      var minutes = ('0' + date.getMinutes()).slice(-2);
+      var seconds = ('0' + date.getSeconds()).slice(-2);
+
+      // Construir la cadena formateada
+      var formattedDate = year + '-' + month + '-' + day + ' T ' + hours + ':' + minutes + ':' + seconds;
+
+      return formattedDate;
+    }
+},
+
 ];
 columns2.value = [
   { data: null, render: function(data, type, row, meta) {
@@ -77,6 +97,25 @@ columns2.value = [
   { data: 'action' },
   { data: 'resource' },
   {data: 'resource_id'},
+  {   data: 'created_at',
+    render: function(data, type, row) {
+      // Obtener la fecha y hora en formato Date
+      var date = new Date(data);
+
+      // Obtener los componentes de la fecha y hora
+      var year = date.getFullYear();
+      var month = ('0' + (date.getMonth() + 1)).slice(-2);
+      var day = ('0' + date.getDate()).slice(-2);
+      var hours = ('0' + date.getHours()).slice(-2);
+      var minutes = ('0' + date.getMinutes()).slice(-2);
+      var seconds = ('0' + date.getSeconds()).slice(-2);
+
+      // Construir la cadena formateada
+      var formattedDate = year + '-' + month + '-' + day + ' T ' + hours + ':' + minutes + ':' + seconds;
+
+      return formattedDate;
+    }
+  },
   { data: 'details' },
 ]; 
 
@@ -163,7 +202,9 @@ buttons2.value= [
                             <th class="px-2 py-2">IP</th>
                             <th class="px-2 py-2">Correo de intento de sesión</th>
                             <th class="px-2 py-2">Nombre de usuario</th>         
-                            <th class="px-2 py-2">Correo de usuario</th>                                                                     
+                            <th class="px-2 py-2">Correo de usuario</th>          
+                            <th class="px-2 py-2">Fecha de intento</th>                                                                     
+                                                           
                         </tr>
                     </thead>
                     </DataTable>
@@ -179,6 +220,7 @@ buttons2.value= [
                             <th class="px-2 py-2">Acción</th>
                             <th class="px-2 py-2">Recurso</th>
                             <th class="px-2 py-2">Id de Recurso</th>
+                            <th class="px-2 py-2">Fecha de intento</th>                                                                     
                             <th class="px-2 py-2">Detalles</th>
                         </tr>
                     </thead>

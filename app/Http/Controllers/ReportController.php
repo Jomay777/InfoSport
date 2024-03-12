@@ -48,14 +48,12 @@ class ReportController extends Controller
         $tournaments = $tournaments->get();
         $game_roles = GameRole::with('tournament', 'pitch');
         $game_roles = $game_roles->get();
-        $game_schedulings = GameScheduling::with('teams', 'gameRole');
+        $game_schedulings = GameScheduling::with('teamA', 'teamB', 'gameRole');
         $game_schedulings = $game_schedulings->get();
 
-        $games = Game::with('gameScheduling.teams', 'gameStatistic','gameScheduling.gameRole');
+        $games = Game::with('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
         $games = $games->get();
         //dd($users);
-
-
 
 
         return Inertia::render('Admin/ReportIndex', [

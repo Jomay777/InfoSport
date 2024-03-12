@@ -110,7 +110,7 @@ columns2.value = [
   {
     data: null,
     render: function(data, type, row) {      
-        return '<a href="' + row.logo_path + '" target="_blank"><img src="http://127.0.0.1:8000'+ row.logo_path + '" alt="logo" style="max-width: 100px;"></img></a>';   
+        return '<a href="' + row.logo_path + '" target="_blank"><img src="'+ row.logo_path + '" alt="logo" style="max-width: 100px;"></img></a>';   
     }   
 }
 ]; 
@@ -257,16 +257,10 @@ columns9.value = [
   {
   data: null,
   render: function(data, type, row) {
-    if (row.teams && row.teams.length > 0) {
+    if (row.teamA && row.teamB) {
       // Si hay equipos asignados, construye el contenido de la celda
-      var teamsHTML = '';
-      row.teams.forEach(function(team, index) {
-        teamsHTML += team.name;
-        if (index < row.teams.length - 1) {
-          teamsHTML +=' ' +'<br>vs<br>'+' ';
-        }
-      });
-      return teamsHTML;
+      
+      return row.teamA.name + ' vs ' + row.teamB.name;
     } else {
       // Si no hay equipos asignados, muestra un mensaje
       return 'Equipos no asignados';
@@ -283,16 +277,12 @@ columns10.value = [
   {
   data: null,
   render: function(data, type, row) {
-    if (row.game_scheduling && row.game_scheduling.teams && row.game_scheduling.teams.length > 0) {
+    if (row.game_scheduling && row.game_scheduling.team_a && row.game_scheduling.team_b) {
       // Si hay equipos asignados, construye el contenido de la celda
       var teamsHTML = '(' + row.game_scheduling.game_role.name + ')<br>';
-      row.game_scheduling.teams.forEach(function(team, index) {
-        teamsHTML += team.name;
-        if (index < row.game_scheduling.teams.length - 1) {
-          teamsHTML += ' '+'<br>vs<br>'+' ';
-        }
-      });
-      return '<a href="' + route('games.show', row.id) + '">' + teamsHTML + '</a>';
+
+      return '<a href="' + route('games.show', row.id) + '">' + teamsHTML 
+        + row.game_scheduling.team_a.name + '<br> vs ' + row.game_scheduling.team_b.name +'</a>';
     } else {
       // Si no hay equipos asignados, muestra un mensaje
       return '<a href="' + route('games.show', row.id) + '">Equipos no asignados</a>';
