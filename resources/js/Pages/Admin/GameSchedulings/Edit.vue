@@ -30,6 +30,10 @@ const props = defineProps({
   teamB:{
     type: Array,
     required: true
+  },
+  position_tables:{
+    type: Array,
+    required: true
   }
 });
 
@@ -98,11 +102,12 @@ const dispatchActionTeamATeamB = () => {
             <VueMultiselect
               id="game_role"
               v-model="form.game_role"
-              :options="game_role"
+              :options="form.game_role ? game_role.filter(item => item.tournament_id === form.game_role.tournament_id): []"
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"
               @select="dispatchActionTeamATeamB"
+
               placeholder="Escoge el rol de partido"
               label="name"
               track-by="id"
@@ -128,7 +133,7 @@ const dispatchActionTeamATeamB = () => {
                   :multiple="false"            
                   :close-on-select="true"
                   @select="dispatchAction"
-
+                  :disabled=" true"
                   placeholder="Escoge equipo A"
                   label="name"
                   track-by="id"
@@ -148,7 +153,8 @@ const dispatchActionTeamATeamB = () => {
                   : []"
                   :multiple="false"            
                   :close-on-select="true"
-                 
+                  :disabled=" true"
+
                   placeholder="Escoge equipo B"
                   label="name"
                   track-by="id"

@@ -90,18 +90,8 @@ class GameController extends Controller
         if ($request->has('goals_team_b')) {
             $validatedData['goals_team_b']= $request->input('goals_team_b');
         } 
-        //recatando datos
-        /* $gameScheduling = GameScheduling::with('teams')->find($validatedData['game_scheduling_id']);
-        $teams = $gameScheduling->teams;
-        if (count($teams) >= 2) {
-            $teamA = $teams[0];
-            $teamB = $teams[1];
-        } else {error_log('Equipos no asignados');} */
 
-        //dd($request->input('game_statistic.goals_team_a'));
-        //dd($request->all(), $validatedData);
-       //dd($validatedData, $request->all());
-        
+        //Created Game        
         $game = Game::create($validatedData);  
         //Creating log Transaction
         $details = 'Id de Programación de partido: ' . $game->game_scheduling_id . ', Resultado: ' . $game->result. ', Observación: ' . $game->observation;
@@ -112,32 +102,137 @@ class GameController extends Controller
             'resource_id' => $game?->id, // ID of the resource, if applicable
             'details' => $details, // Any additional details you want to log
         ]);  
-        
+
+        //Charged PostionTable
+        $game = $game->load('gameScheduling.teamA.positionTables','gameScheduling.teamB.positionTables', 'gameScheduling.gameRole.tournament.positionTables');
+
+        // Procesamiento del resultado del partido
+        $resultId = $request->result['id'];
+        $teamAWon = $resultId === 1;
+        $teamBWon = $resultId === 2;
+        $drawn = $resultId === 3;
+        // Obtener el ID del equipo A, B y del torneo
+        $teamAId = $game->gameScheduling?->team_a_id;
+        $teamBId = $game->gameScheduling?->team_b_id;
+        $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
+        // Obtener goles de equipo A y B
+        $goalsTeamA =$validatedData['goals_team_a'];
+        $goalsTeamB =$validatedData['goals_team_b'];
+
         //teamA WIN
         //$positionTable = PositionTable::find
-        if ($request->result['id'] === 1) {
-            
+         // Lógica para actualizar las posiciones de los equipos en la tabla de posiciones
+        if ($teamAWon || $teamBWon) {
            //aqui hacer los procesos cuando teamA gana
+           
+            $winningTeamId = $teamAWon ? $teamAId : $teamBId;
+            $losingTeamId = $teamAWon ? $teamBId : $teamAId;
+            //goles del equipo ganador y perdedor
+            $goalsWinningTeam = $teamAWon ? $goalsTeamA : $goalsTeamB;
+            $goalsLosingTeam = $teamAWon ? $goalsTeamB : $goalsTeamA;
+            // Encontrar el registro de PositionTable relacionado con el equipo ganador y el torneo
+            $winningTeamPosition = PositionTable::where('team_id', $winningTeamId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            //['points', 'games_played', 'games_won', 'games_drawn', 'games_lost', 'goals_scored', 'goals_against', 'tournament_id', 'team_id',];
+            $winningTeamPosition->points += 3;
+            $winningTeamPosition->games_played += 1;
+            $winningTeamPosition->games_won += 1;
+            $winningTeamPosition->goals_scored += $goalsWinningTeam;
+            $winningTeamPosition->goals_against += $goalsLosingTeam;
+            $winningTeamPosition->save();
+
+            //encontrar el registro de positionTable relacionado con el equipo perdedor y el torneo
+            $losingTeamPosition = PositionTable::where('team_id', $losingTeamId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+            $losingTeamPosition->games_played += 1;
+            $losingTeamPosition->games_lost += 1;
+            $losingTeamPosition->goals_scored += $goalsLosingTeam;
+            $losingTeamPosition->goals_against += $goalsWinningTeam;
+            // Actualiza los demás campos según la lógica de tu aplicación
+            $losingTeamPosition->save();
+
+           //dd($game);
         }
-        //teamB Win
-        elseif ($request->result['id'] === 2) {
+        //Empate
+        elseif ($drawn) {
            //aqui hacer los procesos cuando teamB gana
 
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points += 1;
+            $teamAPosition->games_played += 1;
+            $teamAPosition->games_drawn += 1;
+            $teamAPosition->goals_scored += $goalsTeamA;
+            $teamAPosition->goals_against += $goalsTeamB;
+            $teamAPosition->save();
+
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points += 1;
+            $teamBPosition->games_played += 1;
+            $teamBPosition->games_drawn += 1;
+            $teamBPosition->goals_scored += $goalsTeamB;
+            $teamBPosition->goals_against += $goalsTeamA;
+            $teamBPosition->save();
         }
-        // DRAWN
-        elseif ($request->result['id'] === 3) {
-               //aqui hacer los procesos cuando empatan
-        }
+
         //teamA Win to W.O.
-        elseif ($request->result['id'] === 4) {
+        if ($request->result['id'] === 4) {
             
             $validatedData['goals_team_a'] = 3;
             $validatedData['goals_team_b'] = 0;
+             // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+             $teamAPosition = PositionTable::where('team_id', $teamAId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points += 3;
+            $teamAPosition->games_played += 1;
+            $teamAPosition->games_won += 1;
+            $teamAPosition->goals_scored += 3;
+            $teamAPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->games_played += 1;            
+            $teamBPosition->save();
         }
         //teamB Win to W.O.
         elseif ($request->result['id'] === 5) {
             $validatedData['goals_team_a'] = 0;
             $validatedData['goals_team_b'] = 3;
+             // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+             $teamBPosition = PositionTable::where('team_id', $teamBId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points += 3;
+            $teamBPosition->games_played += 1;
+            $teamBPosition->games_won += 1;
+            $teamBPosition->goals_scored += 3;
+            $teamBPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A 
+            $teamAPosition->games_played += 1;
+            $teamAPosition->save();
         }
         //Canceled
         elseif ($request->result['id'] === 6) {
@@ -235,6 +330,136 @@ class GameController extends Controller
         $oldGameSchedulingId = $game->game_scheduling_id;
         $oldResult = $game->result;
         $oldObservation = $game->observation;
+
+        //Quitar goles puntos, y demas a los equipos en la tabla de posiciones
+             //Charged PostionTable
+        $game = $game->load('gameScheduling.teamA.positionTables','gameScheduling.teamB.positionTables', 'gameScheduling.gameRole.tournament.positionTables');
+
+        // Procesamiento del resultado del partido
+        $resultName = $game->result;
+        $teamAWon = $resultName === 'Ganó A';
+        $teamBWon = $resultName === 'Ganó B';
+        $drawn = $resultName === 'Empate';
+        // Obtener el ID del equipo A, B y del torneo
+        $teamAId = $game->gameScheduling?->team_a_id;
+        $teamBId = $game->gameScheduling?->team_b_id;
+        $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
+        // Obtener goles de equipo A y B
+        $goalsTeamA =$game->gameStatistic->goals_team_a;
+        $goalsTeamB =$game->gameStatistic->goals_team_b;
+
+        //teamA WIN
+        //$positionTable = PositionTable::find
+         // Lógica para actualizar las posiciones de los equipos en la tabla de posiciones
+        if ($teamAWon || $teamBWon) {
+           //aqui hacer los procesos cuando teamA gana
+           
+            $winningTeamId = $teamAWon ? $teamAId : $teamBId;
+            $losingTeamId = $teamAWon ? $teamBId : $teamAId;
+            //goles del equipo ganador y perdedor
+            $goalsWinningTeam = $teamAWon ? $goalsTeamA : $goalsTeamB;
+            $goalsLosingTeam = $teamAWon ? $goalsTeamB : $goalsTeamA;
+            // Encontrar el registro de PositionTable relacionado con el equipo ganador y el torneo
+            $winningTeamPosition = PositionTable::where('team_id', $winningTeamId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            //['points', 'games_played', 'games_won', 'games_drawn', 'games_lost', 'goals_scored', 'goals_against', 'tournament_id', 'team_id',];
+            $winningTeamPosition->points -= 3;
+            $winningTeamPosition->games_played -= 1;
+            $winningTeamPosition->games_won -= 1;
+            $winningTeamPosition->goals_scored -= $goalsWinningTeam;
+            $winningTeamPosition->goals_against -= $goalsLosingTeam;
+            $winningTeamPosition->save();
+
+            //encontrar el registro de positionTable relacionado con el equipo perdedor y el torneo
+            $losingTeamPosition = PositionTable::where('team_id', $losingTeamId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+            $losingTeamPosition->games_played -= 1;
+            $losingTeamPosition->games_lost -= 1;
+            $losingTeamPosition->goals_scored -= $goalsLosingTeam;
+            $losingTeamPosition->goals_against -= $goalsWinningTeam;
+            // Actualiza los demás campos según la lógica de tu aplicación
+            $losingTeamPosition->save();
+
+           //dd($game);
+        }
+        //Empate
+        elseif ($drawn) {
+           //aqui hacer los procesos cuando teamB gana
+
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points -= 1;
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->games_drawn -= 1;
+            $teamAPosition->goals_scored -= $goalsTeamA;
+            $teamAPosition->goals_against -= $goalsTeamB;
+            $teamAPosition->save();
+
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points -= 1;
+            $teamBPosition->games_played -= 1;
+            $teamBPosition->games_drawn -= 1;
+            $teamBPosition->goals_scored -= $goalsTeamB;
+            $teamBPosition->goals_against -= $goalsTeamA;
+            $teamBPosition->save();
+        }
+
+        //teamA Win to W.O.
+        if ($resultName === 'Ganó A por W.O.') {            
+             // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+             $teamAPosition = PositionTable::where('team_id', $teamAId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points -= 3;
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->games_won -= 1;
+            $teamAPosition->goals_scored -= 3;
+            $teamAPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->games_played -= 1;            
+            $teamBPosition->save();
+        }
+        //teamB Win to W.O.
+        elseif ($resultName === 'Ganó B por W.O.') {
+             // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+             $teamBPosition = PositionTable::where('team_id', $teamBId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points -= 3;
+            $teamBPosition->games_played -= 1;
+            $teamBPosition->games_won -= 1;
+            $teamBPosition->goals_scored -= 3;
+            $teamBPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A 
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->save();
+        }
+
+        //dd($oldResult, $oldGoalsTeamA, $oldGoalsTeamB);
         $game->update($validatedData); 
         
         //log Transaction to GAme
@@ -247,6 +472,134 @@ class GameController extends Controller
             'resource_id' => $game?->id, // ID of the resource, if applicable
             'details' => $details, // Any additional details you want to log
         ]); 
+
+            //Charged PostionTable
+        $game = $game->load('gameScheduling.teamA.positionTables','gameScheduling.teamB.positionTables', 'gameScheduling.gameRole.tournament.positionTables');
+
+        // Procesamiento del resultado del partido
+        $resultId = $request->result['id'];
+        $teamAWon = $resultId === 1;
+        $teamBWon = $resultId === 2;
+        $drawn = $resultId === 3;
+        // Obtener el ID del equipo A, B y del torneo
+        $teamAId = $game->gameScheduling?->team_a_id;
+        $teamBId = $game->gameScheduling?->team_b_id;
+        $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
+        // Obtener goles de equipo A y B
+        $goalsTeamA =$validatedData['goals_team_a'];
+        $goalsTeamB =$validatedData['goals_team_b'];
+
+        //teamA WIN
+        //$positionTable = PositionTable::find
+         // Lógica para actualizar las posiciones de los equipos en la tabla de posiciones
+        if ($teamAWon || $teamBWon) {
+           //aqui hacer los procesos cuando teamA gana
+           
+            $winningTeamId = $teamAWon ? $teamAId : $teamBId;
+            $losingTeamId = $teamAWon ? $teamBId : $teamAId;
+            //goles del equipo ganador y perdedor
+            $goalsWinningTeam = $teamAWon ? $goalsTeamA : $goalsTeamB;
+            $goalsLosingTeam = $teamAWon ? $goalsTeamB : $goalsTeamA;
+            // Encontrar el registro de PositionTable relacionado con el equipo ganador y el torneo
+            $winningTeamPosition = PositionTable::where('team_id', $winningTeamId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            //['points', 'games_played', 'games_won', 'games_drawn', 'games_lost', 'goals_scored', 'goals_against', 'tournament_id', 'team_id',];
+            $winningTeamPosition->points += 3;
+            $winningTeamPosition->games_played += 1;
+            $winningTeamPosition->games_won += 1;
+            $winningTeamPosition->goals_scored += $goalsWinningTeam;
+            $winningTeamPosition->goals_against += $goalsLosingTeam;
+            $winningTeamPosition->save();
+
+            //encontrar el registro de positionTable relacionado con el equipo perdedor y el torneo
+            $losingTeamPosition = PositionTable::where('team_id', $losingTeamId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+            $losingTeamPosition->games_played += 1;
+            $losingTeamPosition->games_lost += 1;
+            $losingTeamPosition->goals_scored += $goalsLosingTeam;
+            $losingTeamPosition->goals_against += $goalsWinningTeam;
+            // Actualiza los demás campos según la lógica de tu aplicación
+            $losingTeamPosition->save();
+
+           //dd($game);
+        }
+        //Empate
+        elseif ($drawn) {
+           //aqui hacer los procesos cuando teamB gana
+
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points += 1;
+            $teamAPosition->games_played += 1;
+            $teamAPosition->games_drawn += 1;
+            $teamAPosition->goals_scored += $goalsTeamA;
+            $teamAPosition->goals_against += $goalsTeamB;
+            $teamAPosition->save();
+
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points += 1;
+            $teamBPosition->games_played += 1;
+            $teamBPosition->games_drawn += 1;
+            $teamBPosition->goals_scored += $goalsTeamB;
+            $teamBPosition->goals_against += $goalsTeamA;
+            $teamBPosition->save();
+        }
+
+        //teamA Win to W.O.
+        if ($request->result['id'] === 4) {            
+             // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+             $teamAPosition = PositionTable::where('team_id', $teamAId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            $teamAPosition->points += 3;
+            $teamAPosition->games_played += 1;
+            $teamAPosition->games_won += 1;
+            $teamAPosition->goals_scored += 3;
+            $teamAPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->games_played += 1;            
+            $teamBPosition->save();
+        }
+        //teamB Win to W.O.
+        elseif ($request->result['id'] === 5) {
+             // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+             $teamBPosition = PositionTable::where('team_id', $teamBId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            $teamBPosition->points += 3;
+            $teamBPosition->games_played += 1;
+            $teamBPosition->games_won += 1;
+            $teamBPosition->goals_scored += 3;
+            $teamBPosition->save();
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A 
+            $teamAPosition->games_played += 1;
+            $teamAPosition->save();
+        }
+
        //Created GameSatatistic
         if ($game->gameStatistic) {
             $game->gameStatistic()->update([
@@ -265,7 +618,7 @@ class GameController extends Controller
         }   
 
         //Log Transaction to gameStatistic
-        $details = '[Id del Partido: '.$game->id.'], Goles del Equipo [A, B]: [' . $game->gameStatistic->goals_team_a . ', ' . $game->gameStatistic->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic->yellow_cards_a.', '.$game->gameStatistic->yellow_cards_b.'], '. ' Rojas del Equipo [A, B]: [' . $game->gameStatistic->red_cards_a.', '.$game->gameStatistic->red_cards_b.']';
+        $details = '[Id del Partido: '.$game->id.'], Goles del Equipo [A, B]: [' . $game->gameStatistic?->goals_team_a . ', ' . $game->gameStatistic?->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic?->yellow_cards_a.', '.$game->gameStatistic?->yellow_cards_b.'], '. ' Rojas del Equipo [A, B]: [' . $game->gameStatistic?->red_cards_a.', '.$game->gameStatistic?->red_cards_b.']';
         LogTransaction::create([
             'user_id' => auth()->id(), // Assuming you have user authentication
             'action' => 'Actualizar', // HTTP method used for the request
@@ -295,7 +648,7 @@ class GameController extends Controller
             'resource_id' => $game?->id, // ID of the resource, if applicable
             'details' => $details, // Any additional details you want to log
         ]); 
-        $details = 'Id del Partido: '.$game->id.', Goles del Equipo [A, B]: [' . $game->gameStatistic->goals_team_a . ', ' . $game->gameStatistic->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic->yellow_cards_a.', '.$game->gameStatistic->yellow_cards_b.'], '. '], Rojas del Equipo [A, B]: [' . $game->gameStatistic->red_cards_a.', '.$game->gameStatistic->red_cards_b.']';
+        $details = 'Id del Partido: '.$game->id.', Goles del Equipo [A, B]: [' . $game->gameStatistic?->goals_team_a . ', ' . $game->gameStatistic?->goals_team_b. '], Amarillas del Equipo [A, B]: [' . $game->gameStatistic?->yellow_cards_a.', '.$game->gameStatistic?->yellow_cards_b.'], '. '], Rojas del Equipo [A, B]: [' . $game->gameStatistic?->red_cards_a.', '.$game->gameStatistic?->red_cards_b.']';
         LogTransaction::create([
             'user_id' => auth()->id(), // Assuming you have user authentication
             'action' => 'Eliminar', // HTTP method used for the request
@@ -303,6 +656,146 @@ class GameController extends Controller
             'resource_id' => $game?->gameStatistic?->id, // ID of the resource, if applicable
             'details' => $details, // Any additional details you want to log
         ]);  
+
+        //Quitar goles puntos, y demas a los equipos en la tabla de posiciones
+             //Charged PostionTable
+        $game = $game->load('gameScheduling.teamA.positionTables','gameScheduling.teamB.positionTables', 'gameScheduling.gameRole.tournament.positionTables');
+
+        // Procesamiento del resultado del partido
+        $resultName = $game->result;
+        $teamAWon = $resultName === 'Ganó A';
+        $teamBWon = $resultName === 'Ganó B';
+        $drawn = $resultName === 'Empate';
+        // Obtener el ID del equipo A, B y del torneo
+        $teamAId = $game->gameScheduling?->team_a_id;
+        $teamBId = $game->gameScheduling?->team_b_id;
+        $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
+        // Obtener goles de equipo A y B
+        $goalsTeamA =$game->gameStatistic->goals_team_a;
+        $goalsTeamB =$game->gameStatistic->goals_team_b;
+
+        //teamA WIN
+        //$positionTable = PositionTable::find
+         // Lógica para actualizar las posiciones de los equipos en la tabla de posiciones
+        if ($teamAWon || $teamBWon) {
+           //aqui hacer los procesos cuando teamA gana
+           
+            $winningTeamId = $teamAWon ? $teamAId : $teamBId;
+            $losingTeamId = $teamAWon ? $teamBId : $teamAId;
+            //goles del equipo ganador y perdedor
+            $goalsWinningTeam = $teamAWon ? $goalsTeamA : $goalsTeamB;
+            $goalsLosingTeam = $teamAWon ? $goalsTeamB : $goalsTeamA;
+            // Encontrar el registro de PositionTable relacionado con el equipo ganador y el torneo
+            $winningTeamPosition = PositionTable::where('team_id', $winningTeamId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            //['points', 'games_played', 'games_won', 'games_drawn', 'games_lost', 'goals_scored', 'goals_against', 'tournament_id', 'team_id',];
+            if($winningTeamPosition){
+            $winningTeamPosition->points -= 3;
+            $winningTeamPosition->games_played -= 1;
+            $winningTeamPosition->games_won -= 1;
+            $winningTeamPosition->goals_scored -= $goalsWinningTeam;
+            $winningTeamPosition->goals_against -= $goalsLosingTeam;
+            $winningTeamPosition->save();
+            }
+            //encontrar el registro de positionTable relacionado con el equipo perdedor y el torneo
+            $losingTeamPosition = PositionTable::where('team_id', $losingTeamId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+            if($losingTeamPosition){
+            $losingTeamPosition->games_played -= 1;
+            $losingTeamPosition->games_lost -= 1;
+            $losingTeamPosition->goals_scored -= $goalsLosingTeam;
+            $losingTeamPosition->goals_against -= $goalsWinningTeam;
+            // Actualiza los demás campos según la lógica de tu aplicación
+            $losingTeamPosition->save();
+            }
+           //dd($game);
+        }
+        //Empate
+        elseif ($drawn) {
+           //aqui hacer los procesos cuando teamB gana
+
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            if($teamAPosition){
+            $teamAPosition->points -= 1;
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->games_drawn -= 1;
+            $teamAPosition->goals_scored -= $goalsTeamA;
+            $teamAPosition->goals_against -= $goalsTeamB;
+            $teamAPosition->save();
+            }
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            if($teamBPosition){
+            $teamBPosition->points -= 1;
+            $teamBPosition->games_played -= 1;
+            $teamBPosition->games_drawn -= 1;
+            $teamBPosition->goals_scored -= $goalsTeamB;
+            $teamBPosition->goals_against -= $goalsTeamA;
+            $teamBPosition->save();
+            }
+        }
+
+        //teamA Win to W.O.
+        if ($resultName === 'Ganó A por W.O.') {            
+             // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+             $teamAPosition = PositionTable::where('team_id', $teamAId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A
+            if($teamAPosition){
+            $teamAPosition->points -= 3;
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->games_won -= 1;
+            $teamAPosition->goals_scored -= 3;
+            $teamAPosition->save();
+            }
+            // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+            $teamBPosition = PositionTable::where('team_id', $teamBId)
+                ->where('tournament_id', $tournamentId)
+                ->first();
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            if($teamBPosition){
+            $teamBPosition->games_played -= 1;            
+            $teamBPosition->save();
+            }
+        }
+        //teamB Win to W.O.
+        elseif ($resultName === 'Ganó B por W.O.') {
+             // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
+             $teamBPosition = PositionTable::where('team_id', $teamBId)
+             ->where('tournament_id', $tournamentId)
+             ->first();
+
+            // Incrementar los juegos jugados y los juegos empatados para el equipo B
+            if($teamBPosition){
+            $teamBPosition->points -= 3;
+            $teamBPosition->games_played -= 1;
+            $teamBPosition->games_won -= 1;
+            $teamBPosition->goals_scored -= 3;
+            $teamBPosition->save();
+            }
+            // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
+            $teamAPosition = PositionTable::where('team_id', $teamAId)
+            ->where('tournament_id', $tournamentId)
+            ->first();
+            if($teamAPosition){
+            // Incrementar los juegos jugados y los juegos empatados para el equipo A 
+            $teamAPosition->games_played -= 1;
+            $teamAPosition->save();
+            }
+        }
 
         $game->delete();       
         return to_route('games.index');
