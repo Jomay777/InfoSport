@@ -60,18 +60,20 @@ const closeModal = () => {
   <Head title="Ver Rol de Partido" />
 
   <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white"
+        class="relative sm:flex sm:justify-center sm:items-center bg-gradient-to-b from-slate-100 to-gray-400 min-h-screen bg-center selection:bg-red-500 selection:text-white"
     >
+
     <div class="max-w-7xl mx-auto py-4">
-      <div class="sm:fixed sm:top-0 sm:left-0 p-6 text-left">
+      <div class="sm:fixed sm:top-0 sm:left-0 p-6 text-left z-20">
         <Link
         rel="stylesheet" href="/"
-          class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-green-700 rounded"
+          class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-blue-900 hover:text-green-500 rounded z-20"
           >Back</Link
         >      
       </div>
-      <div class="mt-6 ml-6 w-80">
-      <InputLabel for="published_tournaments" value="Torneo" />
+      <div class="mt-6 ml-6 w-80  text-6xlz-10">
+      <InputLabel for="published_tournaments" value="Torneo"
+        class="text-blue-900 z-50 inline-block" />
         <VueMultiselect
           class="w-full"
           id="published_tournaments"
@@ -87,7 +89,8 @@ const closeModal = () => {
       <InputError class="mt-2" :message="form.errors.published_tournaments" />
       </div>
       <div class="mt-6 ml-6 w-80">
-      <InputLabel for="game_roles" value="Rol de partidos" />
+      <InputLabel for="game_roles" value="Rol de partidos"
+        class="text-green-500" />
         <VueMultiselect
           class="w-full"
           id="game_roles"
@@ -104,15 +107,14 @@ const closeModal = () => {
         />
       <InputError class="mt-2" :message="form.errors.game_roles" />
       </div>
-      <!-- <div v-for="team in teams_a" :key="team">
-        <div v-for="item in team.gameSchedulingsAsTeamA" :key="item">
-          {{ item.id }}
-        </div> 
-      </div> -->
-      <div v-if="form.game_roles" class="mt-6">  
+      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Fecha de Partidos:</span> {{ form.game_roles ? form.game_roles.date : '' }}</p>
+      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Cancha:</span> {{ form.game_roles?.pitch ? form.game_roles?.pitch.name : '' }}</p>
 
-      <Table>
+      <div v-if="form.game_roles" class="mt-6" >  
+
+      <Table class="rounded-sm">
         <template #header>
+          <!--  class="bg-white" -->
           <TableRow>              
             <TableHeaderCell>Equipo A</TableHeaderCell>
             <TableHeaderCell>vs</TableHeaderCell>
@@ -125,13 +127,13 @@ const closeModal = () => {
           <TableRow v-for="(game_scheduling, index) in game_schedulings.filter(item => item.game_role_id === form.game_roles.id).slice().sort(((a, b) => {
                 return a.time.localeCompare(b.time);
               }))"
-             :key="game_scheduling.id" class="border-b">
+             :key="game_scheduling.id" class="border-b bg-slate-200">
 
             <TableDataCell>         
               <div v-for="team in teams_a" :key="team.id" >
                 <div v-for="item in team.gameSchedulingsAsTeamA" :key="item" class="flex items-center justify-between">
                   <span v-if="item?.id === game_scheduling.id">{{ team.name }}</span>
-                  <img v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="w-10 h-10 ml-2" />
+                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 ml-2" />
                 </div>              
               </div>
             </TableDataCell>
@@ -141,7 +143,7 @@ const closeModal = () => {
             <TableDataCell>   
               <div v-for="team in teams_b" :key="team.id">
                 <div v-for="item in team.gameSchedulingsAsTeamB" :key="item" class="flex items-center">                  
-                  <img v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="w-10 h-10 mr-2" />
+                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 mr-2" />
                   <span v-if="item?.id === game_scheduling.id" class="font-bold">{{ team.name }}</span>
                 </div>
               </div>              
@@ -152,7 +154,7 @@ const closeModal = () => {
           </TableRow>
         </template>  
       </Table>
-    </div>
+      </div>
     </div>  
   </div>
 </template>

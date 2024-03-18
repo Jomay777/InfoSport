@@ -1,24 +1,7 @@
 <script>
 export default {  
-  name: 'Dashboard',
-  computed: {
-    sortedGameSchedulings() {
-      // Ordenar los partidos por la hora
-      return this.game_role.game_schedulings.slice().sort((a, b) => {
-        // Suponiendo que 'time' es una cadena en formato 'HH:mm:ss'
-        return a.time.localeCompare(b.time);
-      });
-    },
-    gameRoleDate() {
-    // Parsear la fecha en formato ISO 8601
-    const isoDate = new Date(this.game_role.date.replace(/-/g, '/'));
-    // Obtener la fecha en la zona horaria local
-    const localDate = new Date(isoDate.getTime() + (isoDate.getTimezoneOffset() * 60000));
-    return localDate;
-}
-    
-  }
-};
+  name: 'Bienvenido',
+};  
 </script>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -48,81 +31,18 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Bienvenido <span class=" font-extrabold ">{{$page.props.auth.user.name}}</span>!</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">¡Tu sesión ha iniciado correctamente,
+              <span class=" font-extrabold ">{{$page.props.auth.user.name}}</span>!</h2>
         </template>
-
-        <!-- <div class="py-12" v-if=" gameRoleDate.setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0)">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class=" mt-5 flex flex-col justify-center items-center ">
-                        <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
-                            <div class="mt-2 mb-8  text-gray-700 w-full">
-                                <h4 class=" mt-5 px-2 text-2xl font-bold text-navy-700 dark:text-white">
-                                Rol de partidos {{ game_role.name }}
-                                </h4>                    
-                            </div> 
-                            <div class="grid grid-cols-2 gap-4 px-2 w-full">
-                                <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                                <p class="text-sm text-gray-600">ID</p>
-                                <p class="text-base font-medium text-navy-700 dark:text-navy">
-                                    {{ game_role.id }}
-                                </p>
-                                </div>
-
-                                <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                                <p class="text-sm text-gray-600">Fecha del rol de partidos</p>
-                                <p  class="text-base font-medium text-navy-700 dark:text-navy">
-                                    {{ game_role.date }}
-                                </p>
-                                </div>
-                                <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                                <p class="text-sm text-gray-600">Cancha</p>
-                                <p v-if="game_role.pitch" class="text-base font-medium text-navy-700 dark:text-navy">
-                                    {{ game_role.pitch.name }}
-                                </p>
-                                <p v-else>Cancha no asignada</p>
-                                </div>
-
-                                <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-1 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-                                <p class="text-sm text-gray-600">Torneo</p>
-                                <p v-if="game_role.tournament" class="text-base font-medium text-navy-700 dark:text-navy">
-                                    {{ game_role.tournament.name }}
-                                </p>
-                                <p v-else>Torneo no asignada</p>
-                                </div>
-                                
-                                                
-                            </div>
-                            <div class="mt-3 mb-8 px-2 w-full" v-if="game_role.game_schedulings">
-                            <div v-for="game_scheduling in sortedGameSchedulings" :key="game_scheduling.id"
-                                class="mt-3 rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
-
-                                <p class="text-m text-gray-600">Partido</p>
-
-                                <p class="text-xl dark:text-navy ">
-                                <span class="inline-block w-1/2">{{ game_scheduling.teams.map(team => team.name).join(' vs ') }}</span>
-                                 <img class="bg-cover bg-center max-w-10 flex" :src=" game_scheduling.teams.map(team => team.club.logo_path)" alt="">
-                                <br> 
-                                <span class="inline-block w-1/2 text-right">{{ game_scheduling.time }}</span>
-                                </p>
-
-                            </div>
-                            </div>
-                
-                        </div>  
-                    <p class="font-normal text-navy-700 mt-20 mx-auto w-max">Rol de partidos <a href="https://horizon-ui.com?ref=tailwindcomponents.com" target="_blank" class="text-brand-500 font-bold">{{ game_role.name }}</a></p>  
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg m-10 px-2 " v-else>
-          <p class="text-2xl font-bold text-navy-700 dark:text-white m-10 sm:text-xs">No Hay Rol de Partidos Publicado</p>
+        <!-- <div class="py-4 bg-gray-100 rounded-md p-5 mx-10 mt-10">
+            <h3 class="font-semibold text-xl text-gray-800 leading-tight">Bienvenido a InfoSport</h3>            
+            <p class="font-semibold mt-4 text-l text-gray-800 dark:text-gray-600 leading-tight">Tienes estos roles:<br> 
+              <span class="text-green-900" v-for=" (role, c = 1) in $page.props.auth.user.roles">{{ c = c+1 }}.- {{ role }}.</span>
+            </p>
+          <p class="font-semibold mt-4 text-l text-gray-800 dark:text-gray-600 leading-tight">Tienes estos permisos: <br>
+              <span class="text-blue-800 hover:text-blue-900 dark:text-blue-700" v-for=" (permission, index ) in $page.props.auth.user.permissions">{{ index = index+1 }}.- {{ permission  }}. <br></span>
+            </p>
         </div> -->
-       <!--   <p>{{ game_role.date }}</p>
-        <p>{{  new Date() }}</p>   
-        {{ gameRoleDate }}
-        <br>
-        {{ game_role.date }} -->
+
     </AuthenticatedLayout>
 </template>

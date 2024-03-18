@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameRoleController;
 use App\Http\Controllers\GameSchedulingController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LogLoginAttemptController;
 use App\Http\Controllers\PassRequestController;
@@ -76,6 +77,9 @@ Route::get('/position_tables', [PositionTableController::class, 'index'])
 //Route for logLogginAttempts
 Route::get('/logs', [LogController::class, 'index'])
 ->name('logs.index');
+//Route for Helps
+Route::get('/helps', [HelpController::class, 'index'])
+->name('helps.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

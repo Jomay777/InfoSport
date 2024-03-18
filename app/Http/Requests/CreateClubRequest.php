@@ -27,7 +27,7 @@ class CreateClubRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100', 'unique:' . Club::class],
             'coach' => ['nullable', 'string', 'max:80'],
-            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             //'logo_path' => ['nullable', 'string'],
             'users' => ['sometimes', 'array']
         ];

@@ -247,7 +247,7 @@ const handleFileChangePA = (event) => {
             <InputError class="mt-2" :message="form.errors.state" />
           </div>                    
           <div class="mt-4">
-            <InputLabel for="team" value="Equipo" />
+            <InputLabel for="team" value="Equipo - Categoría" />
             <VueMultiselect
               id="team"
               v-model="form.team"

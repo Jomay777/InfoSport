@@ -58,7 +58,7 @@ const closeModal = () => {
   <Head title="Ver Rol de Partido" />
 
   <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white"
+        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-center bg-gradient-to-b from-slate-100 to-gray-400 selection:bg-red-500 selection:text-white"
     >
     <div class="max-w-7xl mx-auto py-4">
       <div class="sm:fixed sm:top-0 sm:left-0 p-6 text-left">
@@ -86,9 +86,10 @@ const closeModal = () => {
       </div>
 
       <div v-if="form.tournaments" class="mt-6">      
-      <Table>
+      <Table class="rounded-sm">
         <template #header>
-          <TableRow>              
+         <!--  class="bg-white" -->
+          <TableRow >              
             <TableHeaderCell>Equipo</TableHeaderCell>
             <TableHeaderCell>PJ</TableHeaderCell>
             <TableHeaderCell>G</TableHeaderCell>
@@ -105,7 +106,7 @@ const closeModal = () => {
           <TableRow v-for="(position_table_by_tournament, index) in position_tables_by_tournament[form.tournaments.id].sort((a, b) => {
             return b.points - a.points; // Ordenar en orden descendente por puntos
         })"
-             :key="position_table_by_tournament.id" class="border-b">
+             :key="position_table_by_tournament.id" class="border-b bg-gradient-to-b from-blue-100 to-blue-50">
             <TableDataCell>         
               <div class="flex items-center">
                 <img :src="position_table_by_tournament.team.club.logo_path" alt="Logo del equipo" class="w-10 h-10 mr-2 rounded-sm" />

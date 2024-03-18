@@ -25,9 +25,9 @@ const form = useForm({
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Información de perfil</h2>
+            <h2 class="text-lg font-medium text-gray-900 ">Información de perfil</h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-gray-600 ">
                 Actualice la información de su cuenta y la dirección de correo electrónico.
             </p>
         </header>
@@ -65,13 +65,13 @@ const form = useForm({
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
+                <p class="text-sm mt-2 text-gray-800">
                     Su dirección de correo electrónico no está verificada.                    
                     <Link
                         :href="route('verification.send')"
                         method="post"
                         as="button"
-                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                        class="underline text-sm text-gray-600  hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Haga clic aquí para reenviar el correo de verificación.
                     </Link>
@@ -79,7 +79,7 @@ const form = useForm({
 
                 <div
                     v-show="status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600 dark:text-green-400"
+                    class="mt-2 font-medium text-sm text-green-600 "
                 >
                     Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.                
                 </div>
@@ -94,7 +94,7 @@ const form = useForm({
                     leave-active-class="transition ease-in-out"
                     leave-to-class="opacity-0"
                 >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Guardado.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 ">Guardado.</p>
                 </Transition>
             </div>
         </form>

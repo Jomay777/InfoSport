@@ -33,8 +33,9 @@ defineProps({
   tournaments: Object,
   game_roles: Object,
   game_schedulings: Object,
-  games: Object
- 
+  games: Object,
+  player_sanctions: Object,
+  team_sanctions: Object
 });
 
 const columns1 = ref([]);
@@ -47,6 +48,8 @@ const columns7 = ref([]);
 const columns8 = ref([]);
 const columns9 = ref([]);
 const columns10 = ref([]);
+const columns11 = ref([]);
+const columns12 = ref([]);
 
 
 const buttons1 = ref([]);
@@ -59,11 +62,14 @@ const buttons7 = ref([]);
 const buttons8 = ref([]);
 const buttons9 = ref([]);
 const buttons10 = ref([]);
+const buttons11 = ref([]);
+const buttons12 = ref([]);
+
 
 const report = ref([]);
 const types = ref([{'id': 1,'name':'Usuarios'},{'id': 2,'name':'Clubs'},{'id': 3,'name':'Equipos'},{'id': 4,'name':'Jugadores'}
                 ,{'id': 5,'name':'Solicitud de pases'},{'id': 6,'name':'Categorías'},{'id': 7,'name':'Torneos'},{'id': 8,'name':'Roles de partidos'}
-                ,{'id': 9,'name':'Programación de partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'}]);
+                ,{'id': 9,'name':'Programación de partidos'},{'id': 10,'name':'Partidos'},{'id': 11,'name':'Sanción de Jugadores'},{'id': 12,'name':'Sanción de Equipos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'},{'id': 10,'name':'Partidos'}]);
 columns1.value = [
   { data: null, render: function(data, type, row, meta) {
       return meta.row + 1;
@@ -245,6 +251,14 @@ columns9.value = [
       return meta.row + 1;
     }
   },
+  { data: null, render: function(data, type, row) {
+      if (row.gameRole) {
+        return data.gameRole.date;
+      } else {
+        return 'Rol de partido no asignado';
+      }
+    }
+  },
   { data: 'time'},
   { data: null, render: function(data, type, row) {
       if (row.gameRole) {
@@ -291,10 +305,90 @@ columns10.value = [
   },
   { data: 'result'},
   { data: 'observation'},
-
-
-
 ];
+columns11.value = [
+  { 
+    data: null,
+    render: function(data, type, row, meta) {
+      return meta.row + 1;
+    }
+  },
+  {
+    data: null,
+    render: function(data, type, row) {
+      if (row.player) {
+        var playerName = row.player.first_name + ' ' + (row.player.second_name ? row.player.second_name + ' ' : '' ) + row.player.last_name + ' ' + (row.player.mother_last_name ? row.player.mother_last_name : '' );
+        var playerTeam = row.player.team ? ' - ' + row.player.team.name : '';
+        return  playerName  + playerTeam ;
+      } else {
+        return '';
+      }
+    }
+  },
+  {
+    data: null,
+    render: function(data, type, row) {
+      var tournamentName = row.game.game_scheduling?.game_role?.tournament?.name || '';
+      var roleName = row.game.game_scheduling?.game_role?.name || '';
+      var teamAName = row.game.game_scheduling?.team_a.name || '';
+      var teamBName = row.game.game_scheduling?.team_b?.name || '';
+
+      return '<div class="text-blue-800">' + tournamentName + '</div>' + '<div class="text-blue-500">' + roleName + '</div>' +teamAName + ' <div class="text-red-400">vs</div> ' + teamBName ;
+    }
+  },
+  { data: 'sanction' },
+  {
+    data: null,
+    render: function(data, type, row) {
+      var roleDate = row.game.game_scheduling?.game_role?.date || '';
+      return roleDate  ;
+    }
+  },
+  { data: 'state' },
+  { data: 'yellow_cards' },
+  { data: 'red_card' },
+];
+columns12.value = [
+  { 
+    data: null,
+    render: function(data, type, row, meta) {
+      return meta.row + 1;
+    }
+  },
+  {
+    data: null,
+    render: function(data, type, row) {
+      if (row.team) {
+        return row.team.name + '<br>' + row.team.club.name ;
+      } else {
+        return '';
+      }
+    }
+  },
+  {
+    data: null,
+    render: function(data, type, row) {
+      var tournamentName = row.game.game_scheduling?.game_role?.tournament?.name || '';
+      var roleName = row.game.game_scheduling?.game_role?.name || '';
+      var teamAName = row.game.game_scheduling?.team_a.name || '';
+      var teamBName = row.game.game_scheduling?.team_b?.name || '';
+
+      return '<div class="text-blue-800">' + tournamentName + '</div>' +'<div class="text-blue-500">' + roleName + '</div>' + teamAName + ' <div class="text-red-400">vs</div> ' + teamBName;
+    }
+  },
+  {
+    data: null,
+    render: function(data, type, row) {
+      var roleDate = row.game.game_scheduling?.game_role?.date || '';
+
+      return  roleDate;
+    }
+  },
+  { data: 'state' },
+  { data: 'sanction' },
+  { data: 'observation' }
+];
+
 
 buttons1.value= [
     {
@@ -345,7 +439,7 @@ buttons2.value= [
     },
     {
         title:'Clubs',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> COPIAR',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -367,7 +461,7 @@ buttons3.value= [
     },
     {
         title:'Equipos',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -389,7 +483,7 @@ buttons4.value= [
     },
     {
         title:'Jugadores',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -411,7 +505,7 @@ buttons5.value= [
     },
     {
         title:'Solicitud de Pase de Jugadores',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -433,7 +527,7 @@ buttons6.value= [
     },
     {
         title:'Categorías',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -455,7 +549,7 @@ buttons7.value= [
     },
     {
         title:'Torneos',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -477,7 +571,7 @@ buttons8.value= [
     },
     {
         title:'Rol de Partidos',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -499,7 +593,7 @@ buttons9.value= [
     },
     {
         title:'Programación de Partidos',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -521,7 +615,51 @@ buttons10.value= [
     },
     {
         title:'Partidos',extend:'copy', 
-        text:'<i class="fa-solid fa-copy"></i> COPY',
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
+        className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    }
+]
+buttons11.value= [
+    {
+        title:'Sanción de Jugadores',extend:'excelHtml5', 
+        text:'<i class="fa-solid fa-file-excel"></i> Excel',
+        className:'inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Jugadores',extend:'pdfHtml5', 
+        text:'<i class="fa-solid fa-file-pdf"></i> PDF',
+        className:'inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Jugadores',extend:'csv', 
+        text:'<i class="fa-solid fa-print"></i> CSV',
+        className:'inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Jugadores',extend:'copy', 
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
+        className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    }
+]
+buttons12.value= [
+    {
+        title:'Sanción de Equipos',extend:'excelHtml5', 
+        text:'<i class="fa-solid fa-file-excel"></i> Excel',
+        className:'inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Equipos',extend:'pdfHtml5', 
+        text:'<i class="fa-solid fa-file-pdf"></i> PDF',
+        className:'inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Equipos',extend:'csv', 
+        text:'<i class="fa-solid fa-print"></i> CSV',
+        className:'inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
+    },
+    {
+        title:'Sanción de Equipos',extend:'copy', 
+        text:'<i class="fa-solid fa-copy"></i> Copiar',
         className:'inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
     }
 ]
@@ -684,6 +822,7 @@ buttons10.value= [
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="px-2 py-2">#</th>
+                            <th class="px-2 py-2">Fecha</th>
                             <th class="px-2 py-2">Hora</th>
                             <th class="px-2 py-2">Rol de Partido</th>
                             <th class="px-2 py-2">Equipos</th>
@@ -701,6 +840,42 @@ buttons10.value= [
                             <th class="px-2 py-2">Equipos</th>
                             <th class="px-2 py-2">Resultado</th>
                             <th class="px-2 py-2">Observación</th>
+                        </tr>
+                    </thead>
+                    </DataTable>
+                </div>
+                <div v-if="report.id == 11" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
+                    <DataTable :data="player_sanctions" :columns="columns11"
+                    class="w-full display border border-gray-400" 
+                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons11,select:true}">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-2 py-2">#</th>
+                            <th class="px-2 py-2">Jugador - Equipo</th>
+                            <th class="px-2 py-2">Torneo<br>Rol de Partido<br>Partido</th>
+                            <th class="px-2 py-2">Sanción</th>
+                            <th>Fecha</th>
+                            <th class="px-2 py-2">Estado</th>
+                            <th class="px-2 py-2">Tarjetas Amarillas</th>
+                            <th class="px-2 py-2">Tarjeta Roja</th>
+                        </tr>
+                    </thead>
+                    </DataTable>
+                </div>
+                <div v-if="report.id == 12" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
+                    <DataTable :data="team_sanctions" :columns="columns12"
+                    class="w-full display border border-gray-400" 
+                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons12,select:true}">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-2 py-2">#</th>
+                            <th class="px-2 py-2">Equipo<br>Club</th>
+                            <th class="px-2 py-2">Torneo<br>Rol de Partido<br>Partido</th>
+                            <th class="px-2 py-2">Fecha</th>
+
+                            <th class="px-2 py-2">Estado</th>
+                            <th class="px-2 py-2">Sanción</th>
+                            <th class="px-2 py-2">Observaciones</th>
                         </tr>
                     </thead>
                     </DataTable>

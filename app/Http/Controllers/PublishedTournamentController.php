@@ -60,41 +60,22 @@ class PublishedTournamentController extends Controller
         //getting teams_a filtered
 /*         $teamsA = $teams->filter(function ($team, $index) {
             return $index % 2 === 0;
-        })->map(function ($team) {
-            return [
-                'id' => $team['id'],
-                'name' => $team['name'],
-                'description' => $team['description'],
-                'club_id' => $team['club_id'],
-                'category_id' => $team['category_id'],
-                'pivot' => [
-                    'game_scheduling_id' => $team['pivot']['game_scheduling_id'],
-                    'team_id' => $team['pivot']['team_id'],
-                ],
-                'club' => [
-                'logo_path' => $team['club']['logo_path'],
-                ],
-            ];
-        });
-        
-        $teamsB = $teams->filter(function ($team, $index) {
-            return $index % 2 !== 0;
-        })->map(function ($team) {
-            return [
-                'id' => $team['id'],
-                'name' => $team['name'],
-                'description' => $team['description'],
-                'club_id' => $team['club_id'],
-                'category_id' => $team['category_id'],
-                'pivot' => [
-                    'game_scheduling_id' => $team['pivot']['game_scheduling_id'],
-                    'team_id' => $team['pivot']['team_id'],
-                ],
-                'club' => [
+            })->map(function ($team) {
+                return [
+                    'id' => $team['id'],
+                    'name' => $team['name'],
+                    'description' => $team['description'],
+                    'club_id' => $team['club_id'],
+                    'category_id' => $team['category_id'],
+                    'pivot' => [
+                        'game_scheduling_id' => $team['pivot']['game_scheduling_id'],
+                        'team_id' => $team['pivot']['team_id'],
+                    ],
+                    'club' => [
                     'logo_path' => $team['club']['logo_path'],
-                ],
-            ];
-        }); */
+                    ],
+                ];
+            });*/
        //dd($publishedTournaments, $gameRoles, $gameSchedulings, $teamsA, $teamsB);
         return Inertia::render('PublishedTournaments/PublishedTournamentIndex', [
             'published_tournaments' => TournamentResource::collection($publishedTournaments),

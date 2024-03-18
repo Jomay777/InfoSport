@@ -220,7 +220,7 @@ buttons2.value= [
                             <th class="px-2 py-2">Acción</th>
                             <th class="px-2 py-2">Recurso</th>
                             <th class="px-2 py-2">Id de Recurso</th>
-                            <th class="px-2 py-2">Fecha de intento</th>                                                                     
+                            <th class="px-2 py-2">Fecha de Transacción</th>                                                                     
                             <th class="px-2 py-2">Detalles</th>
                         </tr>
                     </thead>

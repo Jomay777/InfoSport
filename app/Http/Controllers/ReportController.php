@@ -9,7 +9,9 @@ use App\Http\Resources\GameRoleResource;
 use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\PassRequestResource;
 use App\Http\Resources\PlayerResource;
+use App\Http\Resources\PlayerSanctionResource;
 use App\Http\Resources\TeamResource;
+use App\Http\Resources\TeamSanctionResource;
 use App\Http\Resources\TournamentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Category;
@@ -19,7 +21,9 @@ use App\Models\GameRole;
 use App\Models\GameScheduling;
 use App\Models\PassRequest;
 use App\Models\Player;
+use App\Models\PlayerSanction;
 use App\Models\Team;
+use App\Models\TeamSanction;
 use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,7 +58,12 @@ class ReportController extends Controller
         $games = Game::with('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
         $games = $games->get();
         //dd($users);
+        $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament');
+        $player_sanctions = $player_sanctions->get();
+        $team_sanctions = TeamSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'team.club','game.gameScheduling.gameRole.tournament');
+        $team_sanctions = $team_sanctions->get();
 
+        //dd($team_sanctions);
 
         return Inertia::render('Admin/ReportIndex', [
             'clubs' => ClubResource::collection($clubs),
@@ -67,8 +76,8 @@ class ReportController extends Controller
             'game_roles' => GameRoleResource::collection($game_roles),
             'game_schedulings' => GameSchedulingResource::collection($game_schedulings),
             'games' => GameResource::collection($games),
-
-
+            'player_sanctions' => PlayerSanctionResource::collection($player_sanctions),
+            'team_sanctions' => TeamSanctionResource::collection($team_sanctions),
         ]);
 
     }

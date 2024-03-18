@@ -52,7 +52,7 @@ class PlayerRequest extends FormRequest
 
                     $birthDate = Carbon::parse($this->birth_date);
                     // Obtener la edad actual del jugador
-                    $age = $birthDate->age;
+                    $agePlayer = $birthDate->age;
                     // Obtener la categoría del equipo
                     $team = Team::findOrFail($id);
                     //$categoryAge = intval($team->category->name);
@@ -61,8 +61,8 @@ class PlayerRequest extends FormRequest
                     //dd($age, $categoryAge);
 
                     // Verificar si la edad del jugador es menor o igual a la edad de la categoría del equipo
-                    if ($age >= $categoryAge) {
-                        $fail("El jugador no tiene la edad requerida para pertenecer al equipo $name $categoryAge .");
+                    if ($agePlayer >= $categoryAge) {
+                        $fail("El jugador no tiene la edad requerida para pertenecer al equipo $name .");
                     }
                 },
             ],
