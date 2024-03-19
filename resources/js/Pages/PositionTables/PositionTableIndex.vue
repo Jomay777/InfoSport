@@ -77,7 +77,7 @@ const closeModal = () => {
           :options="tournaments"
           :multiple="false"
           :close-on-select="true"
-          :preselect-first="false"
+          :preselect-first="true"
           placeholder="Elige el torneo"
           label="name"              
           track-by="id"

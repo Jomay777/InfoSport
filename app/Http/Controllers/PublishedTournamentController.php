@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PlayerSanctionResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\TournamentResource;
+use App\Models\PlayerSanction;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -22,6 +24,8 @@ class PublishedTournamentController extends Controller
 
         $teamsA = $gameSchedulings->pluck('teamA')->flatten()->unique();
         $teamsB = $gameSchedulings->pluck('teamB')->flatten()->unique();
+        $playerSanctions = PlayerSanction::with('game.gameScheduling.gameRole.tournament', 'player.team', 'game.gameScheduling.teamA', 'game.gameScheduling.teamB')->get();
+        //dd($playerSanctions);
  /*        $teamsA = $teamsA->map(function ($team) {
             return [
                 'id' => $team->id,
@@ -83,6 +87,8 @@ class PublishedTournamentController extends Controller
             'teams_b' => TeamResource::collection($teamsB),
             'game_roles' => $gameRoles,
             'game_schedulings' => $gameSchedulings,
+            'player_sanctions' => PlayerSanctionResource::collection($playerSanctions),
+
         ]);
     }
 

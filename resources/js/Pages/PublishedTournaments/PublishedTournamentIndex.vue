@@ -9,6 +9,20 @@ export default {
         return a.time.localeCompare(b.time);
       });
     }
+  },
+  data() {
+    return {
+      showPlayerSanctions: false,
+      team: null // Variable para almacenar el equipo seleccionado
+    };
+  },
+  methods: {
+    handleClick(team) {
+      // Cambiar el estado de la variable showPlayerSanctions
+      this.showPlayerSanctions = true;
+      // Actualizar el equipo seleccionado
+      this.team = team;
+    }
   }
 };
 </script>
@@ -38,6 +52,7 @@ const props = defineProps({
   teams_b: Array,
   game_roles: Array,
   game_schedulings: Array,
+  player_sanctions: Array,
 });
 
 const form = useForm({
@@ -54,6 +69,9 @@ const closeModal = () => {
   showConfirmDeleteGameRoleModal.value = false;
 }
 
+const dispatchAction = () => {
+  form.game_roles = ''
+}
 </script>
 
 <template>
@@ -81,7 +99,8 @@ const closeModal = () => {
           :options="published_tournaments"
           :multiple="false"
           :close-on-select="true"
-          :preselect-first="false"
+          :preselect-first="true"
+          @select="dispatchAction"
           placeholder="Elige el torneo"
           label="name"              
           track-by="id"
@@ -100,7 +119,7 @@ const closeModal = () => {
            : []"
           :multiple="false"
           :close-on-select="true"
-          :preselect-first="false"
+          :preselect-first="true"
           placeholder="Elige el rol de partidos"
           label="name"              
           track-by="id"
@@ -129,10 +148,11 @@ const closeModal = () => {
               }))"
              :key="game_scheduling.id" class="border-b bg-slate-200">
 
-            <TableDataCell>         
+            <TableDataCell >         
               <div v-for="team in teams_a" :key="team.id" >
                 <div v-for="item in team.gameSchedulingsAsTeamA" :key="item" class="flex items-center justify-between">
-                  <span v-if="item?.id === game_scheduling.id">{{ team.name }}</span>
+                  <span v-if="item?.id === game_scheduling.id" @click="handleClick(team)"
+                  class="font-bold hover:text-green-500 cursor-pointer">{{ team.name }}</span>
                   <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 ml-2" />
                 </div>              
               </div>
@@ -144,7 +164,8 @@ const closeModal = () => {
               <div v-for="team in teams_b" :key="team.id">
                 <div v-for="item in team.gameSchedulingsAsTeamB" :key="item" class="flex items-center">                  
                   <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 mr-2" />
-                  <span v-if="item?.id === game_scheduling.id" class="font-bold">{{ team.name }}</span>
+                  <span v-if="item?.id === game_scheduling.id" @click="handleClick(team)" 
+                  class="font-bold hover:text-green-500 cursor-pointer" >{{ team.name }}</span>
                 </div>
               </div>              
             </TableDataCell>
@@ -155,7 +176,61 @@ const closeModal = () => {
         </template>  
       </Table>
       </div>
-    </div>  
+      {{ team?.name }}
+      <p class=" mt-4 block font-medium text-lg text-blue-900">
+        <span class="font-bold text-xl text-green-500">Sanciones de los jugadores del equipo:</span> {{ team?.name }}
+      </p>
+
+      <div v-if="showPlayerSanctions && (form.game_roles ? form.game_roles : showPlayerSanctions = false )" class="mt-6" >  
+        <Table class="rounded-sm">
+          <template #header>
+          <!--  class="bg-white" -->
+          <TableRow>              
+            <TableHeaderCell>Jugador</TableHeaderCell>
+            <TableHeaderCell>Equipo</TableHeaderCell>
+            <TableHeaderCell>Rol de Partido<br>Programación de Partido<br>Fecha</TableHeaderCell>
+            <TableHeaderCell>Amarillas</TableHeaderCell>
+            <TableHeaderCell>Roja</TableHeaderCell>
+          </TableRow>
+        </template>
+        <template #default>
+          <!-- form.game_roles.game_schedulings -->
+          <TableRow v-for="(player_sanction, index) in player_sanctions
+            .filter(item => item.game.game_scheduling.game_role.tournament.id === form.published_tournaments.id 
+            && item.player.team.id === team?.id 
+            && item.game.game_scheduling.game_role.date < form.game_roles.date
+            && item.state === 'Activo').slice()
+            .sort((a, b) => {
+                // Ordenar por fecha de manera descendente (de mayor a menor)
+                return new Date(b.game.game_scheduling.game_role.date) - new Date(a.game.game_scheduling.game_role.date);
+              })"
+             :key="player_sanction.id" class="border-b bg-slate-200">
+
+            <TableDataCell>         
+              {{ player_sanction.player.first_name }} {{ player_sanction.player.second_name }} {{ player_sanction.player.last_name }} {{ player_sanction.player.mother_last_name }}
+            </TableDataCell>
+            <TableDataCell> 
+              {{ player_sanction.player.team.name }}
+            </TableDataCell>
+            <TableDataCell>    
+              <!-- {{ player_sanction.game.game_scheduling.game_role.tournament.name }} <br>   -->         
+              {{ player_sanction.game.game_scheduling.game_role.name }} <br>
+              {{ player_sanction.game.game_scheduling.team_a.name }} <br>
+              vs<br>
+              {{ player_sanction.game.game_scheduling.team_b.name }} <br>
+              {{ player_sanction.game.game_scheduling.game_role.date }}
+            </TableDataCell>
+            <TableDataCell>   
+              {{ player_sanction.yellow_cards }} 
+            </TableDataCell>
+            <TableDataCell>   
+              {{ player_sanction.red_card }} 
+            </TableDataCell>
+          </TableRow>
+        </template> 
+        </Table>
+      </div>      
+    </div>      
   </div>
 </template>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
