@@ -56,7 +56,7 @@ const deleteGameRole = (id) => {
 </script>
 
 <template>
-  <Head title="GameRole Index" />
+  <Head title="Rol de Partidos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

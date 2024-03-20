@@ -20,7 +20,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Ayuda" />
 
     <AuthenticatedLayout>
         <template #header>

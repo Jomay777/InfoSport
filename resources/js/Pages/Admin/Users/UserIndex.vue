@@ -55,7 +55,7 @@ const deleteUser = (id) => {
 </script>
 
 <template>
-  <Head title="Users index" />
+  <Head title="Usuarios" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

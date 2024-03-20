@@ -56,7 +56,7 @@ const deletePlayer = (id) => {
 </script>
 
 <template>
-  <Head title="Players Index" />
+  <Head title="Jugadores" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

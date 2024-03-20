@@ -56,7 +56,7 @@ const deleteCategory = (id) => {
 </script>
 
 <template>
-  <Head title="Categories Index" />
+  <Head title="Categorías" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

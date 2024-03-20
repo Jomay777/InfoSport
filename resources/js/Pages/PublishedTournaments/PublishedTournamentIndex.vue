@@ -29,9 +29,6 @@ export default {
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import AdminLayout from "@/Layouts/AdminLayout.vue";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 
 import Table from "@/Components/Table.vue";
 import TableRow from "@/Components/TableRow.vue";
@@ -41,9 +38,6 @@ import TableDataCell from "@/Components/TableDataCell.vue";
 import { ref, computed } from "vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 
-import Modal from "@/Components/Modal.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import VueMultiselect from "vue-multiselect";
 
 const props = defineProps({
@@ -78,7 +72,7 @@ const dispatchAction = () => {
   <Head title="Ver Rol de Partido" />
 
   <div
-        class="relative sm:flex sm:justify-center sm:items-center bg-gradient-to-b from-slate-100 to-gray-400 min-h-screen bg-center selection:bg-red-500 selection:text-white"
+        class="relative sm:flex sm:justify-center sm:items-center bg-gradient-to-b from-slate-100 to-gray-300 min-h-screen bg-center selection:bg-red-500 selection:text-white"
     >
 
     <div class="max-w-7xl mx-auto py-4">
@@ -126,10 +120,10 @@ const dispatchAction = () => {
         />
       <InputError class="mt-2" :message="form.errors.game_roles" />
       </div>
-      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Fecha de Partidos:</span> {{ form.game_roles ? form.game_roles.date : '' }}</p>
-      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Cancha:</span> {{ form.game_roles?.pitch ? form.game_roles?.pitch.name : '' }}</p>
+      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Fecha de Partidos:</span> {{ form.game_roles ? form.game_roles.date + '.' : '' }}</p>
+      <p class=" mt-4 block font-medium text-lg text-blue-900"> <span class="font-bold text-xl text-green-500">Cancha:</span> {{ form.game_roles?.pitch ? form.game_roles?.pitch.name + '.' : '' }}</p>
 
-      <div v-if="form.game_roles" class="mt-6" >  
+      <div v-if="form.game_roles" class="mt-3" >  
 
       <Table class="rounded-sm">
         <template #header>
@@ -146,24 +140,24 @@ const dispatchAction = () => {
           <TableRow v-for="(game_scheduling, index) in game_schedulings.filter(item => item.game_role_id === form.game_roles.id).slice().sort(((a, b) => {
                 return a.time.localeCompare(b.time);
               }))"
-             :key="game_scheduling.id" class="border-b bg-slate-200">
+             :key="game_scheduling.id" class="border-b bg-gradient-to-b from-blue-100 to-blue-50">
 
-            <TableDataCell >         
+            <TableDataCell  class="text-gray-600">         
               <div v-for="team in teams_a" :key="team.id" >
                 <div v-for="item in team.gameSchedulingsAsTeamA" :key="item" class="flex items-center justify-between">
                   <span v-if="item?.id === game_scheduling.id" @click="handleClick(team)"
                   class="font-bold hover:text-green-500 cursor-pointer">{{ team.name }}</span>
-                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 ml-2" />
+                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del club" class="md:block w-10 h-10 ml-2" />
                 </div>              
               </div>
             </TableDataCell>
-            <TableDataCell> 
+            <TableDataCell class="text-red-500" >
               vs  
             </TableDataCell>
-            <TableDataCell>   
+            <TableDataCell class="text-gray-600">   
               <div v-for="team in teams_b" :key="team.id">
                 <div v-for="item in team.gameSchedulingsAsTeamB" :key="item" class="flex items-center">                  
-                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del equipo" class="md:block w-10 h-10 mr-2" />
+                  <img hidden v-if="item?.id === game_scheduling.id" :src="team.club.logo_path" alt="Logo del club" class="md:block w-10 h-10 mr-2" />
                   <span v-if="item?.id === game_scheduling.id" @click="handleClick(team)" 
                   class="font-bold hover:text-green-500 cursor-pointer" >{{ team.name }}</span>
                 </div>
@@ -175,20 +169,31 @@ const dispatchAction = () => {
           </TableRow>
         </template>  
       </Table>
-      </div>
-      {{ team?.name }}
-      <p class=" mt-4 block font-medium text-lg text-blue-900">
-        <span class="font-bold text-xl text-green-500">Sanciones de los jugadores del equipo:</span> {{ team?.name }}
-      </p>
-
-      <div v-if="showPlayerSanctions && (form.game_roles ? form.game_roles : showPlayerSanctions = false )" class="mt-6" >  
-        <Table class="rounded-sm">
+      </div>   
+      <!-- Sanción de Jugadores de un equipo seleccionado -->
+      <div v-if="showPlayerSanctions && (form.game_roles ? form.game_roles : showPlayerSanctions = false ) 
+        && (player_sanctions
+            .filter(item => item.game.game_scheduling.game_role.tournament.id === form.published_tournaments.id 
+            && item.player.team.id === team?.id 
+            && item.game.game_scheduling.game_role.date < form.game_roles.date
+            && item.state === 'Activo').length)" class="mt-6" > 
+        <p class=" mt-4 mb-3 block font-medium text-lg text-blue-900">
+          <span class="font-bold text-xl text-green-500">Jugadores sancionados del equipo:</span> {{ team?.name }}
+          <span class="text-red-500">en partidos anteriores.</span>
+        </p> 
+        <Table class="rounded-sm"> 
           <template #header>
           <!--  class="bg-white" -->
           <TableRow>              
             <TableHeaderCell>Jugador</TableHeaderCell>
             <TableHeaderCell>Equipo</TableHeaderCell>
-            <TableHeaderCell>Rol de Partido<br>Programación de Partido<br>Fecha</TableHeaderCell>
+            <TableHeaderCell class="text-center">
+              <span class="text-blue-900">
+                Rol de Partido<br>
+              </span>
+              <span class="text-green-600">Fecha<br></span>
+              <span class="text-blue-900">Partido</span>              
+            </TableHeaderCell>
             <TableHeaderCell>Amarillas</TableHeaderCell>
             <TableHeaderCell>Roja</TableHeaderCell>
           </TableRow>
@@ -204,7 +209,7 @@ const dispatchAction = () => {
                 // Ordenar por fecha de manera descendente (de mayor a menor)
                 return new Date(b.game.game_scheduling.game_role.date) - new Date(a.game.game_scheduling.game_role.date);
               })"
-             :key="player_sanction.id" class="border-b bg-slate-200">
+             :key="player_sanction.id" class="border-b bg-gradient-to-b from-blue-100 to-blue-50">
 
             <TableDataCell>         
               {{ player_sanction.player.first_name }} {{ player_sanction.player.second_name }} {{ player_sanction.player.last_name }} {{ player_sanction.player.mother_last_name }}
@@ -213,23 +218,36 @@ const dispatchAction = () => {
               {{ player_sanction.player.team.name }}
             </TableDataCell>
             <TableDataCell>    
-              <!-- {{ player_sanction.game.game_scheduling.game_role.tournament.name }} <br>   -->         
-              {{ player_sanction.game.game_scheduling.game_role.name }} <br>
-              {{ player_sanction.game.game_scheduling.team_a.name }} <br>
-              vs<br>
-              {{ player_sanction.game.game_scheduling.team_b.name }} <br>
-              {{ player_sanction.game.game_scheduling.game_role.date }}
+              <!-- {{ player_sanction.game.game_scheduling.game_role.tournament.name }} <br>   -->   
+              <div class="text-center">
+                <p class="text-blue-900">
+                  {{ player_sanction.game.game_scheduling.game_role.name }} <br>  
+                </p>
+                <p class="text-green-600">
+                  {{ player_sanction.game.game_scheduling.game_role.date }} <br>
+                </p>
+                <p class="text-blue-900">
+                  {{ player_sanction.game.game_scheduling.team_a.name }} <br>
+                  <span class="text-red-500">vs</span><br>
+                  {{ player_sanction.game.game_scheduling.team_b.name }} 
+                </p>      
+              </div>                   
             </TableDataCell>
-            <TableDataCell>   
+            <TableDataCell class="text-yellow-600">   
               {{ player_sanction.yellow_cards }} 
             </TableDataCell>
-            <TableDataCell>   
+            <TableDataCell class="text-red-500">   
               {{ player_sanction.red_card }} 
             </TableDataCell>
-          </TableRow>
+          </TableRow>          
         </template> 
         </Table>
-      </div>      
+      </div> 
+      <div v-else-if="showPlayerSanctions && (form.game_roles ? form.game_roles : showPlayerSanctions = false ) ">
+        <p class="mt-4 text-red-500 italic">
+          No hay Jugadores sancionados del equipo {{ team?.name }}
+        </p>            
+      </div>     
     </div>      
   </div>
 </template>

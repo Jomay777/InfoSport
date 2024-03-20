@@ -56,7 +56,7 @@ const deleteGameScheduling = (id) => {
 </script>
 
 <template>
-  <Head title="GameSchedulings Index" />
+  <Head title="Programación de Partidos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

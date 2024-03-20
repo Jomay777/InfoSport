@@ -67,7 +67,7 @@ const deleteTeamSanction = (id) => {
 </script>
 
 <template>
-  <Head title="TeamSanctions Index" />
+  <Head title="Sanción de Equipos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

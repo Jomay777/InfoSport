@@ -56,7 +56,7 @@ const deleteTeam = (id) => {
 </script>
 
 <template>
-  <Head title="Teams Index" />
+  <Head title="Equipos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

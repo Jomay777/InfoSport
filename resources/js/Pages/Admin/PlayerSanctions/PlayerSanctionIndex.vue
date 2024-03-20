@@ -67,7 +67,7 @@ const totalYellowCards = (playerId, tournamentId, player_sanctions) => {
 </script>
 
 <template>
-  <Head title="PlayerSanctions Index" />
+  <Head title="Sanción de Jugadores" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

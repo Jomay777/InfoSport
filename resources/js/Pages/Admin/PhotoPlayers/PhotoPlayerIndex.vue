@@ -56,7 +56,7 @@ const deletePhotoPlayer = (id) => {
 </script>
 
 <template>
-  <Head title="PhotoPlayers Index" />
+  <Head title="Fotos de Jugadores" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

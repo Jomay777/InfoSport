@@ -55,7 +55,7 @@ const deletePermission = (id) => {
 </script>
 
 <template>
-  <Head title="Permissions" />
+  <Head title="Permisos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

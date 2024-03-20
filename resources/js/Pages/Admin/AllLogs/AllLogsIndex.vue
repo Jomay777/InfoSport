@@ -168,7 +168,7 @@ buttons2.value= [
 </script>
 
 <template>
-    <Head title="Reportes" />
+    <Head title="Logs" />
 
     <AuthenticatedLayout>
         <template #header>

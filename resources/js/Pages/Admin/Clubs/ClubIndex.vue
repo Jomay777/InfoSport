@@ -56,7 +56,7 @@ const deleteClub = (id) => {
 </script>
 
 <template>
-  <Head title="Clubs Index" />
+  <Head title="Clubs" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

@@ -56,7 +56,7 @@ const deleteTournament = (id) => {
 </script>
 
 <template>
-  <Head title="Tournaments Index" />
+  <Head title="Torneos" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

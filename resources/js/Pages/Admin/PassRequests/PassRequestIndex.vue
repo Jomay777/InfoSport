@@ -56,7 +56,7 @@ const deletePassRequest = (id) => {
 </script>
 
 <template>
-  <Head title="PassRequests Index" />
+  <Head title="Solicitud de Pases" />
 
   <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">

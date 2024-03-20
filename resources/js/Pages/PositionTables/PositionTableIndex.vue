@@ -55,7 +55,7 @@ const closeModal = () => {
 </script>
 
 <template>
-  <Head title="Ver Rol de Partido" />
+  <Head title="Ver Tabla de Posiciones" />
 
   <div
         class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-center bg-gradient-to-b from-slate-100 to-gray-400 selection:bg-red-500 selection:text-white"
