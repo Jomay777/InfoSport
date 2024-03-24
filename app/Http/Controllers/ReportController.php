@@ -36,48 +36,11 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $clubs = Club::with('users');
-        $clubs = $clubs->get();
         $users = User::with('clubs', 'roles');
         $users = $users->get();
-        $teams = Team::with('category', 'club');
-        $teams = $teams->get();
-        $players = Player::with('team', 'photoPlayer');
-        $players = $players->get();
-        $passRequests = PassRequest::with('player');
-        $passRequests = $passRequests->get();
-        $categories = Category::query();
-        $categories = $categories->get();
-        $tournaments = Tournament::with('category');
-        $tournaments = $tournaments->get();
-        $game_roles = GameRole::with('tournament', 'pitch');
-        $game_roles = $game_roles->get();
-        $game_schedulings = GameScheduling::with('teamA', 'teamB', 'gameRole');
-        $game_schedulings = $game_schedulings->get();
-
-        $games = Game::with('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
-        $games = $games->get();
-        //dd($users);
-        $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament');
-        $player_sanctions = $player_sanctions->get();
-        $team_sanctions = TeamSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'team.club','game.gameScheduling.gameRole.tournament');
-        $team_sanctions = $team_sanctions->get();
-
         //dd($team_sanctions);
-
         return Inertia::render('Admin/ReportIndex', [
-            'clubs' => ClubResource::collection($clubs),
             'users' => UserResource::collection($users),
-            'teams' => TeamResource::collection($teams),
-            'players' => PlayerResource::collection($players),
-            'pass_requests' => PassRequestResource::collection($passRequests),
-            'categories' => CategoryResource::collection($categories),
-            'tournaments' => TournamentResource::collection($tournaments),
-            'game_roles' => GameRoleResource::collection($game_roles),
-            'game_schedulings' => GameSchedulingResource::collection($game_schedulings),
-            'games' => GameResource::collection($games),
-            'player_sanctions' => PlayerSanctionResource::collection($player_sanctions),
-            'team_sanctions' => TeamSanctionResource::collection($team_sanctions),
         ]);
 
     }
@@ -85,48 +48,97 @@ class ReportController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function user()
     {
-        //
+        dd('hola');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function club()
     {
-        //
+        $clubs = Club::with('users');
+        $clubs = $clubs->get();
+        return Inertia::render('Admin/AllReports/ClubsReport', [
+            'clubs' => ClubResource::collection($clubs),            
+        ]);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function team()
     {
-        //
+        $teams = Team::with('category', 'club');
+        $teams = $teams->get();
+        return Inertia::render('Admin/AllReports/TeamsReport', [
+            'teams' => TeamResource::collection($teams),            
+        ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function player()
     {
-        //
+        $players = Player::with('team', 'photoPlayer');
+        $players = $players->get();
+        return Inertia::render('Admin/AllReports/PlayersReport', [
+            'players' => PlayerResource::collection($players),
+        ]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function passRequest()
     {
-        //
+        $passRequests = PassRequest::with('player');
+        $passRequests = $passRequests->get();
+        return Inertia::render('Admin/AllReports/PassRequestsReport', [
+            'pass_requests' => PassRequestResource::collection($passRequests),
+        ]);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function category()
     {
-        //
+        $categories = Category::query();
+        $categories = $categories->get();
+        return Inertia::render('Admin/AllReports/CategoriesReport', [
+            'categories' => CategoryResource::collection($categories),
+        ]);
     }
+    public function tournament()
+    {
+        $tournaments = Tournament::with('category');
+        $tournaments = $tournaments->get();
+        return Inertia::render('Admin/AllReports/TournamentsReport', [
+            'tournaments' => TournamentResource::collection($tournaments),
+        ]);
+    }
+    public function gameRole()
+    {
+        $game_roles = GameRole::with('tournament', 'pitch');
+        $game_roles = $game_roles->get();
+        return Inertia::render('Admin/AllReports/GameRolesReport', [
+            'game_roles' => GameRoleResource::collection($game_roles),
+        ]);
+    }
+    public function gameScheduling()
+    {
+        $game_schedulings = GameScheduling::with('teamA', 'teamB', 'gameRole');
+        $game_schedulings = $game_schedulings->get();
+        return Inertia::render('Admin/AllReports/GameSchedulingsReport', [
+            'game_schedulings' => GameSchedulingResource::collection($game_schedulings),
+        ]);
+    }
+    public function game()
+    {
+        $games = Game::with('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
+        $games = $games->get();
+        return Inertia::render('Admin/AllReports/GamesReport', [
+            'games' => GameResource::collection($games),
+        ]);
+    }
+    public function playerSanction()
+    {
+        $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament');
+        $player_sanctions = $player_sanctions->get();
+        return Inertia::render('Admin/AllReports/PlayerSanctionsReport', [
+            'player_sanctions' => PlayerSanctionResource::collection($player_sanctions),
+        ]);
+    }
+    public function teamSanction()
+    {
+        $team_sanctions = TeamSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'team.club','game.gameScheduling.gameRole.tournament');
+        $team_sanctions = $team_sanctions->get();
+        return Inertia::render('Admin/AllReports/TeamSanctionsReport', [
+            'team_sanctions' => TeamSanctionResource::collection($team_sanctions),
+        ]);
+    }
+  
 }

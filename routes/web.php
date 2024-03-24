@@ -147,7 +147,22 @@ Route::middleware(['auth', 'can:Ver partido'])->group(function () {
 //Routes for categories
 Route::resource('/categories', CategoryController::class)->middleware(['auth','can:Ver categoría']);
 //Routes for reports
-Route::resource('/reports', ReportController::class);
+//Route::resource('/reports', ReportController::class);
+Route::get('/reports', [ReportController::class, 'index'])
+->name('reports.index');
+Route::get('reports/users', [ReportController::class, 'user'])->name('reports.user');
+Route::get('reports/clubs', [ReportController::class, 'club'])->name('reports.club');
+Route::get('reports/teams', [ReportController::class, 'team'])->name('reports.team');
+Route::get('reports/players', [ReportController::class, 'player'])->name('reports.player');
+Route::get('reports/pass_requests', [ReportController::class, 'passRequest'])->name('reports.passRequest');
+Route::get('reports/categories', [ReportController::class, 'category'])->name('reports.category');
+Route::get('reports/tournaments', [ReportController::class, 'tournament'])->name('reports.tournament');
+Route::get('reports/game_roles', [ReportController::class, 'gameRole'])->name('reports.gameRole');
+Route::get('reports/game_schedulings', [ReportController::class, 'gameScheduling'])->name('reports.gameScheduling');
+Route::get('reports/games', [ReportController::class, 'game'])->name('reports.game');
+Route::get('reports/player_sanctions', [ReportController::class, 'playerSanction'])->name('reports.playerSanction');
+Route::get('reports/team_sanctions', [ReportController::class, 'teamSanction'])->name('reports.teamSanction');
+
 //Routes for player_sanctions
 Route::resource('/player_sanctions', PlayerSanctionController::class);
 //Routes for team_sanctions
