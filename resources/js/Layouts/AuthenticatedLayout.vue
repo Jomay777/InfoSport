@@ -86,7 +86,7 @@ const { hasPermission, hasRole } = usePermission();
                                     Directiva
                                 </NavLink>
                                 <NavLink       
-                                    v-if="hasRole('Administrador')"                         
+                                    v-if="hasRole('Administrador') || hasRole('Comité técnico')"                         
                                     :href="route('reports.index')" 
                                     :active="route().current('reports.index')">
                                     Reportes

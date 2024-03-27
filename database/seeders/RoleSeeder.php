@@ -94,6 +94,8 @@ class RoleSeeder extends Seeder
         $permission_update_game = Permission::create(['name' => 'Actualizar partido']);
         $permission_delete_game = Permission::create(['name' => 'Eliminar partido']);  
 
+        //creating permissions for reports
+        $permission_reports = Permission::create(['name' => 'Reportes']);
         /**
          * Array of permissions_admin
          */
@@ -108,7 +110,8 @@ class RoleSeeder extends Seeder
         $permission_create_pass_request, $permission_read_pass_request, $permission_update_pass_request, $permission_delete_pass_request,
         $permission_create_game_role, $permission_read_game_role,$permission_update_game_role, $permission_delete_game_role, 
         $permission_create_game_scheduling,$permission_read_game_scheduling, $permission_update_game_scheduling, $permission_delete_game_scheduling, 
-        $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game];
+        $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game,
+        $permission_reports];
 
         $permissions_commite = [ $permission_create_club, $permission_read_club, $permission_update_club, $permission_delete_club,   
         $permission_create_category, $permission_read_category, $permission_update_category, $permission_delete_category,        
@@ -118,7 +121,8 @@ class RoleSeeder extends Seeder
         $permission_create_pass_request, $permission_read_pass_request, $permission_update_pass_request, $permission_delete_pass_request,        
         $permission_create_game_role, $permission_read_game_role,$permission_update_game_role, $permission_delete_game_role, 
         $permission_create_game_scheduling,$permission_read_game_scheduling, $permission_update_game_scheduling, $permission_delete_game_scheduling, 
-        $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game];
+        $permission_create_game, $permission_read_game, $permission_update_game, $permission_delete_game,
+        $permission_reports];
 
         $permissions_delegate = [$permission_read_club, $permission_update_club,   
         $permission_read_team, $permission_update_team,

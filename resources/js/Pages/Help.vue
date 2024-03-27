@@ -62,13 +62,17 @@ const props = defineProps({
             <ol>
                 <li class="greenT">Roles: Crear, ver, actualizar y eliminar roles.</li>
                 <li class="blueT">Usuarios: Crear, ver, actualizar y eliminar usuarios.</li>
-                <li class="greenT">Clubes: Crear, ver, actualizar y eliminar clubes.</li>
+                <li class="greenT">Clubs: Crear, ver, actualizar y eliminar clubs.</li>
                 <li class="blueT">Categorías: Crear, ver, actualizar y eliminar categorías.</li>
                 <li class="greenT">Torneos: Crear, ver, actualizar y eliminar torneos.</li>
                 <li class="blueT">Equipos: Crear, ver, actualizar y eliminar equipos.</li>
                 <li class="greenT">Jugadores: Crear, ver, actualizar y eliminar jugadores.</li>
                 <li class="blueT">Pases: Crear, ver, actualizar y eliminar pases.</li>
                 <li class="greenT">Partidos: Crear, ver, actualizar y eliminar partidos.</li>
+                <li class="blueT">Rol de partidos: Crear, ver, actualizar y eliminar rol de partidos.</li>
+                <li class="greenT">Programación de partidos: Crear, ver, actualizar y eliminar programación de partidos.</li>
+                <li class="blueT">Sanción de jugadores: Crear, ver, actualizar y eliminar sanción de jugadores.</li>
+                <li class="greenT">Sanción de equipos: Crear, ver, actualizar y eliminar sanción de equipos.</li>
             </ol>
 
             <h4>Roles</h4>
@@ -79,16 +83,16 @@ const props = defineProps({
 
             <ul>
                 <li class="greenT">Administrador: Tiene todos los permisos del sistema.</li>
-                <li class="blueT">Comité técnico: Puede gestionar usuarios, roles, clubes, categorías, torneos y equipos.</li>
+                <li class="blueT">Comité técnico: Puede gestionar usuarios, roles, clubes, categorías, torneos, equipos, sanción de jugadores y sanción de equipos.</li>
                 <li class="greenT">Delegado: Puede gestionar jugadores, pases y partidos.</li>
-                <li class="blueT">Asistente: Puede ver información del sistema, pero no puede realizar cambios.</li>
-                <li class="greenT">Directiva: Puede ver información del sistema y gestionar usuarios, roles y clubes.</li>
+                <li class="blueT">Directiva: Puede ver información del sistema, pero no puede realizar cambios.</li>
+                <li class="greenT">Asistente: Puede ver información del sistema y gestionar programación de partidos, partidos, rol de partidos, sanción de jugadores y sanción de equipos.</li>
             </ul>
 
             <h4>Asignación de roles y permisos</h4>
 
             <p>
-                El administrador del sistema es responsable de asignar roles y permisos a los usuarios. Para ello, puede utilizar la sección de administración del sistema.
+                El administrador del sistema es responsable de asignar roles y permisos a los usuarios. Para ello, puede utilizar la sección de administración de usuarios.
             </p>
 
             <h4>Ejemplo</h4>
@@ -109,31 +113,30 @@ const props = defineProps({
             <h4>¿Necesitas más ayuda?</h4>
 
             <p>
-                Si necesitas más ayuda con los permisos y roles de InfoSport, puedes consultar la siguiente documentación:
+                Si necesitas más ayuda con los permisos, roles y administración de InfoSport, puedes consultar la siguiente documentación:
             </p>
 
             <ul>
                 <li>
-                    <a href="https://www.techsmith.es/blog/manual-usuario/"
+                    <a href="https://docs.google.com/document/d/1V92AwdrvMGupOZGQhVnT1EglyKrKI2Jo/edit?usp=sharing&ouid=114444990763637699763&rtpof=true&sd=true" target="_blank"   
                     class="hover:text-blue-600">Manual de usuario</a>
                 </li>
-                <li>
+               <!--  <li>
                     <a href="https://es.slideshare.net/OtildeLucyAlarconPaz/guia-para-permisospdf"
                     class="hover:text-blue-600">Guía de permisos</a>
                 </li>
                 <li>
                     <a href="https://es.wikipedia.org/wiki/Preguntas_frecuentes"
                     class="hover:text-blue-600">Preguntas frecuentes</a>
-                </li>
+                </li> -->
             </ul>
 
             <h4>Contacto</h4>
             <p>
                 Contacto:
-                Si tienes alguna pregunta o problema con los permisos y roles de InfoSport, puedes contactar con el administrador del sistema.
-
+                Si tienes alguna pregunta o problema con los permisos, roles y administración de InfoSport, puedes contactar con el administrador del sistema.
+                <a class="hover:text-blue-600" href="mailto:jorgetapia12@gmail.com?subject=Ayuda&body=Hola necesito un rol o permisos para ayudar a administrar InfoSport">Enviar correo</a>
                 Esperamos que esta información te haya sido útil.
-
                 ¡Gracias por usar InfoSport!
             </p>
         </div>            

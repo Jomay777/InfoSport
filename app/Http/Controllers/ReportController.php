@@ -26,15 +26,15 @@ use App\Models\Team;
 use App\Models\TeamSanction;
 use App\Models\Tournament;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $users = User::with('clubs', 'roles');
         $users = $users->get();
@@ -52,7 +52,7 @@ class ReportController extends Controller
     {
         dd('hola');
     }
-    public function club()
+    public function club(): Response
     {
         $clubs = Club::with('users');
         $clubs = $clubs->get();
@@ -60,7 +60,7 @@ class ReportController extends Controller
             'clubs' => ClubResource::collection($clubs),            
         ]);
     }
-    public function team()
+    public function team(): Response
     {
         $teams = Team::with('category', 'club');
         $teams = $teams->get();
@@ -68,7 +68,7 @@ class ReportController extends Controller
             'teams' => TeamResource::collection($teams),            
         ]);
     }
-    public function player()
+    public function player(): Response
     {
         $players = Player::with('team', 'photoPlayer');
         $players = $players->get();
@@ -76,7 +76,7 @@ class ReportController extends Controller
             'players' => PlayerResource::collection($players),
         ]);
     }
-    public function passRequest()
+    public function passRequest(): Response
     {
         $passRequests = PassRequest::with('player');
         $passRequests = $passRequests->get();
@@ -84,7 +84,7 @@ class ReportController extends Controller
             'pass_requests' => PassRequestResource::collection($passRequests),
         ]);
     }
-    public function category()
+    public function category(): Response
     {
         $categories = Category::query();
         $categories = $categories->get();
@@ -92,7 +92,7 @@ class ReportController extends Controller
             'categories' => CategoryResource::collection($categories),
         ]);
     }
-    public function tournament()
+    public function tournament(): Response
     {
         $tournaments = Tournament::with('category');
         $tournaments = $tournaments->get();
@@ -100,7 +100,7 @@ class ReportController extends Controller
             'tournaments' => TournamentResource::collection($tournaments),
         ]);
     }
-    public function gameRole()
+    public function gameRole(): Response
     {
         $game_roles = GameRole::with('tournament', 'pitch');
         $game_roles = $game_roles->get();
@@ -108,7 +108,7 @@ class ReportController extends Controller
             'game_roles' => GameRoleResource::collection($game_roles),
         ]);
     }
-    public function gameScheduling()
+    public function gameScheduling(): Response
     {
         $game_schedulings = GameScheduling::with('teamA', 'teamB', 'gameRole');
         $game_schedulings = $game_schedulings->get();
@@ -116,7 +116,7 @@ class ReportController extends Controller
             'game_schedulings' => GameSchedulingResource::collection($game_schedulings),
         ]);
     }
-    public function game()
+    public function game(): Response
     {
         $games = Game::with('gameScheduling.teamA', 'gameScheduling.teamB', 'gameStatistic','gameScheduling.gameRole');
         $games = $games->get();
@@ -124,7 +124,7 @@ class ReportController extends Controller
             'games' => GameResource::collection($games),
         ]);
     }
-    public function playerSanction()
+    public function playerSanction(): Response
     {
         $player_sanctions = PlayerSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'player.team.club','game.gameScheduling.gameRole.tournament');
         $player_sanctions = $player_sanctions->get();
@@ -132,7 +132,7 @@ class ReportController extends Controller
             'player_sanctions' => PlayerSanctionResource::collection($player_sanctions),
         ]);
     }
-    public function teamSanction()
+    public function teamSanction(): Response
     {
         $team_sanctions = TeamSanction::with('game.gameScheduling.teamA', 'game.gameScheduling.teamB', 'team.club','game.gameScheduling.gameRole.tournament');
         $team_sanctions = $team_sanctions->get();

@@ -62,10 +62,10 @@ defineProps({
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
             <div class="h-30 flex justify-between">
                 <div class="relative w-1/2">
-                    <img src="/storage/bermejoEscudo.png" alt="" class="absolute top-0 left-0 w-20 mt-8">
+                    <img src="/storage/bermejoEscudo.png" alt="escudo" class="absolute top-0 left-0 w-20 mt-8">
                 </div>
                 <div class="relative w-1/2">
-                    <img src="/storage/bermejoEscudo.png" alt="" class="absolute top-0 right-0 w-20 mt-8">
+                    <img src="/storage/bermejoEscudo.png" alt="escudo" class="absolute top-0 right-0 w-20 mt-8">
                 </div>
             </div>
             <div class="flex justify-center mt-5">
@@ -108,7 +108,7 @@ defineProps({
 
                     </div>
                     <div hidden class="md:block md:w-1/2">
-                        <img class="bg-cover bg-center w-full" src="/storage/jugadores.webp" alt="dep">
+                        <img class="bg-cover bg-center w-full" src="/storage/jugadores.webp" alt="jugadores">
                     </div>
                     
                 </div>
@@ -118,7 +118,7 @@ defineProps({
                 <div class="text-center text-sm text-gray-900  sm:text-left">
                     <div class="flex items-center gap-4">
                         <a
-                            href="https://github.com/sponsors/taylorotwell"
+                            href="https://github.com/sponsors/taylorotwell" target="_blank"   
                             class="group inline-flex items-center hover:text-green-400  focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                         >
                             <svg
@@ -143,7 +143,7 @@ defineProps({
 
                 <div class="ml-4 text-center text-sm text-gray-900  sm:text-right sm:ml-0">
                     <a
-                            href="https://github.com/Jomay777"
+                            href="https://github.com/Jomay777" target="_blank"   
                             class="group inline-flex items-center hover:text-green-400  focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                         >                       
                         <svg 

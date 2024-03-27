@@ -6,44 +6,44 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        .card {
-            
-            width: 400px;
-            height: auto;
+        .card {            
+          width: 85.60mm;
+          height: 53.98mm;
             background-color: #cee4e2;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 10px;    
-            padding-bottom: 20px;        
+            padding-top: 0px;    
+            padding-bottom: 5px;        
             position: absolute;
             top: 20%;
             left: 50%;
             transform: translate(-50%, -50%);
+            font-size: 0.65em;
         }
         .watermark {
           position: fixed; /* Fija la imagen en el fondo */
-          bottom: 52%; /* Ajusta la posición vertical al fondo */
-          left: 64%; /* Ajusta la posición horizontal al fondo */
+          bottom: 58.5%; /* Ajusta la posición vertical al fondo */
+          left: 59.5%; /* Ajusta la posición horizontal al fondo */
           index: -1; /* Coloca la imagen detrás de todo el contenido */
-          opacity: 0.2; /* Establece la opacidad de la imagen */
+          opacity: 0.19; /* Establece la opacidad de la imagen */
           width: 120px;
           height: auto;
         }
         .watermark_one  {
           position: fixed; /* Fija la imagen en el fondo */
-          bottom: 68%; /* Ajusta la posición vertical al fondo */
-          left: 50%; /* Ajusta la posición horizontal al fondo */
+          bottom: 69%; /* Ajusta la posición vertical al fondo */
+          left: 49.5%; /* Ajusta la posición horizontal al fondo */
           index: -1; /* Coloca la imagen detrás de todo el contenido */
           opacity: 0.8; /* Establece la opacidad de la imagen */
           width: 50px;
         }
         .watermark_two {
           position: fixed; /* Fija la imagen en el fondo */
-          bottom: 68%; /* Ajusta la posición vertical al fondo */
-          left: 85%; /* Ajusta la posición horizontal al fondo */
+          bottom: 70.2%; /* Ajusta la posición vertical al fondo */
+          left: 80%; /* Ajusta la posición horizontal al fondo */
           index: -1; /* Coloca la imagen detrás de todo el contenido */
           opacity: 0.8; /* Establece la opacidad de la imagen */
-          width: 50px;
+          width: 30px;
         }
         .logo {
             width: 100px;
@@ -51,7 +51,7 @@
             z-index: 99999;
         }
         .expiration {
-          margin-top: 5px;
+          margin-top: 3px;
           text-align: center;
           font-size: 1em;
         }
@@ -78,12 +78,15 @@
   $expirationDate = (new DateTime())->add(new DateInterval('P4M'))->format('d/m/Y');
   ?>
     <div class="card">
-      <img src="{{ public_path($player->photoPlayer->photo_c_i) }}" alt="" class="watermark ">
+      <img src="storage/bermejoEscudo.png" alt="" class="watermark ">
 
-      <img src="{{ public_path($player->team->club->logo_path) }}" alt="" class="watermark_one ">
-      <img src="{{ public_path($player->photoPlayer->photo_c_i) }}" alt="" class="watermark_two ">
-
-      <h2>AMFSB</h2>
+      {{-- <img src="{{ public_path($player->team->club->logo_path) }}" alt="" class="watermark_one "> --}}
+      @if ($player->team && $player->team->club)
+        <img src="{{ public_path($player->team->club->logo_path) }}" alt="Logo de club" class="watermark_two">
+      @else
+        <img src="storage/bermejoEscudo.png" alt="Sin imagen" class="watermark_two">
+      @endif
+        <h2>AMFSB</h2>
 
         <table>
             <tr>
@@ -99,7 +102,7 @@
                         </p>
                         <p class="gender">
                           <span>Equipo: </span>
-                          {{ $player->team->name }}
+                          {{ $player->team ? $player->team->name : 'Sin equipo'}}
                         </p>
                         <p class="gender">
                           <span>Genero: </span>
@@ -125,14 +128,14 @@
                           <span>Lugar de Nac.: </span>
                           {{ $player->region_birth }} {{ $player->country_birth }}
                         </p>
-                        <p class="position">
+                        {{-- <p class="position">
                           <span>ID: </span>
                           {{ $player->id }}
-                        </p>
-                        <p class="position">
+                        </p> --}}
+                        {{-- <p class="position">
                           <span>Estado: </span>
                           {{ $player->state == 1 ? "Inhabilitado": "Habilitado" }}
-                        </p>
+                        </p> --}}
                         
                     </div>
                 </td>
@@ -149,16 +152,13 @@
             <tr>
               <td style="text-align: center; border-top: 1.3px solid black;">Sello AMFSB</td>
               <td style="text-align: center ">Firma del Jugador</td>
-            </tr>
-            
+            </tr>            
         </table>
       <div>
         <p class="expiration">
           <span>Válido hasta: </span> 
           {{ $expirationDate }}
-
-        </p>      
-        
+        </p>              
       </div>    
     </div>
 </body>

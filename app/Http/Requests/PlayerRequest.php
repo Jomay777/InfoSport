@@ -45,25 +45,27 @@ class PlayerRequest extends FormRequest
                 //'exists:teams,id',
                 function ($attribute, $value, $fail) {
                     // Obtener la fecha de nacimiento del jugador
-                    $id = $this->team['id'];
-                    $name = $value['name'];
+                    if($this->team != null ){
+                        $id = $this->team['id'];
+                        $name = $value['name'];
 
-                   // dd($id);
+                    // dd($id);
 
-                    $birthDate = Carbon::parse($this->birth_date);
-                    // Obtener la edad actual del jugador
-                    $agePlayer = $birthDate->age;
-                    // Obtener la categoría del equipo
-                    $team = Team::findOrFail($id);
-                    //$categoryAge = intval($team->category->name);
-                    $categoryAge = ($team->category ? $team->category->name : 'libre');
+                        $birthDate = Carbon::parse($this->birth_date);
+                        // Obtener la edad actual del jugador
+                        $agePlayer = $birthDate->age;
+                        // Obtener la categoría del equipo
+                        $team = Team::findOrFail($id);
+                        //$categoryAge = intval($team->category->name);
+                        $categoryAge = ($team->category ? $team->category->name : 'libre');
 
-                    //dd($age, $categoryAge);
+                        //dd($age, $categoryAge);
 
-                    // Verificar si la edad del jugador es menor o igual a la edad de la categoría del equipo
-                    if ($agePlayer >= $categoryAge) {
-                        $fail("El jugador no tiene la edad requerida para pertenecer al equipo $name .");
-                    }
+                        // Verificar si la edad del jugador es menor o igual a la edad de la categoría del equipo
+                        if ($agePlayer >= $categoryAge) {
+                            $fail("El jugador no tiene la edad requerida para pertenecer al equipo $name .");
+                        }
+                    }                    
                 },
             ],
         ];

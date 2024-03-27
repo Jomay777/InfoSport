@@ -56,7 +56,7 @@ const form = useForm({
 
 onMounted(() => {
   const category = props.player?.team?.category ?  props.player?.team?.category.name : 'Cat. no asignada';
-  form.team = { id: props.player?.team?.id, name: props.player?.team?.name  +' - '+ category};
+  form.team =  props.player?.team ? { id: props.player?.team?.id, name: props.player?.team?.name  +' - '+ category} : [];
   form.gender = props.player?.gender == 'Hombre'? { id: 1, name: 'Hombre' }: { id: 2, name: 'Mujer' };  
 
   form.state = props.player?.state == 1? { id: 1, name: 'inhabilitado' }: { id: 2, name: 'habilitado' };  
