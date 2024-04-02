@@ -13,6 +13,7 @@ use App\Models\GameScheduling;
 use App\Models\LogTransaction;
 use App\Models\PositionTable;
 use App\Models\Team;
+use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -83,12 +84,14 @@ class GameSchedulingController extends Controller
     public function store(GameSchedulingRequest $request)
     {
         $this->authorize('create', GameScheduling::class);
-
         $validatedData = $request->validated();
-
+        
         if ($request->has('game_role')) {
             $validatedData['game_role_id'] = $request->input('game_role.id');
-            $tournamentId = $request->input('game_role.tournament.id');
+            $gameRole = GameRole::find($request->input('game_role.id'));
+            $gameRole = $gameRole->load('tournament');
+            $tournamentId = $gameRole->tournament->id;
+        //    $tournamentId = $request->input('game_role.tournament.id');
         } 
         //depurando
         $teams = $request->input('teams.*.id');
@@ -173,7 +176,7 @@ class GameSchedulingController extends Controller
     {    
         $this->authorize('update', $game_scheduling);
 
-        $game_scheduling = $game_scheduling->load('teamA.positionTables', 'teamB', 'gameRole.tournament');
+        $game_scheduling = $game_scheduling->load('teamA.positionTables', 'teamB', 'gameRole.tournament.category');
         $gameRole = GameRole::with('tournament.category', 'tournament.positionTables')->get();
         $teams = Team::with('category','positionTables')->get();
         $positionTables = PositionTable::with('team','tournament')->get();

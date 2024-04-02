@@ -58,11 +58,15 @@ const dispatchActionTeamATeamB = () => {
             <InputError class="mt-2" :message="form.errors.time" />
           </div> 
           <div class="mt-4">
-            <InputLabel for="game_role" value="Rol de partido" />
+            <InputLabel for="game_role" value="Rol de partido - Torneo - Categoría" />
             <VueMultiselect
               id="game_role"
               v-model="form.game_role"
-              :options="game_role"
+              :options="game_role.map(item => ({
+                  id: item.id,
+                  name: `${item.name + ' - ' +(item.tournament ? item.tournament.name : '')
+                  + ' - ' + (item.tournament.category ? item.tournament.category.name : '')}`
+                }))"
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"
@@ -73,11 +77,11 @@ const dispatchActionTeamATeamB = () => {
             />
             <InputError class="mt-2" :message="form.errors.game_role" />
           </div>
-          <div class="mt-4 text-gray-700" v-if="form.game_role">
+          <!-- <div class="mt-4 text-gray-700" v-if="form.game_role">
             <InputLabel for="tournament" value="Torneo - Categoría" />
             <span  id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.name }} - </span>
             <span id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.name }}</span>
-          </div> 
+          </div>  -->
           <div class="mt-4">
               <InputLabel for="teams" value="Equipos" />
               <VueMultiselect

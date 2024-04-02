@@ -49,8 +49,8 @@ onMounted(() => {
   form.teamA = props.game_scheduling?.teamA;
   form.teamB = props.game_scheduling?.teamB;
 
-  form.game_role = props.game_scheduling?.gameRole;
-
+  //form.game_role = {id:props.game_scheduling?.gameRole.id ,name:props.game_scheduling?.gameRole.name + ' - ' + props.game_scheduling?.gameRole.tournament.name + ' - ' + props.game_scheduling?.gameRole.tournament.category.name};
+  form.game_role =  props.game_scheduling?.gameRole;
 });
 
 const updateGameScheduling = () => {
@@ -97,28 +97,28 @@ const dispatchActionTeamATeamB = () => {
             />
             <InputError class="mt-2" :message="form.errors.time" />
           </div> 
+          <div class="mt-4 text-gray-700" v-if="form.game_role">
+            <InputLabel for="tournament" value="Torneo - Categoría" />
+            <span  id="tournament" class="font-bold text-green-900"> {{  game_role.find(role => role.id === form.game_role.id)?.tournament?.name }} - </span>
+            <span id="tournament" class="font-bold text-blue-900">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.name }}</span>
+          </div> 
           <div class="mt-4">
             <InputLabel for="game_role" value="Rol de partido" />
             <VueMultiselect
               id="game_role"
               v-model="form.game_role"
-              :options="form.game_role ? game_role.filter(item => item.tournament_id === form.game_role.tournament_id): []"
+              :options="form.game_role ? game_role.filter(item => item.tournament_id === form.game_role.tournament_id)                  
+              : []"
               :multiple="false"
               :close-on-select="true"
               :preselect-first="true"
-              @select="dispatchActionTeamATeamB"
-
               placeholder="Escoge el rol de partido"
               label="name"
               track-by="id"
             />
             <InputError class="mt-2" :message="form.errors.game_role" />
           </div>
-          <div class="mt-4 text-gray-700" v-if="form.game_role">
-            <InputLabel for="tournament" value="Torneo - Categoría" />
-            <span  id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.name }} - </span>
-            <span id="tournament">{{  game_role.find(role => role.id === form.game_role.id)?.tournament?.category?.name }}</span>
-          </div>  
+           
           <div class="mt-4">
               <InputLabel for="teamA" value="Equipo A" />
               <VueMultiselect

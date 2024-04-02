@@ -1,15 +1,6 @@
 <script>
 export default {  
   name: 'PublishedTournamentIndex',
-  computed: {
-    sortedGameSchedulin(g) {
-      // Ordenar los partidos por la hora
-      return g.slice().sort((a, b) => {
-        // Suponiendo que 'time' es una cadena en formato 'HH:mm:ss'
-        return a.time.localeCompare(b.time);
-      });
-    }
-  },
   data() {
     return {
       showPlayerSanctions: false,
@@ -23,7 +14,7 @@ export default {
       // Actualizar el equipo seleccionado
       this.team = team;
     }
-  }
+  }  
 };
 </script>
 <script setup>
@@ -62,10 +53,10 @@ const confirmDeleteGameRole = () => {
 const closeModal = () => {
   showConfirmDeleteGameRoleModal.value = false;
 }
-
 const dispatchAction = () => {
-  form.game_roles = ''
+  form.game_roles = '';
 }
+
 </script>
 
 <template>
@@ -169,7 +160,7 @@ const dispatchAction = () => {
           </TableRow>
         </template>  
       </Table>
-      </div>   
+      </div>         
       <!-- Sanción de Jugadores de un equipo seleccionado -->
       <div v-if="showPlayerSanctions && (form.game_roles ? form.game_roles : showPlayerSanctions = false ) 
         && (player_sanctions
@@ -178,8 +169,8 @@ const dispatchAction = () => {
             && item.game.game_scheduling.game_role.date < form.game_roles.date
             && item.state === 'Activo').length)" class="mt-6" > 
         <p class=" mt-4 mb-3 block font-medium text-lg text-blue-900">
-          <span class="font-bold text-xl text-green-500">Jugadores sancionados del equipo:</span> {{ team?.name }}
-          <span class="text-red-500">en partidos anteriores.</span>
+          <span class="text-xl text-gray-900">Jugadores del equipo:  <span class="font-bold text-green-800">{{ team?.name }}</span> que fueron<span class="text-red-500"> sancionados</span> </span> 
+          <span class="text-gray-900"> en partidos anteriores.</span>
         </p> 
         <Table class="rounded-sm"> 
           <template #header>
@@ -247,7 +238,78 @@ const dispatchAction = () => {
         <p class="mt-4 text-red-500 italic">
           No hay Jugadores sancionados del equipo {{ team?.name }}
         </p>            
-      </div>     
+      </div>        
+      <div v-if="form.game_roles && (player_sanctions
+                  .filter(item =>
+                      (game_roles
+                          .filter(role => role.id !== form.game_roles.id)
+                          .filter(role => new Date(role.date) <= new Date(form.game_roles.date))
+                          .sort((a, b) => new Date(b.date) - new Date(a.date)) 
+                          .map(role => role.date)[0] === item.game.game_scheduling.game_role.date)
+                      &&
+                      (form.game_roles?.game_schedulings.some(schedule =>
+                          item.player.team.id === schedule.team_a.id || item.player.team.id === schedule.team_b.id
+                      ))
+                  ).map(item => item.player).length !== 0) " class="mt-6" > 
+        <p class=" mt-4 mb-3 block font-medium text-lg text-blue-900">          
+          <span class="font-bold text-xl text-gray-800">Jugadores que recibieron tarjeta <span class=" text-red-500">roja</span> en su partido anterior</span>
+        </p> 
+        <Table class="rounded-sm"> 
+          <template #header>
+          <TableRow>              
+            <TableHeaderCell>Jugador</TableHeaderCell>
+            <TableHeaderCell>Equipo</TableHeaderCell>
+            <TableHeaderCell class="text-center">              
+              <span class="text-blue-900">Partido</span>              
+            </TableHeaderCell>
+            <TableHeaderCell>Roja</TableHeaderCell>
+          </TableRow>
+        </template>
+        <template #default>
+          <TableRow v-for="(player_sanction, index) in 
+              player_sanctions
+                  .filter(item =>
+                      (game_roles
+                          .filter(role => role.id !== form.game_roles.id)
+                          .filter(role => new Date(role.date) <= new Date(form.game_roles.date))
+                          .sort((a, b) => new Date(b.date) - new Date(a.date)) 
+                          .map(role => role.date)[0] === item.game.game_scheduling.game_role.date)
+                      &&
+                      (form.game_roles?.game_schedulings.some(schedule =>
+                          item.player.team.id === schedule.team_a.id || item.player.team.id === schedule.team_b.id
+                      ))
+                  )"
+             :key="player_sanction.id" class="border-b bg-gradient-to-b from-blue-100 to-blue-50">
+
+            <TableDataCell>         
+              {{ player_sanction.player.first_name }} {{ player_sanction.player.second_name }} {{ player_sanction.player.last_name }} {{ player_sanction.player.mother_last_name }}
+            </TableDataCell>
+            <TableDataCell> 
+              {{ player_sanction.player.team.name }}
+            </TableDataCell>
+            <TableDataCell>    
+              <div class="text-center">
+                <p class="text-blue-900">
+                  {{ player_sanction.game.game_scheduling.game_role.name }} <br>  
+                </p>
+                <p class="text-green-600">
+                  {{ player_sanction.game.game_scheduling.game_role.date }} <br>
+                </p>
+                <p class="text-blue-900">
+                  {{ player_sanction.game.game_scheduling.team_a.name }} <br>
+                  <span class="text-red-500">vs</span><br>
+                  {{ player_sanction.game.game_scheduling.team_b.name }} 
+                </p>      
+              </div>                   
+            </TableDataCell>
+
+            <TableDataCell class="text-red-500">   
+              {{ player_sanction.red_card }} 
+            </TableDataCell>
+          </TableRow>          
+        </template> 
+        </Table>
+      </div>   
     </div>      
   </div>
 </template>
