@@ -20,7 +20,7 @@
   }
 </script>
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import {ref} from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import VueMultiselect from "vue-multiselect";
@@ -168,7 +168,7 @@ buttons11.value= [
                 <div v-if="report?.id == 11" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
                     <DataTable :data="player_sanctions" :columns="columns11"
                     class="w-full display border border-gray-400" 
-                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons11,select:true}">
+                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons11,select:true,language: language}">
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="px-2 py-2">#</th>

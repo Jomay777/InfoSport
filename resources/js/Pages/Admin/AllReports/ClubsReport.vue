@@ -20,7 +20,7 @@
   }
 </script>
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import {ref} from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import VueMultiselect from "vue-multiselect";
@@ -28,7 +28,6 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 import DataTable from 'datatables.net-vue3';
 import DataTablesLib from 'datatables.net';
-//import 'datatables.net-select';
 import 'datatables.net-responsive-dt';
 import language from 'datatables.net-plugins/i18n/es-ES.mjs';
 
@@ -41,8 +40,6 @@ pdfmake.vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfmake.vfs;
 
 window.JSZip = jszip;
 DataTable.use(DataTablesLib);
-//DataTablesLib.Buttons.jszip(jszip);
-//DataTablesLib.Buttons.pdfMake(pdfmake); 
 
 defineProps({
   clubs: Object,
@@ -167,7 +164,7 @@ buttons2.value= [
                 <div v-if="report?.id == 2" class="px-6 py-6 bg-white overflow-hidden shadow-sm sm:rounded-lg -z-10">
                     <DataTable :data="clubs" :columns="columns2"
                     class="w-full display border border-gray-400" 
-                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons2,select:true}">
+                    :options="{responsive:true, autoWidth:false,dom:'Bfrtip',buttons:buttons2,select:true,language: language}">
                     <thead>
                         <tr class="bg-gray-100">
                             <th class="px-2 py-2">#</th>
