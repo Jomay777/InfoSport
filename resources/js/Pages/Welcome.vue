@@ -27,16 +27,7 @@ defineProps({
     >    
         
         <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">                    
-            <Link
-                    :href="route('published_tournaments')"
-                    class="font-semibold text-blue-900 hover:text-green-500 hover:outline hover:p-1  hover:outline-2  hover:ring hover:rounded-sm hover:outline-blue-900"
-                    >Rol de Partidos</Link
-                >
-            <Link
-                    :href="route('position_tables')"
-                    class="ml-4 font-semibold text-green-500 hover:text-blue-900 hover:outline hover:p-1  hover:outline-2  hover:ring hover:rounded-sm hover:outline-green-500"
-                    >Tabla de Posiciones</Link
-                >
+           
             <Link
                 v-if="$page.props.auth.user"
                 :href="route('dashboard')"
@@ -80,15 +71,30 @@ defineProps({
                 </svg> 
                 </Link>                                              
             </div>
-
-            <div class="max-w-7xl mx-auto mt-10 p-6 lg:p-8 overflow-hidden bg-gradient-to-b from-slate-300 to-gray-100  rounded-lg">            
+            <div class="flex justify-between mt-10 text-lg mx-0 md:mx-60 xl:mx-96 font-bold" >
+                    <Link
+                        :href="route('published_tournaments')"
+                        class=" text-green-500 outline outline-blue-900 rounded p-1
+                         hover:text-blue-900 hover:outline hover:p-1.5  hover:outline-2  hover:ring hover:rounded-sm hover:outline-green-500"
+                        >Rol de Partidos
+                    </Link>
+                    <Link
+                        :href="route('position_tables')"
+                        class="text-blue-900 outline outline-green-500 rounded p-1
+                        hover:text-green-500 hover:outline hover:p-1.5  hover:outline-2  hover:ring hover:rounded-sm hover:outline-blue-900"
+                        >Tabla de Posiciones
+                    </Link>    
+            </div>
+            <div class="max-w-7xl mx-auto mt-9 p-6 lg:p-8 overflow-hidden bg-gradient-to-b from-slate-300 to-gray-100  rounded-lg">            
                 <div id="main_container" 
                 class="flex justify-center  before:bg-gradient-to-t before:from-teal-500/70 before:via-fuchsia-600 before:to-transparent before:blur-xl before:filter">
                 
                     <h1 class="title text-6xl font-black text-blue-900 ">Info</h1>
-                    <h2 class="cursive text-6xl font-thin text-green-500">Sport</h2>                    
+                    <h2 class="cursive text-6xl font-thin text-green-500">Sport</h2> <br>
+                                   
                 </div>
-                <div class="mt-10 flex">
+               
+                <div class="mt-5 flex">
                     <div class="sm:w-full mt-10 md:w-1/2 ">
                         <p class="text-gray-600">
                         La <span class="text-green-500 font-extrabold">Asociación Municipal de Fútbol de Salón Bermejo</span>, arraigada en la pasión por el deporte, ha dejado una marca distintiva en la comunidad local. Su fundación se centra en fomentar el fútbol de salón y promover valores como el juego limpio y la inclusión. 
