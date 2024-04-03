@@ -71,19 +71,24 @@ defineProps({
                 </svg> 
                 </Link>                                              
             </div>
-            <div class="flex justify-between mt-10 text-lg mx-0 md:mx-60 xl:mx-96 font-bold" >
+            <!-- class="flex justify-between mt-10 text-lg mx-0 md:mx-60 xl:mx-96 font-bold" -->
+            <div class="flex justify-between md:justify-normal mt-10 text-lg font-bold" >
+                <div class=" md:w-1/2 md:text-right pr-3">
                     <Link
                         :href="route('published_tournaments')"
                         class=" text-green-500 outline outline-blue-900 rounded p-1
                          hover:text-blue-900 hover:outline hover:p-1.5  hover:outline-2  hover:ring hover:rounded-sm hover:outline-green-500"
                         >Rol de Partidos
                     </Link>
+                </div>
+                <div class=" md:w-1/2 md:text-left pl-3">
                     <Link
                         :href="route('position_tables')"
                         class="text-blue-900 outline outline-green-500 rounded p-1
                         hover:text-green-500 hover:outline hover:p-1.5  hover:outline-2  hover:ring hover:rounded-sm hover:outline-blue-900"
                         >Tabla de Posiciones
                     </Link>    
+                </div>                                        
             </div>
             <div class="max-w-7xl mx-auto mt-9 p-6 lg:p-8 overflow-hidden bg-gradient-to-b from-slate-300 to-gray-100  rounded-lg">            
                 <div id="main_container" 
