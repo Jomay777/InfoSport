@@ -13,7 +13,6 @@ use App\Models\GameScheduling;
 use App\Models\LogTransaction;
 use App\Models\PositionTable;
 use App\Models\Team;
-use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

@@ -12,13 +12,7 @@ const props = defineProps({
     type: Object,
     required: true,
   }, 
-  player_sanctions: Array
-  /* player_sanction_scheduling: {
-    type: Array,
-  },
-  game_statistic: {
-    type: Object,
-  } */
+  player_sanctions: Array,
 });
 
 const form = useForm({

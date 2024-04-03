@@ -14,7 +14,6 @@ use App\Models\Category;
 use App\Models\Game;
 use App\Models\GameScheduling;
 use App\Models\PassRequest;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class User extends Authenticatable

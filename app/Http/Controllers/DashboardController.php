@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\GameSchedulingResource;
 use App\Models\GameRole;
 use App\Models\GameScheduling;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller

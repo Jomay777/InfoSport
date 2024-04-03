@@ -26,7 +26,7 @@ import TableRow from "@/Components/TableRow.vue";
 import TableHeaderCell from "@/Components/TableHeaderCell.vue";
 import TableDataCell from "@/Components/TableDataCell.vue";
 
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 
 import VueMultiselect from "vue-multiselect";
@@ -44,15 +44,6 @@ const form = useForm({
   _method: "DELETE",
 });
 
-const showConfirmDeleteGameRoleModal = ref(false)
-
-const confirmDeleteGameRole = () => {
-      showConfirmDeleteGameRoleModal.value = true;
-}
-
-const closeModal = () => {
-  showConfirmDeleteGameRoleModal.value = false;
-}
 const dispatchAction = () => {
   form.game_roles = '';
 }

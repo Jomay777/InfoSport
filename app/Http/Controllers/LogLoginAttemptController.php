@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\LogLoginAttemptResource;
 use App\Models\LogLoginAttempt;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 use Inertia\Response;
 

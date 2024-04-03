@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PlayerSanctionRequest;
 use App\Http\Requests\TeamSanctionRequest;
 use App\Http\Resources\GameResource;
 use App\Http\Resources\TeamResource;

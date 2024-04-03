@@ -7,11 +7,7 @@ import InputError from "@/Components/InputError.vue";
 import TableDataCell from "@/Components/TableDataCell.vue";
 import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
-import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-
-import { ref } from "vue";
-
 
 defineProps({
   game_scheduling: Array,

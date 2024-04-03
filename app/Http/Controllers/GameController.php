@@ -6,18 +6,15 @@ use App\Http\Requests\GameRequest;
 use App\Http\Resources\GameResource;
 use App\Http\Resources\GameSchedulingResource;
 use App\Http\Resources\GameStatisticResource;
-use App\Http\Resources\TeamResource;
 use App\Models\Game;
 use App\Models\GameScheduling;
 use App\Models\GameStatistic;
 use App\Models\LogTransaction;
 use App\Models\PositionTable;
-use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\Console\Input\Input;
 
 class GameController extends Controller
 {

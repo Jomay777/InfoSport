@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PositionTableResource;
 use App\Http\Resources\TournamentResource;
 use App\Models\PositionTable;
-use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

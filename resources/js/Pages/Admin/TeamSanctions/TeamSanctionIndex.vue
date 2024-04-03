@@ -52,18 +52,6 @@ const deleteTeamSanction = (id) => {
    });
 }
 
-/* const totalYellowCards = (teamId, tournamentId, team_sanctions) => {
-    let totalYellows = 0;
-
-    for (const player_sanction of player_sanctions) { // <-- Aquí cambia el nombre
-        if (player_sanction.player_id === playerId && 
-            player_sanction.game.game_scheduling.game_role.tournament.id === tournamentId) {
-            totalYellows += player_sanction.yellow_cards;
-        }
-    }
-    
-    return totalYellows;
-} */
 </script>
 
 <template>

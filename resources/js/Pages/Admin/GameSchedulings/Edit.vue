@@ -10,7 +10,6 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
 
 import { onMounted, ref } from "vue";

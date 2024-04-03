@@ -3,7 +3,6 @@ import { Head } from '@inertiajs/vue3';
 import {ref} from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import VueMultiselect from "vue-multiselect";
-import AdminLayout from '@/Layouts/AdminLayout.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 import DataTable from 'datatables.net-vue3';

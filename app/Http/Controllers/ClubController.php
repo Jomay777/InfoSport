@@ -9,17 +9,12 @@ use App\Http\Resources\UserResource;
 use App\Models\Club;
 use App\Models\LogTransaction;
 use App\Models\User;
-use COM;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-
-use function Laravel\Prompts\search;
 
 class ClubController extends Controller
 {

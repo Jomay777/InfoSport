@@ -3,9 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Club;
-use App\Models\LogTransaction;
 use App\Models\Team;
-use App\Models\Tournament;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

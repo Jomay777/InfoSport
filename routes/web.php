@@ -9,7 +9,6 @@ use App\Http\Controllers\GameRoleController;
 use App\Http\Controllers\GameSchedulingController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\LogLoginAttemptController;
 use App\Http\Controllers\PassRequestController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoPlayerController;
@@ -31,7 +30,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-use App\Models\Club;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,13 +97,13 @@ Route::middleware(['auth', 'role:Administrador'])->prefix('/admin')->group(funct
     Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
         ->name('users.roles.destroy');       
 });
-Route::middleware(['auth', 'can:Ver club', 'log.transactions:clubs'])->group(function () {
+Route::middleware(['auth', 'can:Ver club'])->group(function () {
 
     //Routes for clubs
     Route::resource('/clubs', ClubController::class);
     Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
 });   
-Route::middleware(['auth', 'can:Ver equipo', 'log.transactions:teams'])->group(function () {
+Route::middleware(['auth', 'can:Ver equipo'])->group(function () {
 
     //Routes for teams
     Route::resource('/teams', TeamController::class);

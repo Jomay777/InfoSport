@@ -10,14 +10,10 @@ use App\Models\Game;
 use App\Models\LogTransaction;
 use App\Models\Player;
 use App\Models\PlayerSanction;
-use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-
-use function Pest\Laravel\get;
-use function PHPSTORM_META\map;
 
 class PlayerSanctionController extends Controller
 {

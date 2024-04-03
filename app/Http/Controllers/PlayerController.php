@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PlayerRequest;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PhotoPlayerResource;
 use App\Http\Resources\PlayerResource;
 use App\Http\Resources\TeamResource;
-use App\Models\Category;
 use App\Models\LogTransaction;
 use App\Models\PhotoPlayer;
 use App\Models\Player;
