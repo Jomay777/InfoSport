@@ -90,11 +90,6 @@ class User extends Authenticatable
         return $this->morphedByMany(GameRole::class, 'userable');
     }
 
-    //one-to-many relationship
-    public function cardGenerations(){
-        return $this->hasMany(CardGeneration::class);
-    }
-
      /**
      * Define the relationship with the LogLoginAttempt model.
      */

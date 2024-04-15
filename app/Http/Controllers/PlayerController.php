@@ -54,15 +54,15 @@ class PlayerController extends Controller
                         ->orWhere('players.first_name', 'like', '%' . $request->search . '%')
                         ->orWhere('players.second_name', 'like', '%' . $request->search . '%')
                         ->orWhere('players.last_name', 'like', '%' . $request->search . '%')
-                        ->orWhere('players.id', 'like', '%' . $request->search . '%')
-                        ->orWhere('players.c_i', 'like', '%' . $request->search . '%')
+                        ->orWhere('players.id', 'like', $request->search)
+                        ->orWhere('players.c_i', 'like', $request->search)
                         //->orWhere('players.state', 'like', '%' . $request->search . '%')
 
                         ->orWhereHas('team', function ($subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%' . $request->search . '%');
+                            $subQuery->where('name', 'like', $request->search . '%');
                         })
                         ->orWhereHas('team.category', function ($subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%' . $request->search . '%');
+                            $subQuery->where('name', 'like', $request->search);
                         });
                          
                 })

@@ -30,15 +30,15 @@ class GameController extends Controller
         if ($request->search) {
             $games->where(function ($query) use ($request) {
                 $query->where('games.id', 'like', $request->search)
-                    ->orWhere('games.result', 'like', '%' . $request->search . '%')
+                    ->orWhere('games.result', 'like', $request->search . '%')
                     ->orWhereHas('gameScheduling.teamA', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('gameScheduling.teamB', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('gameScheduling.gameRole', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     });
             });
         }
@@ -342,8 +342,8 @@ class GameController extends Controller
         $teamBId = $game->gameScheduling?->team_b_id;
         $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
         // Obtener goles de equipo A y B
-        $goalsTeamA =$game->gameStatistic->goals_team_a;
-        $goalsTeamB =$game->gameStatistic->goals_team_b;
+        $goalsTeamA =$game->gameStatistic?->goals_team_a;
+        $goalsTeamB =$game->gameStatistic?->goals_team_b;
 
         //teamA WIN
         //$positionTable = PositionTable::find
@@ -668,8 +668,8 @@ class GameController extends Controller
         $teamBId = $game->gameScheduling?->team_b_id;
         $tournamentId = $game->gameScheduling?->gameRole?->tournament_id;
         // Obtener goles de equipo A y B
-        $goalsTeamA =$game->gameStatistic->goals_team_a;
-        $goalsTeamB =$game->gameStatistic->goals_team_b;
+        $goalsTeamA =$game->gameStatistic?->goals_team_a;
+        $goalsTeamB =$game->gameStatistic?->goals_team_b;
 
         //teamA WIN
         //$positionTable = PositionTable::find

@@ -91,7 +91,7 @@ const deletePlayer = (id) => {
             <TableRow >              
               <TableHeaderCell>ID</TableHeaderCell>
               <TableHeaderCell>Nombre</TableHeaderCell>
-              <TableHeaderCell>Equipo</TableHeaderCell>
+              <TableHeaderCell>Equipo - Cat</TableHeaderCell>
               <TableHeaderCell>CI</TableHeaderCell>
               <TableHeaderCell>Foto</TableHeaderCell>
               <TableHeaderCell>Acción</TableHeaderCell>            

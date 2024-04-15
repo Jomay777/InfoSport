@@ -26,10 +26,10 @@ class TournamentController extends Controller
 
         if ($request->search) {
             $tournaments->where('tournaments.name', 'like', '%' . $request->search . '%')
-                ->orWhere('tournaments.id', 'like', $request->search . '%')
+                ->orWhere('tournaments.id', 'like', $request->search)
                 ->orWhere('tournaments.state', 'like', $request->search . '%')
                 ->orWhereHas('category', function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', $request->search);
                 });
         }
 

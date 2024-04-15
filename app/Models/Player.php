@@ -29,10 +29,6 @@ class Player extends Model
         return $this->hasMany(PassRequest::class);
     }
 
-    public function cardGenerations(){
-        return $this->hasMany(CardGeneration::class);
-    }
-
     //one-to-one relationship
     public function photoPlayer(){
         return $this->hasOne(PhotoPlayer::class);

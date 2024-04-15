@@ -28,7 +28,7 @@ class PlayerSanctionController extends Controller
 
         if ($request->search) {
             $player_sanctions->where(function ($query) use ($request) {
-                $query->where('player_sanctions.id', 'like', '%' . $request->search . '%')
+                $query->where('player_sanctions.id', 'like', $request->search)
                     ->orWhere('player_sanctions.state', 'like', $request->search . '%')
                     ->orWhereHas('game.gameScheduling.teamA', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
@@ -37,7 +37,7 @@ class PlayerSanctionController extends Controller
                         $subQuery->where('name', 'like', '%' . $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.gameRole', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like',  $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.gameRole.tournament', function ($subQuery) use ($request) {
                         $subQuery->where('name', 'like', '%' . $request->search . '%');

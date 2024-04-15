@@ -74,7 +74,7 @@ const closeModal = () => {
           class="w-full"
           id="tournaments"
           v-model="form.tournaments"
-          :options="tournaments"
+          :options="tournaments.filter(item => item.state != 'No publicado')"
           :multiple="false"
           :close-on-select="true"
           :preselect-first="true"

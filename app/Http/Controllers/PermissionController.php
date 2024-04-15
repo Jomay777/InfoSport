@@ -22,7 +22,7 @@ class PermissionController extends Controller
         ->latest()
         ->take(20); 
         if ($request->search) {
-            $permission->where('permissions.id', 'like', '%' . $request->search . '%')
+            $permission->where('permissions.id', 'like', $request->search)
                 ->orWhere('permissions.name', 'like', '%' . $request->search . '%');
         }
         $permission = $permission->get();

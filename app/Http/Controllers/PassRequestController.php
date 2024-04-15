@@ -42,7 +42,7 @@ class PassRequestController extends Controller
             $names = explode(' ', $fullName);
             $firstName = isset($names[0]) ? $names[0] : '';
             $passRequests->where(function ($query) use ($request, $fullName, $firstName) {
-                $query->where('pass_requests.id', 'like', '%' . $request->search . '%')
+                $query->where('pass_requests.id', 'like', $request->search)
                     ->orWhereHas('player', function ($subQuery) use ($firstName, $fullName, $request) {
                         $subQuery->where('first_name', 'like', '%' . $firstName . '%')                            
                             ->orWhere('first_name', 'like', '%' . $request->search . '%')

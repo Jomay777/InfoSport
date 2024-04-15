@@ -23,7 +23,7 @@ class RoleController extends Controller
         ->latest()
         ->take(20); 
         if ($request->search) {
-            $roles->where('roles.id', 'like', '%' . $request->search . '%')
+            $roles->where('roles.id', 'like', $request->search )
                 ->orWhere('roles.name', 'like', '%' . $request->search . '%');
         }
         $roles = $roles->get();

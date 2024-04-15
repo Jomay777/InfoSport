@@ -23,8 +23,8 @@ class CategoryController extends Controller
         ->take(20); 
 
         if ($request->search) {
-            $categories->where('categories.name', 'like', '%' . $request->search . '%')
-                ->orWhere('categories.id', 'like', '%' . $request->search . '%');
+            $categories->where('categories.name', 'like', $request->search)
+                ->orWhere('categories.id', 'like', $request->search);
         }
 
         $categories = $categories->get();

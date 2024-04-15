@@ -32,22 +32,22 @@ class TeamSanctionController extends Controller
                     ->orWhere('team_sanctions.state', 'like', $request->search . '%')
                     ->orWhere('team_sanctions.sanction', 'like', $request->search . '%')
                     ->orWhereHas('game.gameScheduling.teamA', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.teamB', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('game.gameScheduling.gameRole', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search);
                     })
                     ->orWhereHas('game.gameScheduling.gameRole.tournament', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('team', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     })
                     ->orWhereHas('team.club', function ($subQuery) use ($request) {
-                        $subQuery->where('name', 'like', '%' . $request->search . '%');
+                        $subQuery->where('name', 'like', $request->search . '%');
                     });
             });
         }

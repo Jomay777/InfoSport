@@ -18,7 +18,7 @@ class GameStatisticFactory extends Factory
      */
     public function definition(): array
     {
-        $game = Game::factory()->create();
+        $game = Game::whereDoesntHave('gameStatistic')->inRandomOrder()->first();
         return [
             'goals_team_a' => $this->faker->numberBetween(0, 10),
             'goals_team_b' => $this->faker->numberBetween(0, 10),
