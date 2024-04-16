@@ -48,9 +48,9 @@ const deleteClub = (id) => {
         >
       </div>
       <div class=" mt-5 flex flex-col justify-center items-center ">
-            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
+            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
-                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700 dark:text-white">
+                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700">
                     Club {{ club.name }}
                     </h4>
                     <div class="mt-5 flex justify-center">
@@ -58,26 +58,26 @@ const deleteClub = (id) => {
                     </div>
                 </div> 
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">
-                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500">
                     <p class="text-sm text-gray-600">Identificador</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p class="text-base font-medium text-navy-700 ">
                         {{ club.id }}
                     </p>
                     </div>
 
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500">
                     <p class="text-sm text-gray-600">Profesor</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy" v-if="club.coach">
+                    <p class="text-base font-medium text-navy-700 " v-if="club.coach">
                         {{ club.coach }}
                     </p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy" v-else>
+                    <p class="text-base font-medium text-navy-700 " v-else>
                       Profesor no registrado
                     </p>
                     </div>
 
-                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 ">
                     <p class="text-sm text-gray-600">Delegado</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy" v-if="club.users.length > 0" >
+                    <p class="text-base font-medium text-navy-700 " v-if="club.users.length > 0" >
                   
                       <span  v-for="user in club.users" :key="user.id" >
                       {{ user.name }}
@@ -92,7 +92,7 @@ const deleteClub = (id) => {
                     <button @click="confirmDeleteClub" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
                     <Modal :show="showConfirmDeleteClubModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el club {{club.name}}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 ">¿Está seguro de eliminar el club {{club.name}}?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteClub(club.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

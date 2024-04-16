@@ -52,12 +52,12 @@ const deletePassRequest = (id) => {
         >
       </div>
       <div class=" mt-5 flex flex-col justify-center items-center ">
-            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
+            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
-                    <h4 class=" mt-5 px-2 text-xl font-bold dark:text-white">
+                    <h4 class=" mt-5 px-2 text-xl font-bold ">
                     Jugador {{ pass_request.player.first_name }} {{ pass_request.player.second_name }} {{ pass_request.player.last_name }} {{ pass_request.player.mother_last_name }}
                     </h4>  
-                    <h2 class=" mt-5 px-2 text-xl font-bold dark:text-white">ID de solicitud de pase <span class="text-red-500"> {{ pass_request.id }} </span></h2>
+                    <h2 class=" mt-5 px-2 text-xl font-bold ">ID de solicitud de pase <span class="text-red-500"> {{ pass_request.id }} </span></h2>
                     <div class="mt-5 flex justify-center">
                       <img v-if="pass_request.request_photo_path" class=" bg-cover bg-center max-w-20" :src="pass_request.request_photo_path" alt="foto de solicitud de pase"/> 
                       <img v-else class=" bg-cover bg-center max-w-20" src="https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331256_1280.png" alt="foto de solicitud de pase"/> 
@@ -70,7 +70,7 @@ const deletePassRequest = (id) => {
                     <button @click="confirmDeletePassRequest" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
                     <Modal :show="showConfirmDeletePassRequestModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar la solicitud de pase del jugador {{ pass_request.player.first_name }} {{ pass_request.player.second_name }} {{ pass_request.player.last_name }} {{ pass_request.player.mother_last_name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 ">¿Está seguro de eliminar la solicitud de pase del jugador {{ pass_request.player.first_name }} {{ pass_request.player.second_name }} {{ pass_request.player.last_name }} {{ pass_request.player.mother_last_name }}?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deletePassRequest(pass_request.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>

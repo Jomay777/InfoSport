@@ -52,23 +52,23 @@ const deleteTournament = (id) => {
         >
       </div>
       <div class=" mt-5 flex flex-col justify-center items-center ">
-            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500 dark:bg-gray-700 dark:text-gray-400 dark:!shadow-none p-3">
+            <div class="relative flex flex-col items-center rounded-[20px] w-[700px] max-w-[95%] mx-auto bg-gray-100 bg-clip-border shadow-3xl shadow-shadow-500  p-3">
                 <div class="mt-2 mb-8  text-gray-700 w-full">
-                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700 dark:text-white">
+                    <h4 class=" mt-5 px-2 text-xl font-bold text-navy-700 ">
                     Torneo {{ tournament.name }}
                     </h4>                    
                 </div> 
                 <div class="grid grid-cols-2 gap-4 px-2 w-full">
-                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <div class="flex flex-col items-start justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 ">
                     <p class="text-sm text-gray-600">Identificador</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p class="text-base font-medium text-navy-700 ">
                         {{ tournament.id }}
                     </p>
                     </div>
 
-                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+                    <div class="flex flex-col justify-center rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 ">
                     <p class="text-sm text-gray-600">Categoría</p>
-                    <p v-if="tournament.category" class="text-base font-medium text-navy-700 dark:text-navy">
+                    <p v-if="tournament.category" class="text-base font-medium text-navy-700 ">
                         {{ tournament.category.name }}
                     </p>
                     <p v-else>Categoría no asignada</p>
@@ -77,9 +77,9 @@ const deleteTournament = (id) => {
                                        
                 </div>
                 <div class="mt-3 px-2 w-full">
-                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
+                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500  ">
                     <p class="text-sm text-gray-600">Estado</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">                  
+                    <p class="text-base font-medium text-navy-700 ">                  
                       <span>
                       {{ tournament.state }}
                       <br> 
@@ -88,9 +88,9 @@ const deleteTournament = (id) => {
                     </div> 
                 </div>
                 <div class="mt-3 mb-8 px-2 w-full">
-                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none ">
+                  <div class="  rounded-2xl bg-white bg-clip-border px-3 py-4 shadow-3xl shadow-shadow-500  ">
                     <p class="text-sm text-gray-600">Descripción</p>
-                    <p class="text-base font-medium text-navy-700 dark:text-navy">                  
+                    <p class="text-base font-medium text-navy-700 ">                  
                       <span>
                       {{ tournament.description }}
                       <br> 
@@ -103,7 +103,7 @@ const deleteTournament = (id) => {
                     <button @click="confirmDeleteTournament" class="text-red-400 hover:text-red-600 m-5">Eliminar</button>
                     <Modal :show="showConfirmDeleteTournamentModal" @close="closeModal">
                         <div class="p-6">
-                            <h2 class="text-lg font-semibold text-slate-800 dark:text-white">¿Está seguro de eliminar el torneo {{ tournament.name }}?</h2>
+                            <h2 class="text-lg font-semibold text-slate-800 ">¿Está seguro de eliminar el torneo {{ tournament.name }}?</h2>
                             <div class="mt-6 flex space-x-4">
                                 <DangerButton @click="deleteTournament(tournament.id)">Eliminar</DangerButton>
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
