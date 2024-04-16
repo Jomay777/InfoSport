@@ -92,15 +92,17 @@ columns2.value = [
   render: function(data, type, row) {
     const imageData = btoa('http://127.0.0.1:8000'+row.logo_path);
     return '<img src="data:image/png;base64,' + imageData + '" alt="logo" />';
+    <img src="'+ row.logo_path + '" alt="logo" style="max-width: 100px;"></img>
   }
 }, */
 
   {
     data: null,
     render: function(data, type, row) {      
-        return '<a href="' + row.logo_path + '" target="_blank"><img src="'+ row.logo_path + '" alt="logo" style="max-width: 100px;"></img></a>';   
+        //return '<a href="' + row.logo_path + '" target="_blank"><img src="'+ row.logo_path + '" alt="logo" style="max-width: 100px;"></img></a><br><span>'+ row.logo_path +'<span>';   
+          return '<a href="' + row.logo_path + '" target="_blank" ><img src="'+ row.logo_path + '" alt="logo" style="max-width: 100px;"/></a><p class="text-xs text-transparent absolute -z-10">'+row.logo_path+'</p>'
     }   
-}
+  }
 ]; 
 
 buttons2.value= [

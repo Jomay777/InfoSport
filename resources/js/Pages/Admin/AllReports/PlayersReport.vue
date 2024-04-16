@@ -97,7 +97,7 @@ columns4.value = [
   { data: 'c_i' },
   { data: null, render: function(data, type, row) {
       if (row.photo_player) {
-        return '<img src="' + row.photo_player.photo_path + '" alt="logo" style="max-width: 100px;">';
+        return '<img src="' + row.photo_player.photo_path + '" alt="logo" style="max-width: 100px;"><p class="text-xs text-transparent absolute -z-10">'+row.photo_player.photo_path+'</p>';
       } else {
         return 'Imagen no asignada';
       }

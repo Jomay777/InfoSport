@@ -88,7 +88,7 @@ columns5.value = [
   },
   { data: null, render: function(data, type, row) {
       if (row.request_photo_path) {
-        return '<img src="' + row.request_photo_path + '" alt="logo" style="max-width: 100px;">';
+        return '<img src="' + row.request_photo_path + '" alt="logo" style="max-width: 100px;"><p class="text-xs text-transparent absolute -z-10">'+row.request_photo_path+'</p>';
       } else {
         return 'Imagen no asignada';
       }
