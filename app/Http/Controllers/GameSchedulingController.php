@@ -141,6 +141,14 @@ class GameSchedulingController extends Controller
                 'tournament_id' => $tournamentId,
             ]);
             $positionTableTeamA->save();
+            $details = 'Id de Equipo: ' . $teamAId. ', Id de Torneo: ' . $tournamentId;
+            LogTransaction::create([
+                'user_id' => auth()->id(), // Assuming you have user authentication
+                'action' => 'Crear', // HTTP method used for the request
+                'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                'resource_id' => $positionTableTeamA?->id, // ID of the resource, if applicable
+                'details' => $details, // Any additional details you want to log
+            ]); 
         }
 
         // Realizar la misma verificación y creación para el equipo B
@@ -161,6 +169,15 @@ class GameSchedulingController extends Controller
                 'tournament_id' => $tournamentId,
             ]);
             $positionTableTeamB->save();
+            //log create
+            $details = 'Id de Equipo: ' . $teamBId. ', Id de Torneo: ' . $tournamentId;
+            LogTransaction::create([
+                'user_id' => auth()->id(), // Assuming you have user authentication
+                'action' => 'Crear', // HTTP method used for the request
+                'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                'resource_id' => $positionTableTeamB?->id, // ID of the resource, if applicable
+                'details' => $details, // Any additional details you want to log
+            ]); 
         }
 
         return redirect()->route('game_schedulings.index')->with('success', 'programación de partido creado correctamente');
@@ -269,16 +286,37 @@ class GameSchedulingController extends Controller
 
             // Eliminar los registros antiguos de las tablas de posiciones si el equipo antiguo A no tiene otras programaciones de partido en el mismo torneo
             if (!$hasOtherGameSchedulingsA) {
+                $positionTableTeamA = PositionTable::where('tournament_id', $oldTournamentId)
+                    ->where('team_id', $oldTeamAId);
                 PositionTable::where('tournament_id', $oldTournamentId)
                     ->where('team_id', $oldTeamAId)
                     ->delete();
+                    $details = 'Id de Equipo: ' . $oldTeamAId. ', Id de Torneo: ' . $oldTournamentId;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Eliminar', // HTTP method used for the request
+                        'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                        'resource_id' => $positionTableTeamA?->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
             }
 
             // Eliminar los registros antiguos de las tablas de posiciones si el equipo antiguo B no tiene otras programaciones de partido en el mismo torneo
             if (!$hasOtherGameSchedulingsB) {
+                $positionTableTeamB = PositionTable::where('tournament_id', $oldTournamentId)
+                    ->where('team_id', $oldTeamBId);
                 PositionTable::where('tournament_id', $oldTournamentId)
                     ->where('team_id', $oldTeamBId)
                     ->delete();
+                //create log
+                $details = 'Id de Equipo: ' . $oldTeamBId. ', Id de Torneo: ' . $oldTournamentId;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Eliminar', // HTTP method used for the request
+                        'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                        'resource_id' => $positionTableTeamB?->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
             }
 
             // Verificar si ya existe un registro de PositionTable para el equipo A en este torneo
@@ -288,12 +326,22 @@ class GameSchedulingController extends Controller
 
             // Crear un nuevo registro solo si no existe un registro previo para el equipo A en este torneo
             if (!$existingPositionTableA) {
-            $positionTableTeamA = new PositionTable([
-                'team_id' => $newTeamAId,
-                'tournament_id' => $tournamentId,
-                // Otros campos de la tabla de posiciones
-            ]);
-            $positionTableTeamA->save();
+                $positionTableTeamA = new PositionTable([
+                    'team_id' => $newTeamAId,
+                    'tournament_id' => $tournamentId,
+                    // Otros campos de la tabla de posiciones
+                ]);
+                $positionTableTeamA->save();
+                //create log
+                $details = 'Id de Equipo: ' . $newTeamAId. ', Id de Torneo: ' . $tournamentId;
+                LogTransaction::create([
+                    'user_id' => auth()->id(), // Assuming you have user authentication
+                    'action' => 'Crear', // HTTP method used for the request
+                    'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                    'resource_id' => $positionTableTeamA?->id, // ID of the resource, if applicable
+                    'details' => $details, // Any additional details you want to log
+                ]); 
+
             }
 
             // Realizar la misma verificación y creación para el equipo B
@@ -302,12 +350,21 @@ class GameSchedulingController extends Controller
             ->first();
 
             if (!$existingPositionTableB) {
-            $positionTableTeamB = new PositionTable([
-                'team_id' => $newTeamBId,
-                'tournament_id' => $tournamentId,
-                // Otros campos de la tabla de posiciones
-            ]);
-            $positionTableTeamB->save();
+                $positionTableTeamB = new PositionTable([
+                    'team_id' => $newTeamBId,
+                    'tournament_id' => $tournamentId,
+                    // Otros campos de la tabla de posiciones
+                ]);
+                $positionTableTeamB->save();
+                //create log
+                $details = 'Id de Equipo: ' . $newTeamBId. ', Id de Torneo: ' . $tournamentId;
+                LogTransaction::create([
+                    'user_id' => auth()->id(), // Assuming you have user authentication
+                    'action' => 'Crear', // HTTP method used for the request
+                    'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                    'resource_id' => $positionTableTeamB?->id, // ID of the resource, if applicable
+                    'details' => $details, // Any additional details you want to log
+                ]); 
             }
         }
 
@@ -353,13 +410,13 @@ class GameSchedulingController extends Controller
             $game_scheduling = $game_scheduling->load('teamA.positionTables','teamB.positionTables', 'gameRole.tournament.positionTables','game.gameStatistic');
 
             // Procesamiento del resultado del partido
-            $resultName = $game_scheduling->game->result;
+            $resultName = $game_scheduling?->game?->result;
             $teamAWon = $resultName === 'Ganó A';
             $teamBWon = $resultName === 'Ganó B';
             $drawn = $resultName === 'Empate';
             // Obtener goles de equipo A y B
-            $goalsTeamA =$game_scheduling->game->gameStatistic->goals_team_a;
-            $goalsTeamB =$game_scheduling->game->gameStatistic->goals_team_b;
+            $goalsTeamA =$game_scheduling?->game?->gameStatistic?->goals_team_a;
+            $goalsTeamB =$game_scheduling?->game?->gameStatistic?->goals_team_b;
 
             //teamA WIN
             //$positionTable = PositionTable::find
@@ -384,6 +441,16 @@ class GameSchedulingController extends Controller
                     $winningTeamPosition->goals_scored -= $goalsWinningTeam;
                     $winningTeamPosition->goals_against -= $goalsLosingTeam;
                     $winningTeamPosition->save();
+                     //create log
+                    $details = 'Id de Equipo: ' . $winningTeamPosition->team_id. ', Id de Torneo: ' . $winningTeamPosition->tournament_id 
+                        . ', Pts:'.' -3'.', Part Jugados: -1'. ', Part Ganados: -1, Goles a Favor: -'. $goalsWinningTeam . ', Goles en Contra: -'. $goalsLosingTeam;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $winningTeamPosition?->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
                 //encontrar el registro de positionTable relacionado con el equipo perdedor y el torneo
 
@@ -397,6 +464,15 @@ class GameSchedulingController extends Controller
                     $losingTeamPosition->goals_against -= $goalsWinningTeam;
                     // Actualiza los demás campos según la lógica de tu aplicación
                     $losingTeamPosition->save();
+                    $details = 'Id de Equipo: ' . $losingTeamPosition->team_id. ', Id de Torneo: ' . $losingTeamPosition->tournament_id 
+                        . ', Part Jugados: -1'. ', Part Perdidos: -1, Goles a Favor: -'. $goalsLosingTeam . ', Goles en Contra: -'. $goalsWinningTeam;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $losingTeamPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
             //dd($game);
             }
@@ -409,28 +485,46 @@ class GameSchedulingController extends Controller
                     ->where('tournament_id', $tournamentId)
                     ->first();
 
-                // Incrementar los juegos jugados y los juegos empatados para el equipo A
+                // Quitar los juegos jugados y los juegos empatados para el equipo A
                 if($teamAPosition){
-                $teamAPosition->points -= 1;
-                $teamAPosition->games_played -= 1;
-                $teamAPosition->games_drawn -= 1;
-                $teamAPosition->goals_scored -= $goalsTeamA;
-                $teamAPosition->goals_against -= $goalsTeamB;
-                $teamAPosition->save();
+                    $teamAPosition->points -= 1;
+                    $teamAPosition->games_played -= 1;
+                    $teamAPosition->games_drawn -= 1;
+                    $teamAPosition->goals_scored -= $goalsTeamA;
+                    $teamAPosition->goals_against -= $goalsTeamB;
+                    $teamAPosition->save();
+                    $details = 'Id de Equipo: ' . $teamAPosition->team_id. ', Id de Torneo: ' . $teamAPosition->tournament_id 
+                        . ', Pts:'.' -1'.', Part Jugados: -1'. ', Part Empatados: -1, Goles a Favor: -'. $goalsTeamA . ', Goles en Contra: -'. $goalsTeamB;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamAPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
                 // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
                 $teamBPosition = PositionTable::where('team_id', $teamBId)
                     ->where('tournament_id', $tournamentId)
                     ->first();
 
-                // Incrementar los juegos jugados y los juegos empatados para el equipo B
+                // Quitar los juegos jugados y los juegos empatados para el equipo B
                 if($teamBPosition){
-                $teamBPosition->points -= 1;
-                $teamBPosition->games_played -= 1;
-                $teamBPosition->games_drawn -= 1;
-                $teamBPosition->goals_scored -= $goalsTeamB;
-                $teamBPosition->goals_against -= $goalsTeamA;
-                $teamBPosition->save();
+                    $teamBPosition->points -= 1;
+                    $teamBPosition->games_played -= 1;
+                    $teamBPosition->games_drawn -= 1;
+                    $teamBPosition->goals_scored -= $goalsTeamB;
+                    $teamBPosition->goals_against -= $goalsTeamA;
+                    $teamBPosition->save();
+                    $details = 'Id de Equipo: ' . $teamBPosition->team_id. ', Id de Torneo: ' . $teamBPosition->tournament_id 
+                        . ', Pts:'.' -1'.', Part Jugados: -1'. ', Part Empatados: -1, Goles a Favor: -'. $goalsTeamB . ', Goles en Contra: -'. $goalsTeamA;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamBPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
             }
 
@@ -441,22 +535,45 @@ class GameSchedulingController extends Controller
                 ->where('tournament_id', $tournamentId)
                 ->first();
 
-                // Incrementar los juegos jugados y los juegos empatados para el equipo A
+                // Quitar los juegos jugados y los juegos ganados para el equipo A
                 if($teamAPosition){
-                $teamAPosition->points -= 3;
-                $teamAPosition->games_played -= 1;
-                $teamAPosition->games_won -= 1;
-                $teamAPosition->goals_scored -= 3;
-                $teamAPosition->save();
+                    $teamAPosition->points -= 3;
+                    $teamAPosition->games_played -= 1;
+                    $teamAPosition->games_won -= 1;
+                    $teamAPosition->goals_scored -= 3;
+                    $teamAPosition->save();
+                    //log
+                    $details = 'Id de Equipo: ' . $teamAPosition->team_id. ', Id de Torneo: ' . $teamAPosition->tournament_id 
+                        . ', Pts:'.' -3'.', Part Jugados: -1'. ', Part Ganados: -1, Goles a Favor: -3' ;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamAPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
                 // Encontrar el registro de PositionTable relacionado con el equipo B y el torneo
                 $teamBPosition = PositionTable::where('team_id', $teamBId)
                     ->where('tournament_id', $tournamentId)
                     ->first();
-                // Incrementar los juegos jugados y los juegos empatados para el equipo B
+                // Quitar los juegos jugados y los juegos perdidos para el equipo B
                 if($teamBPosition){
-                $teamBPosition->games_played -= 1;            
-                $teamBPosition->save();
+                    $teamBPosition->games_played -= 1;            
+                    $teamBPosition->games_lost -= 1;            
+                    $teamBPosition->goals_against -= 3;            
+
+                    $teamBPosition->save();
+                    //log
+                    $details = 'Id de Equipo: ' . $teamBPosition->team_id. ', Id de Torneo: ' . $teamBPosition->tournament_id 
+                        .', Part Jugados: -1'. ', Part Perdidos: -1, Goles en Contra: -3';
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamBPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
             }
             //teamB Win to W.O.
@@ -469,11 +586,21 @@ class GameSchedulingController extends Controller
                 // Incrementar los juegos jugados y los juegos empatados para el equipo B
                 if($teamBPosition){
 
-                $teamBPosition->points -= 3;
-                $teamBPosition->games_played -= 1;
-                $teamBPosition->games_won -= 1;
-                $teamBPosition->goals_scored -= 3;
-                $teamBPosition->save();
+                    $teamBPosition->points -= 3;
+                    $teamBPosition->games_played -= 1;
+                    $teamBPosition->games_won -= 1;
+                    $teamBPosition->goals_scored -= 3;
+                    $teamBPosition->save();
+                    //log
+                    $details = 'Id de Equipo: ' . $teamBPosition->team_id. ', Id de Torneo: ' . $teamBPosition->tournament_id 
+                        . ', Pts:'.' -3'.', Part Jugados: -1'. ', Part Ganados: -1, Goles a Favor: -3' ;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamBPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]);
                 }
                 // Encontrar el registro de PositionTable relacionado con el equipo A y el torneo
                 $teamAPosition = PositionTable::where('team_id', $teamAId)
@@ -484,21 +611,53 @@ class GameSchedulingController extends Controller
                 if($teamAPosition){
 
                 $teamAPosition->games_played -= 1;
+                $teamAPosition->games_lost -= 1;
+                $teamAPosition->goals_against -= 3;
                 $teamAPosition->save();
+                $details = 'Id de Equipo: ' . $teamAPosition->team_id. ', Id de Torneo: ' . $teamAPosition->tournament_id 
+                        .', Part Jugados: -1'. ', Part Perdidos: -1'. ', Goles en Contra: -3';
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Actualizar', // HTTP method used for the request
+                        'resource' => 'Tabla de posición', // Name of the resource being accessed
+                        'resource_id' => $teamAPosition->id, // ID of the resource, if applicable
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
                 }
             }
 
         }
         if (!$hasOtherGameSchedulingsA) {
+            $positionTableTeamA = PositionTable::where('tournament_id', $tournamentId)
+            ->where('team_id', $teamAId)->first();
             PositionTable::where('tournament_id', $tournamentId)
                 ->where('team_id', $teamAId)
                 ->delete();
+            //create log postion table
+            $details = 'Id de Equipo: ' . $teamAId. ', Id de Torneo: ' . $tournamentId;
+                    LogTransaction::create([
+                        'user_id' => auth()->id(), // Assuming you have user authentication
+                        'action' => 'Eliminar', // HTTP method used for the request
+                        'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                        'resource_id' => $positionTableTeamA ? $positionTableTeamA->id : null, // ID del recurso, si corresponde
+                        'details' => $details, // Any additional details you want to log
+                    ]); 
         }
 
         if (!$hasOtherGameSchedulingsB) {
+            $positionTableTeamB = PositionTable::where('tournament_id', $tournamentId)
+            ->where('team_id', $teamBId)->first();
             PositionTable::where('tournament_id', $tournamentId)
                 ->where('team_id', $teamBId)
                 ->delete();
+            $details = 'Id de Equipo: ' . $teamBId. ', Id de Torneo: ' . $tournamentId;
+                LogTransaction::create([
+                    'user_id' => auth()->id(), // Assuming you have user authentication
+                    'action' => 'Eliminar', // HTTP method used for the request
+                    'resource' => 'Posición de Equipo', // Name of the resource being accessed
+                    'resource_id' => $positionTableTeamB ? $positionTableTeamB->id : null, // ID del recurso, si corresponde
+                    'details' => $details, // Any additional details you want to log
+                ]); 
         }
         //$game_scheduling->teams()->detach();
         
