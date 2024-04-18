@@ -79,7 +79,7 @@ const updateGame= () => {
               id="result"
               v-model="form.result"
               :options="[{ id: 1, name: 'Ganó A' }, { id: 2, name: 'Ganó B' }, { id: 3, name: 'Empate' }
-                        , { id: 4, name: 'Ganó A por W.O.' }, { id: 5, name: 'Ganó B por W.O.'}, { id: 5, name: 'Partido Cancelado'}]"
+                        , { id: 4, name: 'Ganó A por W.O.' }, { id: 5, name: 'Ganó B por W.O.'}]"
               :multiple="false"
               :preselect-first="true"
               placeholder="Resultado del partido"
